@@ -49,29 +49,29 @@ export default function Home() {
         <Reveal className="max-w-3xl mx-auto text-center">
           <p className="text-gold text-[11px] tracking-track uppercase mb-5">Raw and natural</p>
           <h2 className="font-display text-4xl md:text-6xl text-ink leading-tight mb-8">
-            Nothing added.
+            Pure, natural,
             <br />
-            Nothing needed.
+            and nothing else.
           </h2>
           <p className="text-ink/65 text-lg font-light leading-relaxed mb-5">
-            Our raw makhana is exactly what comes out of the pond and off the roaster. One
-            ingredient, sorted by hand for size and colour, sealed the same day it is packed.
+            Our raw makhana is 100% plant based and naturally gluten free, sourced from the ponds of
+            the Mithila belt and sorted by hand for size and colour.
           </p>
           <p className="text-ink/65 text-lg font-light leading-relaxed mb-12">
-            Eat it as it is, toss it in ghee and salt, or drop it into kheer. It keeps for fifteen
-            months and it never asks for anything else.
+            Perfect on its own or added to your own cooking. Just the natural crunch, with no
+            additives, no preservatives and nothing to hide behind.
           </p>
 
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             {[
-              { t: "Exclusively vegetarian", d: "M12 3v18M8 7c0 2 1.8 3.5 4 3.5M16 11c0 2-1.8 3.5-4 3.5" },
+              { t: "100% plant based", d: "M12 3v18M8 7c0 2 1.8 3.5 4 3.5M16 11c0 2-1.8 3.5-4 3.5" },
               { t: "Naturally gluten free", d: "M12 3v18M12 8c-2.5-1.5-4-1-4-1s.5 2.5 4 3.5M12 8c2.5-1.5 4-1 4-1s-.5 2.5-4 3.5M12 14c-2.5-1.5-4-1-4-1s.5 2.5 4 3.5M12 14c2.5-1.5 4-1 4-1s-.5 2.5-4 3.5" },
-              { t: "Roasted, never fried", d: "M12 3c2.5 3 4.5 5 4.5 8a4.5 4.5 0 01-9 0c0-3 2-5 4.5-8z" },
-              { t: "Single ingredient", d: "M12 4a8 8 0 100 16 8 8 0 000-16zM12 9v6M9 12h6" },
+              { t: "No additives", d: "M12 4a8 8 0 100 16 8 8 0 000-16zM8 8l8 8" },
               { t: "No preservatives", d: "M12 3l7 3v6c0 4-3 7.5-7 9-4-1.5-7-5-7-9V6l7-3z" },
-              { t: "Light to eat", d: "M12 4a8 8 0 100 16 8 8 0 000-16zM12 4v16" },
+              { t: "Single ingredient", d: "M12 4a8 8 0 100 16 8 8 0 000-16zM12 9v6M9 12h6" },
               { t: "Hand sorted", d: "M8 12V6a1.5 1.5 0 013 0v5M11 11V5a1.5 1.5 0 013 0v6M14 11V7a1.5 1.5 0 013 0v8a5 5 0 01-5 5H10a4 4 0 01-3.5-2L5 15" },
-              { t: "Global flavours", d: "M12 3a9 9 0 100 18 9 9 0 000-18zM3 12h18M12 3c2.5 2.5 3.5 5.6 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.6-3.5-9s1-6.5 3.5-9z" },
+              { t: "Roasted, never fried", d: "M12 3c2.5 3 4.5 5 4.5 8a4.5 4.5 0 01-9 0c0-3 2-5 4.5-8z" },
+              { t: "Exclusively vegetarian", d: "M12 3a9 9 0 100 18 9 9 0 000-18zM8 12h8" },
             ].map((b) => (
               <span key={b.t} className="inline-flex items-center gap-2.5 border border-ink/20 rounded-full pl-4 pr-5 py-2.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition duration-300">
                 <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0 text-gold" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d={b.d} /></svg>
