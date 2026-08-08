@@ -35,21 +35,20 @@ export default function HeroSlider() {
 
       <div className="relative max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-12 px-6 md:px-12 py-16 md:py-24">
 
-        <div className="relative aspect-[4/5] md:aspect-auto md:h-[34rem] w-full overflow-hidden rounded-[2rem]">
-          {slides.map((sl, idx) => (
-            <div
-              key={sl.src}
-              className="absolute inset-0 transition-all duration-1000 ease-out"
-              style={{ opacity: idx === i ? 1 : 0, transform: idx === i ? "scale(1)" : "scale(1.06)" }}
-            >
-              <img src={sl.src} alt={sl.label} className="w-full h-full object-cover" />
-            </div>
-          ))}
-          <span className="absolute inset-0 bg-gradient-to-t from-ink/45 via-transparent to-transparent" aria-hidden="true" />
-          <div className="absolute bottom-6 left-6 right-6">
-            <p className="font-display text-cream text-2xl leading-tight">{s.label}</p>
-            <p className="text-cream/70 text-[11px] tracking-tracksm uppercase mt-1.5">{s.note}</p>
+        <div className="relative mx-auto w-full max-w-[26rem] md:max-w-[38rem] lg:max-w-[42rem]">
+          <div className="relative aspect-square w-full overflow-hidden rounded-full ring-1 ring-cream/20 shadow-2xl">
+            {slides.map((sl, idx) => (
+              <div
+                key={sl.src}
+                className="absolute inset-0 transition-all duration-1000 ease-out"
+                style={{ opacity: idx === i ? 1 : 0, transform: idx === i ? "scale(1)" : "scale(1.06)" }}
+              >
+                <img src={sl.src} alt={sl.label} className="w-full h-full object-cover" />
+              </div>
+            ))}
+            <span className="absolute inset-0 rounded-full bg-gradient-to-t from-ink/35 via-transparent to-transparent" aria-hidden="true" />
           </div>
+
         </div>
 
         <div className="text-center md:text-left">
