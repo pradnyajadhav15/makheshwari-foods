@@ -34,3 +34,49 @@ body { -webkit-font-smoothing: antialiased; }
   from { opacity: 0; transform: translate(-50%, 20px); }
   to { opacity: 1; transform: translate(-50%, 0); }
 }
+
+/* ---- motion foundation ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+@keyframes wordUp {
+  from { opacity: 0; transform: translate3d(0, 0.7em, 0) rotate(1.5deg); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0) rotate(0); }
+}
+.word {
+  display: inline-block;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: wordUp 0.85s cubic-bezier(0.16, 0.84, 0.24, 1) forwards;
+}
+
+@keyframes pondRipple {
+  from { transform: scale(0); opacity: 0.45; }
+  to   { transform: scale(3.2); opacity: 0; }
+}
+.ripple {
+  position: absolute;
+  border-radius: 9999px;
+  background: currentColor;
+  pointer-events: none;
+  animation: pondRipple 0.75s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+.magnet, .tilt-inner {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+.tilt {
+  perspective: 1000px;
+}
+.tilt-inner {
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-style: preserve-3d;
+}

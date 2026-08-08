@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import AddToCart from "@/components/AddToCart";
+import Tilt from "@/components/Tilt";
 import { accentClass, accentText, formatPrice, type Product } from "@/lib/products";
 
 export default function ProductCard({ product: p }: { product: Product }) {
   const img = `/products/${p.slug === "himalayan-pink-salt" ? "pink-salt" : p.slug}.jpg`;
 
   return (
-    <article className="group bg-white rounded-[1.5rem] border border-ink/10 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-20px_rgba(18,53,42,0.28)]">
+    <Tilt className="h-full"><article className="group bg-white rounded-[1.5rem] border border-ink/10 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-20px_rgba(18,53,42,0.28)]">
       <div className="relative p-5">
         <div className="relative rounded-[1rem] overflow-hidden bg-cream/70">
           <svg className="absolute inset-0 w-full h-full opacity-[0.13]" aria-hidden="true">
@@ -65,6 +66,6 @@ export default function ProductCard({ product: p }: { product: Product }) {
 
         <div className="mt-6"><AddToCart slug={p.slug} /></div>
       </div>
-    </article>
+    </article></Tilt>
   );
 }

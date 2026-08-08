@@ -1,7 +1,10 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import SplitReveal from "@/components/SplitReveal";
+import SeedField from "@/components/SeedField";
+import { Magnetic, Ripple } from "@/components/Motion";
 
 const slides = [
   { src: "/products/hero-masala.jpg", label: "Peri Peri", tint: "#D8503C", bg: "#D3A292" },
@@ -29,7 +32,7 @@ export default function HeroSlider() {
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-10 px-6 md:px-12 py-16 md:py-24">
 
         <div className="relative aspect-square max-w-xl mx-auto w-full">
-          <div className="absolute inset-0 rounded-full bg-cream/40 blur-2xl scale-90" />
+          <div className="absolute inset-0 rounded-full bg-cream/40 blur-2xl scale-90" /><SeedField />
           {slides.map((s, idx) => (
             <div
               key={s.src}
@@ -46,11 +49,7 @@ export default function HeroSlider() {
             Our most loved crunch
           </span>
 
-          <h1 className="font-display text-ink text-5xl md:text-7xl leading-[1.03]">
-            Savour every.
-            <br />
-            last. bite.
-          </h1>
+          <h1 className="font-display text-ink text-5xl md:text-7xl leading-[1.03]"><SplitReveal text={"Savour every.\nlast. bite."} delay={200} /></h1>
 
           <div className="h-8 mt-7">
             {slides.map((s, idx) => (
@@ -69,9 +68,9 @@ export default function HeroSlider() {
             ))}
           </div>
 
-          <Link href="/shop" className="inline-block mt-9 bg-ink text-cream px-12 py-4 rounded-full text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition duration-300">
+          <Magnetic className="mt-9"><Ripple className="rounded-full text-cream/40"><Link href="/shop" className="inline-block mt-9 bg-ink text-cream px-12 py-4 rounded-full text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition duration-300">
             Shop all &rarr;
-          </Link>
+          </Link></Ripple></Magnetic>
 
           <div className="flex items-center justify-center md:justify-start gap-2.5 mt-12">
             {slides.map((s, idx) => (
