@@ -1,28 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import ProductCard from "@/components/ProductCard";
 import HeroSlider from "@/components/HeroSlider";
-import PackCarousel from "@/components/PackCarousel";
-import { products, accentClass, accentText, formatPrice } from "@/lib/products";
-
-const ticker = [
-  "Roasted not fried", "Small batch", "Mithila grown", "Gluten free",
-  "Plant based", "No palm oil", "Hand harvested", "Samastipur, Bihar",
-];
-
-const pillars = [
-  { t: "Gluten free", b: "Naturally, not by substitution. No wheat, no fillers." },
-  { t: "Plant based", b: "One ingredient at the base: the seed of a water lily." },
-  { t: "Always fresh", b: "Sealed pouches, small batches, dated on every pack." },
-  { t: "Roasted", b: "Hot air, never deep fried. No palm oil." },
-];
-
-const steps = [
-  { n: "01", t: "Seed collection", b: "Divers bring seeds up from the pond floor by hand." },
-  { n: "02", t: "Wash and dry", b: "Cleaned, washed, then sun dried to lock in freshness." },
-  { n: "03", t: "Grade and temper", b: "Sorted by size, pre-heated, then tempered for the roast." },
-  { n: "04", t: "Pop and pack", b: "Roasted until it bursts white, checked, then sealed." },
-];
+import { products } from "@/lib/products";
 
 export default function Home() {
   return (
@@ -109,7 +90,7 @@ export default function Home() {
         <div className="grid md:grid-cols-2 items-stretch">
           <Reveal>
             <div className="h-full min-h-[16rem] md:min-h-[20rem] bg-sand/40">
-              <img src="/brand/harvest.jpg" alt="Makhana harvest in the ponds of Mithila" className="w-full h-full object-cover" />
+              <Image src="/brand/harvest.jpg" alt="Makhana harvest in the ponds of Mithila" width={900} height={700} sizes="(max-width: 768px) 100vw, 50vw" className="w-full h-full object-cover" />
             </div>
           </Reveal>
           <Reveal delay={160}>
@@ -125,15 +106,7 @@ export default function Home() {
         </div>
       </section>
 
-      
-
-      
-
-      
-
-      
-
-      <section className="bg-sand/30 px-6 md:px-14 py-24">
+<section className="bg-sand/30 px-6 md:px-14 py-24">
         <Reveal className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-gold text-[11px] tracking-track uppercase mb-4">Why choose us</p>
@@ -210,13 +183,7 @@ export default function Home() {
         </Reveal>
       </section>
 
-      
-
-      
-
-      
-
-      <section className="bg-gold px-6 md:px-14 py-20">
+<section className="bg-gold px-6 md:px-14 py-20">
         <Reveal className="max-w-5xl mx-auto text-center">
           <p className="text-ink/60 text-[11px] tracking-track uppercase mb-4">Also available on</p>
           <h2 className="font-display text-ink text-3xl md:text-4xl mb-4">Buy where you already shop</h2>
@@ -224,16 +191,14 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[{ n: "Amazon", f: "amazon", u: "https://www.amazon.in/Makheshwari-Makhana-Roasted-Non-Fried-Crunchy/dp/B0H4ZW8W6N" }, { n: "Flipkart", f: "flipkart", u: "https://www.flipkart.com/makheshwari-makhana-gm01-fox-nut/p/itm936f89f66380e" }, { n: "IndiaMART", f: "indiamart", u: "https://www.indiamart.com/proddetail/makheshwari-makhana-sonu-enterprises-2859488333273.html" }].map((m) => (
               <a key={m.n} href={m.u} target="_blank" rel="noopener noreferrer" title={`Buy on ${m.n}`} className="group bg-white rounded-[1.25rem] h-24 flex items-center justify-center px-8 transition-all duration-400 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-16px_rgba(18,53,42,0.4)]">
-                <img src={`/marketplaces/${m.f}.jpg`} alt={m.n} className="max-h-11 max-w-[70%] w-auto object-contain transition-transform duration-400 group-hover:scale-105" />
+                <Image src={`/marketplaces/${m.f}.jpg`} alt={m.n} width={160} height={48} className="max-h-11 max-w-[70%] w-auto object-contain transition-transform duration-400 group-hover:scale-105" />
               </a>
             ))}
           </div>
         </Reveal>
       </section>
 
-      
-
-      <section className="bg-cream px-6 md:px-14 py-24">
+<section className="bg-cream px-6 md:px-14 py-24">
         <Reveal className="max-w-4xl mx-auto">
           <div className="rounded-[2rem] bg-gradient-to-br from-mint/20 to-gold/25 p-12 md:p-16 text-center">
             <p className="text-gold text-[11px] tracking-track uppercase mb-5">Bulk and reseller</p>
