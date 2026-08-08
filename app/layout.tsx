@@ -5,6 +5,8 @@ import Footer from "@/components/Footer";
 import { CartProvider } from "@/components/CartContext";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { ADDRESS, EMAIL, INSTAGRAM } from "@/lib/products";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const display = Marcellus({
@@ -79,6 +81,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <Footer />
         <WhatsAppButton /></CartProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
