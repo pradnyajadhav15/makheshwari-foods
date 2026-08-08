@@ -5,6 +5,7 @@ import { waLink, mailLink } from "@/lib/messages";
 import AdminProducts from "@/components/AdminProducts";
 import AdminEnquiries from "@/components/AdminEnquiries";
 import AdminReviews from "@/components/AdminReviews";
+import AdminCoupons from "@/components/AdminCoupons";
 
 type Order = {
   id: string; created_at: string; razorpay_payment_id: string; status: string;
@@ -15,7 +16,7 @@ type Order = {
 type Stats = { totalOrders: number; revenue: number; byStatus: Record<string, number> };
 
 const STATUSES = ["paid", "packed", "shipped", "delivered", "cancelled"] as const;
-const TABS = ["Orders", "Products", "Reviews", "Enquiries"] as const;
+const TABS = ["Orders", "Products", "Coupons", "Reviews", "Enquiries"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function Admin() {
@@ -80,13 +81,25 @@ export default function Admin() {
   };
 
   const setOrderStatus = async (id: string, next: string) => {
+    let tracking_id: string | null = null;
+    let courier: string | null = null;
+
+    if (next === "shipped") {
+      tracking_id = window.prompt("Tracking number (leave blank to skip)") || null;
+      if (tracking_id) courier = window.prompt("Courier name, e.g. Delhivery") || null;
+    }
+
     setUpdating(id);
-    await fetch(`/api/admin/orders/${id}`, {
+    const r = await fetch(`/api/admin/orders/${id}`, {
       method: "PATCH", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: next }),
+      body: JSON.stringify({ status: next, tracking_id, courier }),
     });
-    setOrders((prev) => prev!.map((o) => (o.id === id ? { ...o, status: next } : o)));
+    const out = await r.json().catch(() => ({}));
+
+    setOrders((prev) => prev!.map((o) => (o.id === id ? { ...o, status: next, tracking_id, courier } : o)));
     loadStats(); setUpdating(null);
+
+    if (out?.emailed) console.log("Customer emailed:", next);
   };
 
   if (authed === null) return <div className="min-h-screen bg-cream" />;
@@ -197,6 +210,7 @@ export default function Admin() {
         )}
 
         {tab === "Products" && <AdminProducts />}
+        {tab === "Coupons" && <AdminCoupons />}
         {tab === "Reviews" && <AdminReviews />}
         {tab === "Enquiries" && <AdminEnquiries />}
       </div>

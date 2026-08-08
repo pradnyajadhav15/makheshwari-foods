@@ -19,11 +19,51 @@ export default function Checkout() {
   const [err, setErr] = useState("");
   const router = useRouter();
 
+  const [codeInput, setCodeInput] = useState("");
+  const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(null);
+  const [couponMsg, setCouponMsg] = useState("");
+  const [checking, setChecking] = useState(false);
+
+  // Free shipping is judged on the pre-discount subtotal.
   const shipping = subtotal >= FREE_SHIPPING_OVER ? 0 : 49;
-  const total = subtotal + shipping;
+  const discount = coupon?.discount ?? 0;
+  const total = Math.max(1, subtotal - discount + shipping);
   const set = (k: string, v: string) => setF({ ...f, [k]: v });
 
   const valid = f.name.trim() && /\S+@\S+\.\S+/.test(f.email) && /^[6-9]\d{9}$/.test(f.phone.replace(/\D/g, "")) && f.address.trim() && f.city.trim() && /^\d{6}$/.test(f.pincode);
+
+  const lineItems = items.map((i) => ({ slug: i.product.slug, name: i.product.name, qty: i.qty, price: i.product.price ?? 0 }));
+
+  const applyCoupon = async () => {
+    const code = codeInput.trim();
+    if (!code) return;
+    setChecking(true);
+    setCouponMsg("");
+    try {
+      const r = await fetch("/api/coupon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, lineItems, phone: f.phone }),
+      });
+      const d = await r.json();
+      if (d.valid) {
+        setCoupon({ code: d.code, discount: Number(d.discount) || 0 });
+        setCouponMsg("");
+      } else {
+        setCoupon(null);
+        setCouponMsg(d.error || "That code cannot be used");
+      }
+    } catch {
+      setCouponMsg("Could not check that code");
+    }
+    setChecking(false);
+  };
+
+  const removeCoupon = () => {
+    setCoupon(null);
+    setCodeInput("");
+    setCouponMsg("");
+  };
 
   const loadScript = () =>
     new Promise<boolean>((resolve) => {
@@ -43,14 +83,19 @@ export default function Checkout() {
       const ok = await loadScript();
       if (!ok) throw new Error("Could not load payment window");
 
-      const lineItems = items.map((i) => ({ slug: i.product.slug, name: i.product.name, qty: i.qty, price: i.product.price ?? 0 }));
       const res = await fetch("/api/razorpay/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customer: f, lineItems }),
+        body: JSON.stringify({ customer: f, lineItems, coupon: coupon?.code || null }),
       });
       const order = await res.json();
-      if (res.status === 409) { setErr(order.error || "Some items are out of stock"); setBusy(false); return; }
+
+      if (res.status === 409) {
+        setErr(order.error || "Some items are out of stock");
+        if (order.couponError) { setCoupon(null); setCouponMsg(order.error); }
+        setBusy(false);
+        return;
+      }
       if (!res.ok) throw new Error(order.error || "Could not start payment");
 
       const rzp = new window.Razorpay({
@@ -66,7 +111,7 @@ export default function Checkout() {
           const v = await fetch("/api/razorpay/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...r, customer: f, items: lineItems, subtotal, shipping, total }),
+            body: JSON.stringify({ ...r, customer: f, items: lineItems, subtotal: order.subtotal, shipping: order.shipping, total: order.total }),
           });
           const out = await v.json();
           if (out.verified) {
@@ -128,10 +173,49 @@ export default function Checkout() {
                   <div key={p.slug} className="flex justify-between gap-3"><span className="text-ink/60">{p.name} &times;{qty}</span><span className="text-ink">{formatPrice((p.price ?? 0) * qty)}</span></div>
                 ))}
               </div>
+
+              <div className="border-b border-ink/10 pb-5 mb-5">
+                {coupon ? (
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-2 bg-gold/15 border border-gold/40 rounded-full px-4 py-2 text-[10px] tracking-tracksm uppercase text-ink">
+                      {coupon.code}
+                    </span>
+                    <button type="button" onClick={removeCoupon} className="text-ink/40 text-[10px] tracking-tracksm uppercase hover:text-peri transition">Remove</button>
+                  </div>
+                ) : (
+                  <>
+                    <label className={lbl} htmlFor="k-code">Discount code</label>
+                    <div className="flex gap-2">
+                      <input
+                        id="k-code"
+                        className={inp + " uppercase"}
+                        placeholder="Enter code"
+                        value={codeInput}
+                        onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                        onKeyDown={(e) => { if (e.key === "Enter") applyCoupon(); }}
+                      />
+                      <button
+                        type="button"
+                        onClick={applyCoupon}
+                        disabled={checking || !codeInput.trim()}
+                        className="shrink-0 border border-ink text-ink rounded-xl px-5 text-[10px] tracking-tracksm uppercase hover:bg-ink hover:text-cream transition disabled:opacity-40"
+                      >
+                        {checking ? "..." : "Apply"}
+                      </button>
+                    </div>
+                  </>
+                )}
+                {couponMsg && <p className="text-peri text-xs mt-3 font-light">{couponMsg}</p>}
+              </div>
+
               <div className="space-y-3 text-sm font-light border-b border-ink/10 pb-5 mb-5">
                 <div className="flex justify-between"><span className="text-ink/60">Subtotal</span><span className="text-ink">{formatPrice(subtotal)}</span></div>
+                {discount > 0 && (
+                  <div className="flex justify-between"><span className="text-gold">Discount</span><span className="text-gold">&minus;{formatPrice(discount)}</span></div>
+                )}
                 <div className="flex justify-between"><span className="text-ink/60">Shipping</span><span className="text-ink">{shipping === 0 ? "Free" : formatPrice(shipping)}</span></div>
               </div>
+
               <div className="flex justify-between items-baseline mb-2"><span className="text-ink/60 text-sm">Total</span><span className="font-display text-2xl text-ink">{formatPrice(total)}</span></div>
               <p className="text-ink/40 text-[11px] mb-7">Inclusive of all taxes</p>
               <button type="button" onClick={pay} disabled={busy} className="w-full bg-ink text-cream rounded-full py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition disabled:opacity-50">

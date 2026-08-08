@@ -6,13 +6,12 @@ import { FREE_SHIPPING_OVER } from "@/lib/products";
 
 export async function POST(req: Request) {
   try {
-    const { customer, lineItems } = await req.json();
+    const { customer, lineItems, coupon } = await req.json();
 
     if (!Array.isArray(lineItems) || !lineItems.length) {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
     }
 
-    // Prices come from the database, never from the browser.
     const live = await getLiveProducts();
 
     let subtotal = 0;
@@ -23,22 +22,12 @@ export async function POST(req: Request) {
       const qty = Math.max(1, Math.min(20, Number(l.qty) || 1));
       const p = live.find((x) => x.slug === l.slug);
 
-      if (!p) {
-        return NextResponse.json({ error: "One of the items is no longer available" }, { status: 409 });
-      }
-      if (!p.inStock) {
-        problems.push({ slug: p.slug, requested: qty, available: 0 });
-        continue;
-      }
-      if (p.stock > 0 && p.stock < qty) {
-        problems.push({ slug: p.slug, requested: qty, available: p.stock });
-        continue;
-      }
+      if (!p) return NextResponse.json({ error: "One of the items is no longer available" }, { status: 409 });
+      if (!p.inStock) { problems.push({ slug: p.slug, requested: qty, available: 0 }); continue; }
+      if (p.stock > 0 && p.stock < qty) { problems.push({ slug: p.slug, requested: qty, available: p.stock }); continue; }
 
       const price = p.price ?? 0;
-      if (price <= 0) {
-        return NextResponse.json({ error: "Pricing unavailable, please try again" }, { status: 409 });
-      }
+      if (price <= 0) return NextResponse.json({ error: "Pricing unavailable, please try again" }, { status: 409 });
 
       subtotal += price * qty;
       priced.push({ slug: p.slug, name: p.name, qty, price });
@@ -54,12 +43,35 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: msg, outOfStock: problems }, { status: 409 });
     }
 
+    // Free shipping is judged on the pre-discount subtotal, so a coupon
+    // can never quietly push someone back over the shipping line.
     const shipping = subtotal >= FREE_SHIPPING_OVER ? 0 : 49;
-    const total = subtotal + shipping;
 
-    if (total < 1) {
-      return NextResponse.json({ error: "Invalid order total" }, { status: 400 });
+    // Discount is calculated server-side. The browser only names a code.
+    let discount = 0;
+    let couponCode: string | null = null;
+
+    if (coupon) {
+      const phone = customer?.phone ? String(customer.phone).replace(/\D/g, "").slice(-10) : null;
+      const { data, error } = await supabaseAdmin.rpc("validate_coupon", {
+        p_code: String(coupon),
+        p_subtotal: subtotal,
+        p_phone: phone,
+      });
+
+      if (error) {
+        console.error("Coupon validation failed", error);
+      } else {
+        const r = data as { valid: boolean; error?: string; code?: string; discount?: number };
+        if (!r.valid) {
+          return NextResponse.json({ error: r.error || "That code cannot be used", couponError: true }, { status: 409 });
+        }
+        discount = Number(r.discount) || 0;
+        couponCode = r.code || null;
+      }
     }
+
+    const total = Math.max(1, subtotal - discount + shipping);
 
     const rzp = new Razorpay({
       key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
@@ -70,7 +82,7 @@ export async function POST(req: Request) {
       amount: Math.round(total * 100),
       currency: "INR",
       receipt: `mk_${Date.now()}`,
-      notes: { items: priced.map((l) => `${l.name} x${l.qty}`).join(", ") },
+      notes: { items: priced.map((l) => `${l.name} x${l.qty}`).join(", "), coupon: couponCode || "" },
     });
 
     if (customer) {
@@ -90,6 +102,8 @@ export async function POST(req: Request) {
         items: priced,
         subtotal,
         shipping,
+        discount,
+        coupon_code: couponCode,
         total,
       });
       if (error) console.error("Pending order save failed", error, order.id);
@@ -101,6 +115,8 @@ export async function POST(req: Request) {
       currency: order.currency,
       subtotal,
       shipping,
+      discount,
+      coupon: couponCode,
       total,
     });
   } catch (e) {

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 
@@ -42,7 +42,7 @@ export default function AdminEnquiries() {
             <div className="flex flex-wrap justify-between gap-4 mb-5">
               <div>
                 <p className="font-display text-xl text-ink">{e.name}</p>
-                <p className="text-ink/50 text-sm mt-1">{e.company || "No business name"}{e.city ? ` Â· ${e.city}` : ""}</p>
+                <p className="text-ink/50 text-sm mt-1">{e.company || "No business name"}{e.city ? ` · ${e.city}` : ""}</p>
                 <p className="text-ink/40 text-xs mt-1">{new Date(e.created_at).toLocaleString("en-IN")}</p>
               </div>
               <select value={e.status} onChange={(ev) => mark(e.id, ev.target.value)} className="self-start bg-cream/60 border border-ink/15 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink focus:outline-none focus:border-gold">

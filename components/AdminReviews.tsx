@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 
@@ -42,7 +42,7 @@ export default function AdminReviews() {
             <div className="flex flex-wrap justify-between gap-4 mb-4">
               <div>
                 <p className="font-display text-lg text-ink">{r.name} <span className="text-gold ml-2">{"\u2605".repeat(r.rating)}</span></p>
-                <p className="text-ink/45 text-xs mt-1">{r.product_slug}{r.city ? ` Â· ${r.city}` : ""} Â· {new Date(r.created_at).toLocaleDateString("en-IN")}</p>
+                <p className="text-ink/45 text-xs mt-1">{r.product_slug}{r.city ? ` \u00B7 ${r.city}` : ""} \u00B7 {new Date(r.created_at).toLocaleDateString("en-IN")}</p>
               </div>
               <span className={`self-start rounded-full px-4 py-1.5 text-[9px] tracking-tracksm uppercase ${r.approved ? "bg-mint/25 text-ink" : "bg-gold/25 text-ink"}`}>
                 {r.approved ? "Live" : "Pending"}
