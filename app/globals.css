@@ -1,26 +1,36 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-ink: #12352A;
+  --color-inkdeep: #0C241C;
+  --color-gold: #C9A227;
+  --color-goldsoft: #E3C766;
+  --color-cream: #F7F3E9;
+  --color-sand: #E5DAC3;
+  --color-peri: #D8503C;
+  --color-mint: #7FA860;
+  --color-salt: #DB8C9E;
+  --font-display: var(--font-marcellus), Georgia, serif;
+  --font-body: var(--font-jost), Helvetica, sans-serif;
+  --tracking-track: 0.32em;
+  --tracking-tracksm: 0.18em;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+html { scroll-behavior: smooth; }
+body { -webkit-font-smoothing: antialiased; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes kenburns { 0% { transform: scale(1); } 100% { transform: scale(1.12); } }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.animate-floaty { animation: floaty 6s ease-in-out infinite; }
+.animate-marquee { animation: marquee 30s linear infinite; }
+.animate-kenburns { animation: kenburns 20s ease-out infinite alternate; }
+.perspective { perspective: 1400px; }
+
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1); }
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
 }
