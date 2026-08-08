@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
@@ -40,7 +41,7 @@ export default function KnowYourMakhana() {
             <Reveal key={s.n} delay={60}>
               <div className={`grid md:grid-cols-2 gap-8 md:gap-12 items-center ${i % 2 === 1 ? "md:[direction:rtl]" : ""}`}>
                 <div className="md:[direction:ltr] rounded-[1.5rem] overflow-hidden bg-sand/40 aspect-[4/3]">
-                  <img src={`/brand/process/${s.n}.jpg`} alt={s.t} className="w-full h-full object-cover" />
+                  <Image src={`/brand/process/${s.n}.jpg`} alt={s.t} width={800} height={600} sizes="(max-width: 768px) 100vw, 45vw" className="w-full h-full object-cover" />
                 </div>
                 <div className="md:[direction:ltr] py-4">
                   <p className="font-display text-gold text-4xl mb-4">{s.n}</p>

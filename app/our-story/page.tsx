@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
@@ -23,7 +24,7 @@ export default function OurStory() {
   return (
     <>
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
-        <img src="/brand/story-hero.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <Image src="/brand/story-hero.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
         <span className="absolute inset-0 bg-gradient-to-b from-inkdeep/80 via-ink/70 to-inkdeep/85" aria-hidden="true" />
         <Reveal className="relative px-6 md:px-14 py-24 text-center">
           <p className="text-gold text-[11px] tracking-track uppercase mb-6">Our story</p>

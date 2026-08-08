@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -131,7 +132,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <Link key={p.slug} href={`/shop/makhana/${p.slug}`} className="group border border-cream/15 hover:border-gold/60 transition">
                 <div className={`h-1.5 ${accentClass[p.accent]}`} />
                 <div className="p-8 flex items-center gap-6">
-                  <img src={p.images[0]} alt={p.name} className="w-20 h-20 object-contain shrink-0" />
+                  <Image src={p.images[0]} alt={p.name} width={80} height={80} className="w-20 h-20 object-contain shrink-0" />
                   <div className="flex-1">
                     <h3 className="font-display text-cream text-2xl">{p.name}</h3>
                     <p className={`${accentText[p.accent]} text-sm mt-2 font-light`}>{p.hook}</p>

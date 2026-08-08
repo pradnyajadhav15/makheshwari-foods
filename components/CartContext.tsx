@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { products, type Product } from "@/lib/products";
 
 type Line = { slug: string; qty: number };
+type LivePrice = { slug: string; price: number | null; mrp: number | null; stock: number; inStock: boolean };
 type Ctx = {
   lines: Line[];
   add: (slug: string, qty?: number) => void;
@@ -21,6 +22,7 @@ const KEY = "mk-cart";
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<Line[]>([]);
   const [ready, setReady] = useState(false);
+  const [live, setLive] = useState<LivePrice[]>([]);
 
   useEffect(() => {
     try {
@@ -33,6 +35,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (ready) localStorage.setItem(KEY, JSON.stringify(lines));
   }, [lines, ready]);
+
+  // Live prices from the database so admin edits show up in the cart.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/products")
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled && Array.isArray(d.products)) setLive(d.products); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const add = (slug: string, qty = 1) =>
     setLines((prev) => {
@@ -48,8 +60,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clear = () => setLines([]);
 
   const items = lines
-    .map((l) => ({ product: products.find((p) => p.slug === l.slug)!, qty: l.qty }))
-    .filter((i) => i.product);
+    .map((l) => {
+      const base = products.find((p) => p.slug === l.slug);
+      if (!base) return null;
+      const row = live.find((x) => x.slug === l.slug);
+      const product: Product = row
+        ? { ...base, price: row.price ?? base.price, mrp: row.mrp ?? base.mrp, inStock: row.inStock }
+        : base;
+      return { product, qty: l.qty };
+    })
+    .filter(Boolean) as { product: Product; qty: number }[];
 
   const count = lines.reduce((n, l) => n + l.qty, 0);
   const subtotal = items.reduce((n, i) => n + (i.product.price ?? 0) * i.qty, 0);

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState } from "react";
 
 export default function ProductImages({ slug, images, onChange }: { slug: string; images: string[]; onChange: (imgs: string[]) => void }) {
@@ -89,7 +90,7 @@ export default function ProductImages({ slug, images, onChange }: { slug: string
       <p className="text-ink/60 text-sm mb-3">Main photo</p>
       {main ? (
         <div className="mb-4">
-          <img src={main} alt="" className="w-28 h-28 object-cover rounded-lg border border-ink/15 mb-3" />
+          <Image src={main} alt="" width={112} height={112} unoptimized className="w-28 h-28 object-cover rounded-lg border border-ink/15 mb-3" />
           <button type="button" disabled={busy} onClick={() => removeOne(main)} className={del}>Remove main photo</button>
         </div>
       ) : (
@@ -112,7 +113,7 @@ export default function ProductImages({ slug, images, onChange }: { slug: string
           {extras.map((url) => (
             <div key={url} className="w-24">
               <div className="relative group w-24 h-24 rounded-lg overflow-hidden border border-ink/15">
-                <img src={url} alt="" className="w-full h-full object-cover" />
+                <Image src={url} alt="" fill unoptimized sizes="96px" className="object-cover" />
                 <div className="absolute inset-0 bg-ink/75 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                   <button type="button" onClick={() => promote(url)} className="bg-gold text-ink rounded px-2 py-1 text-[9px] tracking-tracksm uppercase hover:opacity-80 transition">Set main</button>
                 </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/components/CartContext";
 import { formatPrice, accentClass, FREE_SHIPPING_OVER } from "@/lib/products";
@@ -40,7 +41,7 @@ export default function CartPage() {
               <div key={p.slug} className="bg-white rounded-[1.25rem] border border-ink/10 overflow-hidden flex">
                 <div className={`w-1.5 ${accentClass[p.accent]}`} />
                 <div className="flex-1 p-6 flex flex-wrap items-center gap-5">
-                  <img src={`/products/${p.slug === "himalayan-pink-salt" ? "pink-salt" : p.slug}.jpg`} alt={p.name} className="w-20 h-20 object-contain" />
+                  <Image src={`/products/${p.slug === "himalayan-pink-salt" ? "pink-salt" : p.slug}.jpg`} alt={p.name} width={80} height={80} className="w-20 h-20 object-contain" />
                   <div className="flex-1 min-w-[9rem]">
                     <Link href={`/shop/makhana/${p.slug}`} className="font-display text-xl text-ink hover:text-gold transition">{p.name}</Link>
                     <p className="text-ink/45 text-xs mt-1.5">{p.weightG} g</p>
