@@ -49,9 +49,9 @@ export default function Header() {
     <>
       <AnnouncementBar />
 
-      <header className="bg-cream sticky top-0 z-50 border-b border-ink/15">
-        <div className="max-w-6xl mx-auto px-6 h-24 flex items-center justify-between">
-          <Link href="/" aria-label="Makheshwari Foods home" className="shrink-0"><img src="/brand/logo.png" alt="Makheshwari Foods" className="h-14 md:h-16 w-auto" /></Link>
+      <header className="bg-[#FDF6EC] sticky top-0 z-50 border-b border-ink/15">
+        <div className="max-w-6xl mx-auto px-6 h-32 flex items-center justify-between">
+          <Link href="/" aria-label="Makheshwari Foods home" className="shrink-0"><img src="/brand/logo.png" alt="Makheshwari Foods" className="h-24 md:h-28 w-auto" /></Link>
 
           <nav className="hidden md:flex items-center gap-6 lg:gap-9 text-ink/75 text-[13px] tracking-tracksm uppercase">
             {nav.map((n) => (
@@ -104,3 +104,6 @@ export default function Header() {
     </>
   );
 }
+
+
+

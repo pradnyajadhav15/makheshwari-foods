@@ -7,9 +7,9 @@ import SeedField from "@/components/SeedField";
 import { Magnetic, Ripple } from "@/components/Motion";
 
 const slides = [
-  { src: "/products/hero-masala.jpg", label: "Peri Peri", tint: "#D8503C", bg: "#D3A292" },
-  { src: "/products/hero-mint.jpg", label: "Garden Mint", tint: "#5F8C42", bg: "#AAC38C" },
-  { src: "/products/hero-plain.jpg", label: "Himalayan Pink Salt", tint: "#C2748A", bg: "#D5A3B0" },
+  { src: "/products/hero-masala.jpg", label: "Peri Peri", note: "Loud. Bring water.", tint: "#F0A896", bg: "#8C2F22" },
+  { src: "/products/hero-mint.jpg", label: "Garden Mint", note: "Cold, sharp, refreshing.", tint: "#A9C97E", bg: "#1E4025" },
+  { src: "/products/hero-plain.jpg", label: "Himalayan Pink Salt", note: "The one you finish.", tint: "#F2B79E", bg: "#8E4A36" },
 ];
 
 export default function HeroSlider() {
@@ -18,67 +18,69 @@ export default function HeroSlider() {
 
   useEffect(() => {
     if (paused) return;
-    const t = setInterval(() => setI((v) => (v + 1) % slides.length), 3000);
+    const t = setInterval(() => setI((v) => (v + 1) % slides.length), 3600);
     return () => clearInterval(t);
   }, [paused]);
+
+  const s = slides[i];
 
   return (
     <section
       className="relative overflow-hidden transition-colors duration-1000 ease-out"
-      style={{ backgroundColor: slides[i].bg }}
+      style={{ backgroundColor: s.bg }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-10 px-6 md:px-12 py-16 md:py-24">
+      <SeedField count={14} />
 
-        <div className="relative aspect-square max-w-xl mx-auto w-full">
-          <div className="absolute inset-0 rounded-full bg-cream/40 blur-2xl scale-90" /><SeedField />
-          {slides.map((s, idx) => (
+      <div className="relative max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-12 px-6 md:px-12 py-16 md:py-24">
+
+        <div className="relative aspect-[4/5] md:aspect-auto md:h-[34rem] w-full overflow-hidden rounded-[2rem]">
+          {slides.map((sl, idx) => (
             <div
-              key={s.src}
+              key={sl.src}
               className="absolute inset-0 transition-all duration-1000 ease-out"
-              style={{ opacity: idx === i ? 1 : 0, transform: idx === i ? "scale(1)" : "scale(0.92)" }}
+              style={{ opacity: idx === i ? 1 : 0, transform: idx === i ? "scale(1)" : "scale(1.06)" }}
             >
-              <img src={s.src} alt={s.label} className="w-full h-full object-cover rounded-full shadow-[0_35px_70px_-20px_rgba(18,53,42,0.5)]" />
+              <img src={sl.src} alt={sl.label} className="w-full h-full object-cover" />
             </div>
           ))}
+          <span className="absolute inset-0 bg-gradient-to-t from-ink/45 via-transparent to-transparent" aria-hidden="true" />
+          <div className="absolute bottom-6 left-6 right-6">
+            <p className="font-display text-cream text-2xl leading-tight">{s.label}</p>
+            <p className="text-cream/70 text-[11px] tracking-tracksm uppercase mt-1.5">{s.note}</p>
+          </div>
         </div>
 
         <div className="text-center md:text-left">
-          <span className="inline-block text-ink/55 text-[11px] tracking-track uppercase mb-6">
+          <span className="inline-flex items-center gap-2.5 text-cream/65 text-[11px] tracking-track uppercase mb-6">
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.tint, transition: "background-color .7s" }} />
             Our most loved crunch
           </span>
 
-          <h1 className="font-display text-ink text-5xl md:text-7xl leading-[1.03]"><SplitReveal text={"Savour every.\nlast. bite."} delay={200} /></h1>
+          <h1 className="font-display text-cream text-5xl md:text-7xl leading-[1.03]">
+            <SplitReveal text={"Savour every.\nlast. bite."} delay={200} />
+          </h1>
 
-          <div className="h-8 mt-7">
-            {slides.map((s, idx) => (
-              <p
-                key={s.src}
-                className="text-lg font-light transition-all duration-700"
-                style={{
-                  color: s.tint,
-                  opacity: idx === i ? 1 : 0,
-                  transform: `translateY(${idx === i ? 0 : 14}px)`,
-                  display: idx === i ? "block" : "none",
-                }}
-              >
-                {s.label}
-              </p>
-            ))}
-          </div>
+          <p className="text-cream/65 text-lg font-light leading-relaxed max-w-md mx-auto md:mx-0 mt-7">
+            Roasted in Samastipur, never fried. Three flavours, one honest crunch.
+          </p>
 
-          <Magnetic className="mt-9"><Ripple className="rounded-full text-cream/40"><Link href="/shop" className="inline-block mt-9 bg-ink text-cream px-12 py-4 rounded-full text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition duration-300">
-            Shop all &rarr;
-          </Link></Ripple></Magnetic>
+          <Magnetic className="mt-10">
+            <Ripple className="rounded-full text-cream/40">
+              <Link href="/shop" className="inline-block bg-gold text-ink px-12 py-4 rounded-full text-[11px] tracking-tracksm uppercase hover:bg-goldsoft transition duration-300">
+                Shop all &rarr;
+              </Link>
+            </Ripple>
+          </Magnetic>
 
           <div className="flex items-center justify-center md:justify-start gap-2.5 mt-12">
-            {slides.map((s, idx) => (
+            {slides.map((sl, idx) => (
               <button
-                key={s.src}
+                key={sl.src}
                 onClick={() => setI(idx)}
-                aria-label={`Show ${s.label}`}
-                className={`h-1.5 rounded-full transition-all duration-500 ${idx === i ? "w-10 bg-ink" : "w-1.5 bg-ink/30 hover:bg-ink/60"}`}
+                aria-label={`Show ${sl.label}`}
+                className={`h-1.5 rounded-full transition-all duration-500 ${idx === i ? "w-10 bg-gold" : "w-1.5 bg-cream/30 hover:bg-cream/60"}`}
               />
             ))}
           </div>

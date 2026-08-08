@@ -80,3 +80,5 @@ body { -webkit-font-smoothing: antialiased; }
   transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
   transform-style: preserve-3d;
 }
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+.spin-slow { animation: spinSlow 90s linear infinite; }

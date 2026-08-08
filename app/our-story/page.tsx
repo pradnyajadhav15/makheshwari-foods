@@ -22,11 +22,13 @@ const wont = [
 export default function OurStory() {
   return (
     <>
-      <section className="bg-ink px-6 md:px-14 py-24 text-center">
-        <Reveal>
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+        <img src="/brand/story-hero.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <span className="absolute inset-0 bg-gradient-to-b from-inkdeep/80 via-ink/70 to-inkdeep/85" aria-hidden="true" />
+        <Reveal className="relative px-6 md:px-14 py-24 text-center">
           <p className="text-gold text-[11px] tracking-track uppercase mb-6">Our story</p>
           <h1 className="font-display text-cream text-5xl md:text-7xl leading-[1.05] mb-8">Rooted in Bihar.</h1>
-          <p className="text-cream/70 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
+          <p className="text-cream/75 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
             We roast makhana in Samastipur, where it grows. That is the whole idea.
           </p>
         </Reveal>

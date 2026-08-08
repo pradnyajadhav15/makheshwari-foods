@@ -218,12 +218,13 @@ export default function Home() {
 
       <section className="bg-gold px-6 md:px-14 py-20">
         <Reveal className="max-w-5xl mx-auto text-center">
-          <h2 className="font-display text-ink text-3xl md:text-4xl mb-4">Also available on</h2>
-          <p className="text-ink/70 font-light mb-12">Order from wherever you already shop.</p>
-          <div className="flex flex-wrap justify-center gap-6">
+          <p className="text-ink/60 text-[11px] tracking-track uppercase mb-4">Also available on</p>
+          <h2 className="font-display text-ink text-3xl md:text-4xl mb-4">Buy where you already shop</h2>
+          <p className="text-ink/60 font-light mb-14">Same makhana, same Samastipur roastery.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[{ n: "Amazon", f: "amazon", u: "https://www.amazon.in/Makheshwari-Makhana-Roasted-Non-Fried-Crunchy/dp/B0H4ZW8W6N" }, { n: "Flipkart", f: "flipkart", u: "https://www.flipkart.com/makheshwari-makhana-gm01-fox-nut/p/itm936f89f66380e" }, { n: "IndiaMART", f: "indiamart", u: "https://www.indiamart.com/proddetail/makheshwari-makhana-sonu-enterprises-2859488333273.html" }].map((m) => (
-              <a key={m.n} href={m.u} target="_blank" rel="noopener noreferrer" title={`Buy on ${m.n}`} className="group bg-white rounded-[1.25rem] w-56 h-36 flex items-center justify-center p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_25px_50px_-18px_rgba(18,53,42,0.5)]">
-                <img src={`/marketplaces/${m.f}.jpg`} alt={m.n} className="max-h-full max-w-full w-auto object-contain transition-transform duration-500 group-hover:scale-105" />
+              <a key={m.n} href={m.u} target="_blank" rel="noopener noreferrer" title={`Buy on ${m.n}`} className="group bg-white rounded-[1.25rem] h-24 flex items-center justify-center px-8 transition-all duration-400 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-16px_rgba(18,53,42,0.4)]">
+                <img src={`/marketplaces/${m.f}.jpg`} alt={m.n} className="max-h-11 max-w-[70%] w-auto object-contain transition-transform duration-400 group-hover:scale-105" />
               </a>
             ))}
           </div>
