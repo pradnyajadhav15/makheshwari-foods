@@ -7,9 +7,9 @@ import SeedField from "@/components/SeedField";
 import { Magnetic, Ripple } from "@/components/Motion";
 
 const slides = [
-  { src: "/products/hero-masala.jpg", label: "Peri Peri", note: "Loud. Bring water.", tint: "#F0A896", bg: "#8C2F22" },
-  { src: "/products/hero-mint.jpg", label: "Garden Mint", note: "Cold, sharp, refreshing.", tint: "#A9C97E", bg: "#1E4025" },
-  { src: "/products/hero-plain.jpg", label: "Himalayan Pink Salt", note: "The one you finish.", tint: "#F2B79E", bg: "#8E4A36" },
+  { src: "/products/hero-masala.jpg", label: "Fire & Smoke", note: "Peri Peri \u00b7 Loud. Bring water.", tint: "#F0A896", bg: "#8C2F22" },
+  { src: "/products/hero-mint.jpg", label: "Cool Mint Crunch", note: "Pudina \u00b7 Cold, sharp, clean.", tint: "#A9C97E", bg: "#1E4025" },
+  { src: "/products/hero-plain.jpg", label: "The Plain One", note: "Himalayan Salted \u00b7 You will finish it.", tint: "#F2B79E", bg: "#8E4A36" },
 ];
 
 export default function HeroSlider() {
@@ -18,7 +18,7 @@ export default function HeroSlider() {
 
   useEffect(() => {
     if (paused) return;
-    const t = setInterval(() => setI((v) => (v + 1) % slides.length), 3600);
+    const t = setInterval(() => setI((v) => (v + 1) % slides.length), 2000);
     return () => clearInterval(t);
   }, [paused]);
 
@@ -26,7 +26,7 @@ export default function HeroSlider() {
 
   return (
     <section
-      className="relative overflow-hidden transition-colors duration-1000 ease-out"
+      className="relative overflow-hidden transition-colors duration-[900ms] ease-out"
       style={{ backgroundColor: s.bg }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -35,12 +35,12 @@ export default function HeroSlider() {
 
       <div className="relative max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-12 px-6 md:px-12 py-16 md:py-24">
 
-        <div className="relative mx-auto w-full max-w-[26rem] md:max-w-[38rem] lg:max-w-[42rem]">
+        <div className="relative mx-auto w-full max-w-[26rem] md:max-w-[34rem]">
           <div className="relative aspect-square w-full overflow-hidden rounded-full ring-1 ring-cream/20 shadow-2xl">
             {slides.map((sl, idx) => (
               <div
                 key={sl.src}
-                className="absolute inset-0 transition-all duration-1000 ease-out"
+                className="absolute inset-0 transition-all duration-[900ms] ease-out"
                 style={{ opacity: idx === i ? 1 : 0, transform: idx === i ? "scale(1)" : "scale(1.06)" }}
               >
                 <img src={sl.src} alt={sl.label} className="w-full h-full object-cover" />
@@ -49,11 +49,15 @@ export default function HeroSlider() {
             <span className="absolute inset-0 rounded-full bg-gradient-to-t from-ink/35 via-transparent to-transparent" aria-hidden="true" />
           </div>
 
+          <div key={s.src} className="mt-8 text-center animate-fade-up">
+            <p className="font-display text-cream text-3xl md:text-4xl leading-tight">{s.label}</p>
+            <p className="text-cream/70 text-[11px] tracking-tracksm uppercase mt-2.5">{s.note}</p>
+          </div>
         </div>
 
         <div className="text-center md:text-left">
           <span className="inline-flex items-center gap-2.5 text-cream/65 text-[11px] tracking-track uppercase mb-6">
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.tint, transition: "background-color .7s" }} />
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.tint, transition: "background-color 2s" }} />
             Our most loved crunch
           </span>
 
