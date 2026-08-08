@@ -86,7 +86,7 @@ export default function Header() {
         </div>
 
         {open && (
-          <nav className="md:hidden border-t border-cream/10 bg-ink px-6 pb-6">
+          <nav className="md:hidden border-t border-ink/10 bg-cream px-6 pb-6">
             {nav.map((n) => (
               <Link
                 key={n.href}
