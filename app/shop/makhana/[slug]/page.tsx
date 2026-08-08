@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import ProductGallery from "@/components/ProductGallery";
 import BuyBox from "@/components/BuyBox";
 import Reviews from "@/components/Reviews";
-import { getLiveProduct, getLiveProducts } from "@/lib/liveProducts";
+import { getLiveProducts } from "@/lib/liveProducts";
 import { products, accentClass, accentText, formatPrice } from "@/lib/products";
 
 export const revalidate = 60;
@@ -46,10 +46,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = await getLiveProduct(slug);
+  const all = await getLiveProducts();
+  const product = all.find((p) => p.slug === slug);
   if (!product) notFound();
 
-  const all = await getLiveProducts();
   const others = all.filter((p) => p.slug !== product.slug);
   const bullets = BULLETS[product.slug] || [product.description];
 
@@ -116,7 +116,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           )}
 
           <div className="mt-8">
-            <BuyBox slug={product.slug} inStock={product.inStock} />
+            <BuyBox slug={product.slug} inStock={product.inStock} stock={product.stock} />
           </div>
         </div>
       </section>

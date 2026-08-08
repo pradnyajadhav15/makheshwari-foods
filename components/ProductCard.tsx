@@ -5,8 +5,11 @@ import AddToCart from "@/components/AddToCart";
 import Tilt from "@/components/Tilt";
 import { accentClass, accentText, formatPrice, type Product } from "@/lib/products";
 
-export default function ProductCard({ product: p }: { product: Product }) {
+type CardProduct = Product & { stock?: number; lowStock?: boolean };
+
+export default function ProductCard({ product: p }: { product: CardProduct }) {
   const img = `/products/${p.slug === "himalayan-pink-salt" ? "pink-salt" : p.slug}.jpg`;
+  const sold = p.inStock === false;
 
   return (
     <Tilt className="h-full"><article className="group bg-white rounded-[1.5rem] border border-ink/10 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-20px_rgba(18,53,42,0.28)]">
@@ -27,7 +30,18 @@ export default function ProductCard({ product: p }: { product: Product }) {
           <div className="absolute inset-3 border border-gold/35 rounded-[0.7rem] pointer-events-none" />
           <div className="absolute inset-[0.9rem] border border-gold/20 rounded-[0.5rem] pointer-events-none" />
 
-          <Link href={`/shop/makhana/${p.slug}`} className="relative block aspect-square flex items-center justify-center p-8">
+          {sold && (
+            <span className="absolute top-4 left-4 z-10 bg-ink/85 text-cream text-[9px] tracking-tracksm uppercase px-3.5 py-1.5 rounded-full">
+              Sold out
+            </span>
+          )}
+          {!sold && p.lowStock && (
+            <span className="absolute top-4 left-4 z-10 bg-gold text-ink text-[9px] tracking-tracksm uppercase px-3.5 py-1.5 rounded-full">
+              Only {p.stock} left
+            </span>
+          )}
+
+          <Link href={`/shop/makhana/${p.slug}`} className={`relative block aspect-square flex items-center justify-center p-8 ${sold ? "opacity-45 grayscale" : ""}`}>
             <img
               src={img}
               alt={p.name}
@@ -35,15 +49,17 @@ export default function ProductCard({ product: p }: { product: Product }) {
             />
           </Link>
 
-          <Link
-            href={`/shop/makhana/${p.slug}`}
-            aria-label={`Add ${p.name}`}
-            className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-ink text-cream flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-gold hover:text-ink"
-          >
-            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.7">
-              <path d="M12 6v12M6 12h12" strokeLinecap="round" />
-            </svg>
-          </Link>
+          {!sold && (
+            <Link
+              href={`/shop/makhana/${p.slug}`}
+              aria-label={`Add ${p.name}`}
+              className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-ink text-cream flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-gold hover:text-ink"
+            >
+              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.7">
+                <path d="M12 6v12M6 12h12" strokeLinecap="round" />
+              </svg>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -64,7 +80,15 @@ export default function ProductCard({ product: p }: { product: Product }) {
           <span className="text-ink/50 text-xs">{p.weightG} g</span>
         </div>
 
-        <div className="mt-6"><AddToCart slug={p.slug} /></div>
+        <div className="mt-6">
+          {sold ? (
+            <button type="button" disabled className="w-full bg-ink/15 text-ink/40 rounded-full py-4 text-[11px] tracking-tracksm uppercase cursor-not-allowed">
+              Sold out
+            </button>
+          ) : (
+            <AddToCart slug={p.slug} />
+          )}
+        </div>
       </div>
     </article></Tilt>
   );

@@ -50,6 +50,7 @@ export default function Checkout() {
         body: JSON.stringify({ amount: total, items: lineItems.map((l) => `${l.name} x${l.qty}`).join(", "), customer: f, lineItems, subtotal, shipping }),
       });
       const order = await res.json();
+      if (res.status === 409) { setErr(order.error || "Some items are out of stock"); setBusy(false); return; }
       if (!res.ok) throw new Error(order.error || "Could not start payment");
 
       const rzp = new window.Razorpay({

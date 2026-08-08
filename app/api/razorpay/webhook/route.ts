@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { supabaseAdmin } from "@/lib/supabase";
 import { notifyOwner } from "@/lib/notify";
+import { decrementStockOnce } from "@/lib/stock";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -79,6 +80,8 @@ export async function POST(req: Request) {
           console.error("Webhook order update failed", error, orderId);
           return NextResponse.json({ ok: false }, { status: 500 });
         }
+
+        await decrementStockOnce(orderId);
 
         try {
           await notifyOwner({

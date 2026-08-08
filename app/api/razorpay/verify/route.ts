@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { supabaseAdmin } from "@/lib/supabase";
 import { notifyOwner } from "@/lib/notify";
+import { decrementStockOnce } from "@/lib/stock";
 
 export async function POST(req: Request) {
   try {
@@ -69,6 +70,8 @@ export async function POST(req: Request) {
         return NextResponse.json({ verified: true, saved: false, paymentId: razorpay_payment_id });
       }
     }
+
+    await decrementStockOnce(razorpay_order_id);
 
     try {
       await notifyOwner({
