@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatPrice } from "@/lib/products";
@@ -46,7 +47,7 @@ export default function SearchOverlay({ open, onClose }: { open: boolean; onClos
             {hits.map((p) => (
               <Link key={p.slug} href={`/shop/makhana/${p.slug}`} onClick={onClose} className="group">
                 <div className="aspect-square bg-white rounded-xl border border-ink/10 overflow-hidden flex items-center justify-center p-3 group-hover:border-gold transition">
-                  <img src={p.images?.[0] || `/products/${p.slug === "himalayan-pink-salt" ? "pink-salt" : p.slug}.jpg`} alt={p.name} className="max-h-full w-auto object-contain" />
+                  <Image src={p.images?.[0] || `/products/${p.slug === "himalayan-pink-salt" ? "pink-salt" : p.slug}.jpg`} alt={p.name} width={80} height={80} className="max-h-full w-auto object-contain" />
                 </div>
                 <p className="font-display text-ink text-base mt-3 leading-tight group-hover:text-gold transition">{p.name}</p>
                 <p className="text-ink/50 text-sm mt-1">{formatPrice(p.price)}</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import AddToCart from "@/components/AddToCart";
 import Tilt from "@/components/Tilt";
 import { accentClass, accentText, formatPrice, type Product } from "@/lib/products";
@@ -42,9 +43,12 @@ export default function ProductCard({ product: p }: { product: CardProduct }) {
           )}
 
           <Link href={`/shop/makhana/${p.slug}`} className={`relative block aspect-square flex items-center justify-center p-8 ${sold ? "opacity-45 grayscale" : ""}`}>
-            <img
+            <Image
               src={img}
               alt={p.name}
+              width={400}
+              height={400}
+              sizes="(max-width: 768px) 45vw, 320px"
               className="max-h-full w-auto mx-auto transition-transform duration-700 group-hover:scale-105"
             />
           </Link>

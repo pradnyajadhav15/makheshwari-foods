@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import SplitReveal from "@/components/SplitReveal";
 import SeedField from "@/components/SeedField";
@@ -43,7 +44,7 @@ export default function HeroSlider() {
                 className="absolute inset-0 transition-all duration-[900ms] ease-out"
                 style={{ opacity: idx === i ? 1 : 0, transform: idx === i ? "scale(1)" : "scale(1.06)" }}
               >
-                <img src={sl.src} alt={sl.label} className="w-full h-full object-cover" />
+                <Image src={sl.src} alt={sl.label} fill sizes="(max-width: 768px) 90vw, 34rem" priority={idx === 0} className="object-cover" />
               </div>
             ))}
             <span className="absolute inset-0 rounded-full bg-gradient-to-t from-ink/35 via-transparent to-transparent" aria-hidden="true" />

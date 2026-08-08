@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const packs = [
@@ -38,11 +39,7 @@ export default function PackCarousel() {
               filter: pos === 0 ? "none" : "blur(1px)",
             }}
           >
-            <img
-              src={p.src}
-              alt={p.name}
-              className="h-64 md:h-80 w-auto drop-shadow-[0_25px_45px_rgba(18,53,42,0.35)]"
-            />
+            <Image src={p.src} alt={p.name} width={400} height={520} sizes="(max-width: 768px) 60vw, 400px" className="h-64 md:h-80 w-auto drop-shadow-[0_25px_45px_rgba(18,53,42,0.35)]" />
           </div>
         );
       })}

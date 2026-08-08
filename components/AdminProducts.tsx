@@ -1,5 +1,6 @@
-﻿"use client";
+"use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import ProductImages from "@/components/ProductImages";
 import Toast from "@/components/Toast";
@@ -95,7 +96,7 @@ export default function AdminProducts() {
         {rows.map((p) => (
           <div key={p.slug} className="bg-white rounded-[1.25rem] border border-ink/10 p-6">
             <div className="flex flex-wrap items-end gap-5">
-              <img src={p.images?.[0] || `/products/${p.slug === "himalayan-pink-salt" ? "pink-salt" : p.slug}.jpg`} alt={p.name} className="w-16 h-16 object-contain shrink-0" />
+              <Image src={p.images?.[0] || `/products/${p.slug === "himalayan-pink-salt" ? "pink-salt" : p.slug}.jpg`} alt={p.name} width={64} height={64} className="w-16 h-16 object-contain shrink-0" />
               <div className="min-w-[9rem] flex-1"><label className={lbl}>Name</label><input className={inp + " w-full"} value={p.name} onChange={(e) => edit(p.slug, "name", e.target.value)} /></div>
               <div><label className={lbl}>Price</label><input type="number" className={inp + " w-20"} value={p.price} onChange={(e) => edit(p.slug, "price", Number(e.target.value))} /></div>
               <div><label className={lbl}>MRP</label><input type="number" className={inp + " w-20"} value={p.mrp ?? 0} onChange={(e) => edit(p.slug, "mrp", Number(e.target.value))} /></div>
