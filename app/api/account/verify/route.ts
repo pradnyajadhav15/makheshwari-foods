@@ -1,9 +1,20 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { rateLimit, clientIp } from "@/lib/rateLimit";
 
 export async function POST(req: Request) {
   const { phone, code } = await req.json();
   const num = String(phone || "").replace(/\D/g, "").slice(-10);
+
+  // The per-row attempts counter resets when a new OTP is issued,
+  // so an IP limit is what actually stops brute forcing.
+  const perIp = await rateLimit("otp-verify:ip", clientIp(req), 20, 60 * 60);
+  if (!perIp.allowed) {
+    return NextResponse.json(
+      { error: "Too many attempts. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(perIp.retryAfter || 3600) } }
+    );
+  }
 
   const { data: row } = await supabaseAdmin.from("otp_codes").select("*").eq("phone", num).maybeSingle();
   if (!row) return NextResponse.json({ error: "Request a new code" }, { status: 400 });
