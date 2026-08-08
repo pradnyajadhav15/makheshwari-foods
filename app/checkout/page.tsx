@@ -47,7 +47,7 @@ export default function Checkout() {
       const res = await fetch("/api/razorpay/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: total, items: lineItems.map((l) => `${l.name} x${l.qty}`).join(", ") }),
+        body: JSON.stringify({ amount: total, items: lineItems.map((l) => `${l.name} x${l.qty}`).join(", "), customer: f, lineItems, subtotal, shipping }),
       });
       const order = await res.json();
       if (!res.ok) throw new Error(order.error || "Could not start payment");

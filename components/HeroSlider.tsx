@@ -7,9 +7,9 @@ import SeedField from "@/components/SeedField";
 import { Magnetic, Ripple } from "@/components/Motion";
 
 const slides = [
-  { src: "/products/hero-masala.jpg", label: "Fire & Smoke", note: "Peri Peri \u00b7 Loud. Bring water.", tint: "#F0A896", bg: "#8C2F22" },
-  { src: "/products/hero-mint.jpg", label: "Cool Mint Crunch", note: "Pudina \u00b7 Cold, sharp, clean.", tint: "#A9C97E", bg: "#1E4025" },
-  { src: "/products/hero-plain.jpg", label: "The Plain One", note: "Himalayan Salted \u00b7 You will finish it.", tint: "#F2B79E", bg: "#8E4A36" },
+  { src: "/products/hero-masala.jpg", label: "Peri Peri", note: "Fire & smoke. Bring water.", tint: "#F0A896", bg: "#8C2F22" },
+  { src: "/products/hero-mint.jpg", label: "Garden Mint", note: "Cool crunch. Cold and clean.", tint: "#A9C97E", bg: "#1E4025" },
+  { src: "/products/hero-plain.jpg", label: "Himalayan Pink Salt", note: "The plain one. You will finish it.", tint: "#F2B79E", bg: "#8E4A36" },
 ];
 
 export default function HeroSlider() {
