@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import LotusRing from "@/components/LotusRing";
 import { useEffect, useState } from "react";
 import SplitReveal from "@/components/SplitReveal";
 import SeedField from "@/components/SeedField";
@@ -37,7 +38,9 @@ export default function HeroSlider() {
       <div className="relative max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-12 px-6 md:px-12 py-16 md:py-24">
 
         <div className="relative mx-auto w-full max-w-[26rem] md:max-w-[34rem]">
-          <div className="relative aspect-square w-full overflow-hidden rounded-full ring-1 ring-cream/20 shadow-2xl">
+          <div className="relative aspect-square w-full text-gold">
+            <LotusRing cycles={2} />
+          <div className="absolute inset-[12%] overflow-hidden rounded-full ring-1 ring-cream/25 shadow-2xl">
             {slides.map((sl, idx) => (
               <div
                 key={sl.src}
@@ -48,6 +51,7 @@ export default function HeroSlider() {
               </div>
             ))}
             <span className="absolute inset-0 rounded-full bg-gradient-to-t from-ink/35 via-transparent to-transparent" aria-hidden="true" />
+          </div>
           </div>
 
           <div key={s.src} className="mt-8 text-center animate-fade-up">
