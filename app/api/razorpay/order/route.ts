@@ -3,6 +3,7 @@ import Razorpay from "razorpay";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getLiveProducts } from "@/lib/liveProducts";
 import { FREE_SHIPPING_OVER } from "@/lib/products";
+import { getSettings } from "@/lib/settings";
 
 export async function POST(req: Request) {
   try {
@@ -10,6 +11,12 @@ export async function POST(req: Request) {
 
     if (!Array.isArray(lineItems) || !lineItems.length) {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
+    }
+
+    // Owner can pause the shop from admin settings.
+    const settings = await getSettings();
+    if (settings.shop_open === false) {
+      return NextResponse.json({ error: settings.shop_closed_message || "We are not taking orders right now.", shopClosed: true }, { status: 409 });
     }
 
     const live = await getLiveProducts();

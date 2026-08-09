@@ -8,6 +8,8 @@ import AdminReviews from "@/components/AdminReviews";
 import AdminCoupons from "@/components/AdminCoupons";
 import AdminDashboard from "@/components/AdminDashboard";
 import OrderTracking from "@/components/OrderTracking";
+import AdminSettings from "@/components/AdminSettings";
+import AdminCustomers from "@/components/AdminCustomers";
 
 type Order = {
   id: string; created_at: string; razorpay_payment_id: string; status: string;
@@ -18,7 +20,7 @@ type Order = {
 type Stats = { totalOrders: number; revenue: number; byStatus: Record<string, number> };
 
 const STATUSES = ["paid", "packed", "shipped", "delivered", "cancelled"] as const;
-const TABS = ["Dashboard", "Orders", "Products", "Coupons", "Reviews", "Enquiries"] as const;
+const TABS = ["Dashboard", "Orders", "Products", "Coupons", "Customers", "Reviews", "Enquiries", "Settings"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function Admin() {
@@ -209,6 +211,8 @@ export default function Admin() {
         {tab === "Coupons" && <AdminCoupons />}
         {tab === "Reviews" && <AdminReviews />}
         {tab === "Enquiries" && <AdminEnquiries />}
+        {tab === "Customers" && <AdminCustomers />}
+        {tab === "Settings" && <AdminSettings />}
       </div>
     </section>
   );

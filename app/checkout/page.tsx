@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartContext";
@@ -23,6 +23,13 @@ export default function Checkout() {
   const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(null);
   const [couponMsg, setCouponMsg] = useState("");
   const [checking, setChecking] = useState(false);
+  const [closed, setClosed] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/settings").then((r) => r.json()).then((s) => {
+      if (s?.shop_open === false) setClosed(s.shop_closed_message || "We are not taking orders right now.");
+    }).catch(() => {});
+  }, []);
 
   // Free shipping is judged on the pre-discount subtotal.
   const shipping = subtotal >= FREE_SHIPPING_OVER ? 0 : 49;
@@ -218,7 +225,10 @@ export default function Checkout() {
 
               <div className="flex justify-between items-baseline mb-2"><span className="text-ink/60 text-sm">Total</span><span className="font-display text-2xl text-ink">{formatPrice(total)}</span></div>
               <p className="text-ink/40 text-[11px] mb-7">Inclusive of all taxes</p>
-              <button type="button" onClick={pay} disabled={busy} className="w-full bg-ink text-cream rounded-full py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition disabled:opacity-50">
+              {closed && (
+                <div className="bg-gold/15 border border-gold/40 rounded-xl px-5 py-4 mb-5 text-ink/75 text-sm font-light">{closed}</div>
+              )}
+              <button type="button" onClick={pay} disabled={busy || Boolean(closed)} className="w-full bg-ink text-cream rounded-full py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition disabled:opacity-50">
                 {busy ? "Opening payment" : `Pay ${formatPrice(total)}`}
               </button>
               {err && <p className="text-peri text-xs text-center mt-4 font-light">{err}</p>}
