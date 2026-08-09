@@ -6,6 +6,8 @@ import AdminProducts from "@/components/AdminProducts";
 import AdminEnquiries from "@/components/AdminEnquiries";
 import AdminReviews from "@/components/AdminReviews";
 import AdminCoupons from "@/components/AdminCoupons";
+import AdminDashboard from "@/components/AdminDashboard";
+import OrderTracking from "@/components/OrderTracking";
 
 type Order = {
   id: string; created_at: string; razorpay_payment_id: string; status: string;
@@ -16,7 +18,7 @@ type Order = {
 type Stats = { totalOrders: number; revenue: number; byStatus: Record<string, number> };
 
 const STATUSES = ["paid", "packed", "shipped", "delivered", "cancelled"] as const;
-const TABS = ["Orders", "Products", "Coupons", "Reviews", "Enquiries"] as const;
+const TABS = ["Dashboard", "Orders", "Products", "Coupons", "Reviews", "Enquiries"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function Admin() {
@@ -24,7 +26,7 @@ export default function Admin() {
   const [pw, setPw] = useState("");
   const [loginErr, setLoginErr] = useState("");
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState<Tab>("Orders");
+  const [tab, setTab] = useState<Tab>("Dashboard");
 
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [total, setTotal] = useState(0);
@@ -81,22 +83,14 @@ export default function Admin() {
   };
 
   const setOrderStatus = async (id: string, next: string) => {
-    let tracking_id: string | null = null;
-    let courier: string | null = null;
-
-    if (next === "shipped") {
-      tracking_id = window.prompt("Tracking number (leave blank to skip)") || null;
-      if (tracking_id) courier = window.prompt("Courier name, e.g. Delhivery") || null;
-    }
-
     setUpdating(id);
     const r = await fetch(`/api/admin/orders/${id}`, {
       method: "PATCH", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: next, tracking_id, courier }),
+      body: JSON.stringify({ status: next }),
     });
     const out = await r.json().catch(() => ({}));
 
-    setOrders((prev) => prev!.map((o) => (o.id === id ? { ...o, status: next, tracking_id, courier } : o)));
+    setOrders((prev) => prev!.map((o) => (o.id === id ? { ...o, status: next } : o)));
     loadStats(); setUpdating(null);
 
     if (out?.emailed) console.log("Customer emailed:", next);
@@ -194,6 +188,7 @@ export default function Admin() {
                     <a href={mailLink(o, o.email)} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Email update</a>
                     <a href={`tel:${o.phone}`} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Call {o.phone}</a>
                     <span className="text-ink/35 text-[10px] tracking-tracksm uppercase py-2">{o.razorpay_payment_id}</span>
+                      <OrderTracking order={o} onSaved={() => loadOrders(page)} />
                   </div>
                 </div>
               ))}
@@ -210,6 +205,7 @@ export default function Admin() {
         )}
 
         {tab === "Products" && <AdminProducts />}
+        {tab === "Dashboard" && <AdminDashboard onJump={(t) => setTab(t as Tab)} />}
         {tab === "Coupons" && <AdminCoupons />}
         {tab === "Reviews" && <AdminReviews />}
         {tab === "Enquiries" && <AdminEnquiries />}
