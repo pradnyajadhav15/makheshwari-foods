@@ -50,6 +50,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: msg, outOfStock: problems }, { status: 409 });
     }
 
+    const minOrder = Number(settings.min_order) || 0;
+    if (minOrder > 0 && subtotal < minOrder) {
+      return NextResponse.json(
+        { error: `Minimum order is Rs ${minOrder}. Please add a little more to your cart.`, belowMinimum: true },
+        { status: 409 }
+      );
+    }
+
     // Free shipping is judged on the pre-discount subtotal, so a coupon
     // can never quietly push someone back over the shipping line.
     const shipping = subtotal >= FREE_SHIPPING_OVER ? 0 : 49;

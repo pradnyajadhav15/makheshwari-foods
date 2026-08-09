@@ -9,6 +9,7 @@ export type Settings = {
   instagram: string;
   shop_open: boolean;
   shop_closed_message: string;
+  min_order: number;
 };
 
 // Used when the table is unreachable, so the site never breaks on a settings failure.
@@ -21,6 +22,7 @@ export const DEFAULTS: Settings = {
   instagram: "https://www.instagram.com/makheshwari_makhana/",
   shop_open: true,
   shop_closed_message: "We are restocking. Back in a few days.",
+  min_order: 299,
 };
 
 export async function getSettings(): Promise<Settings> {

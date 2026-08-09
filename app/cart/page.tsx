@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useCart } from "@/components/CartContext";
 import { formatPrice, accentClass, FREE_SHIPPING_OVER } from "@/lib/products";
 
@@ -10,6 +11,9 @@ export default function CartPage() {
   const shipping = subtotal >= FREE_SHIPPING_OVER || subtotal === 0 ? 0 : 49;
   const total = subtotal + shipping;
   const away = FREE_SHIPPING_OVER - subtotal;
+  const [minOrder, setMinOrder] = useState(0);
+  useEffect(() => { fetch("/api/settings").then((r) => r.json()).then((s) => setMinOrder(Number(s?.min_order) || 0)).catch(() => {}); }, []);
+  const short = minOrder - subtotal;
 
   if (count === 0) {
     return (
@@ -29,7 +33,13 @@ export default function CartPage() {
         <h1 className="font-display text-4xl md:text-5xl text-ink mb-3">Your cart</h1>
         <p className="text-ink/50 text-sm font-light mb-10">{count} item{count > 1 ? "s" : ""}</p>
 
-        {away > 0 && (
+        {short > 0 && (
+          <div className="bg-peri/10 border border-peri/40 rounded-xl px-6 py-4 mb-5 text-center text-ink/75 text-sm font-light">
+            Minimum order is {formatPrice(minOrder)}. Add {formatPrice(short)} more to check out.
+          </div>
+        )}
+
+        {away > 0 && short <= 0 && (
           <div className="bg-gold/15 border border-gold/40 rounded-xl px-6 py-4 mb-8 text-center text-ink/70 text-sm font-light">
             Add {formatPrice(away)} more for free shipping
           </div>
@@ -72,7 +82,11 @@ export default function CartPage() {
                 <span className="font-display text-2xl text-ink">{formatPrice(total)}</span>
               </div>
               <p className="text-ink/40 text-[11px] mb-7">Inclusive of all taxes</p>
-              <Link href="/checkout" className="block w-full text-center bg-ink text-cream rounded-full py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition">Checkout</Link>
+              {short > 0 ? (
+                <span className="block w-full text-center bg-ink/20 text-ink/45 rounded-full py-4 text-[11px] tracking-tracksm uppercase cursor-not-allowed">Add {formatPrice(short)} more</span>
+              ) : (
+                <Link href="/checkout" className="block w-full text-center bg-ink text-cream rounded-full py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition">Checkout</Link>
+              )}
               <Link href="/shop" className="block text-center text-ink/50 text-[11px] tracking-tracksm uppercase mt-5 hover:text-gold transition">
                 Continue shopping
               </Link>

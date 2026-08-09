@@ -12,6 +12,7 @@ type S = {
   instagram: string;
   shop_open: boolean;
   shop_closed_message: string;
+  min_order: number;
 };
 
 export default function AdminSettings() {
@@ -24,7 +25,7 @@ export default function AdminSettings() {
     fetch("/api/admin/settings").then((r) => (r.ok ? r.json() : null)).then((d) => d && setS(d));
   }, []);
 
-  const set = (k: keyof S, v: string | boolean) => setS((p) => (p ? { ...p, [k]: v } : p));
+  const set = (k: keyof S, v: string | boolean | number) => setS((p) => (p ? { ...p, [k]: v } : p));
 
   const save = async () => {
     if (!s) return;
@@ -77,6 +78,15 @@ export default function AdminSettings() {
           </>
         )}
       </div>
+
+      <div className={card}>
+        <p className="font-display text-xl text-ink mb-6">Ordering</p>
+          <label className={lbl} htmlFor="s-min">Minimum order value</label>
+          <input id="s-min" className={inp + " max-w-[12rem]"} value={s.min_order} onChange={(e) => set("min_order", e.target.value.replace(/\D/g, ""))} />
+          <p className={hint}>Customers cannot check out below this amount. Set 0 to turn it off.</p>
+        </div>
+
+
 
       <div className={card}>
         <p className="font-display text-xl text-ink mb-6">Contact details</p>
