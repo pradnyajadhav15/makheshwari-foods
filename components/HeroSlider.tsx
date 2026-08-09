@@ -63,6 +63,14 @@ export default function HeroSlider() {
         </div>
 
         <div className="relative z-10 order-2 px-6 md:pl-8 md:pr-12 py-10 md:py-16 text-center md:text-left">
+          <div key={s.src} className="animate-fade-up mb-6">
+            <span className="inline-flex items-center gap-2.5 text-[11px] tracking-track uppercase" style={{ color: s.tint }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.tint }} />
+              {s.label}
+            </span>
+            <p className="text-cream/55 text-sm font-light mt-2">{s.note}</p>
+          </div>
+
           <h1 className="font-display text-cream text-4xl sm:text-5xl md:text-[3.4rem] lg:text-[3.9rem] leading-[1.1] uppercase tracking-[0.01em]">
             <SplitReveal text={"Savour every.\nlast. bite."} delay={200} />
           </h1>
