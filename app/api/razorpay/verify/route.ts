@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { supabaseAdmin } from "@/lib/supabase";
 import { notifyOwner } from "@/lib/notify";
 import { decrementStockOnce } from "@/lib/stock";
+import { ensureInvoice } from "@/lib/invoice";
 
 export async function POST(req: Request) {
   try {
@@ -72,6 +73,11 @@ export async function POST(req: Request) {
     }
 
     await decrementStockOnce(razorpay_order_id);
+
+    try {
+      const { data: row } = await supabaseAdmin.from("orders").select("id").eq("razorpay_order_id", razorpay_order_id).maybeSingle();
+      if (row) await ensureInvoice(row.id);
+    } catch (e) { console.error("Invoice failed", e); }
 
     try {
       await notifyOwner({

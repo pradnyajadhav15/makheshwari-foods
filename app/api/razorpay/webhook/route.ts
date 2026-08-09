@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { supabaseAdmin } from "@/lib/supabase";
 import { notifyOwner } from "@/lib/notify";
 import { decrementStockOnce } from "@/lib/stock";
+import { ensureInvoice } from "@/lib/invoice";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -82,6 +83,9 @@ export async function POST(req: Request) {
         }
 
         await decrementStockOnce(orderId);
+
+        // Invoice numbering must never gap, so failures are logged, not thrown.
+        try { await ensureInvoice(existing.id); } catch (e) { console.error("Invoice failed", e); }
 
         try {
           await notifyOwner({

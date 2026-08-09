@@ -190,6 +190,14 @@ export default function Admin() {
                     <a href={mailLink(o, o.email)} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Email update</a>
                     <a href={`tel:${o.phone}`} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Call {o.phone}</a>
                     <span className="text-ink/35 text-[10px] tracking-tracksm uppercase py-2">{o.razorpay_payment_id}</span>
+                      {["paid", "packed", "shipped", "delivered"].includes(o.status) && (
+                        <a
+                          href={`/api/admin/invoice/${o.id}`}
+                          className="border border-gold/50 text-ink rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase hover:bg-gold/15 transition"
+                        >
+                          Invoice PDF
+                        </a>
+                      )}
                       <OrderTracking order={o} onSaved={() => loadOrders(page)} />
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { IngredientList, StepList } from "@/components/RecipeInteractive";
 import { recipes, getRecipe } from "@/lib/recipes";
@@ -29,6 +30,7 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
     "@type": "Recipe",
     name: r.name,
     description: r.blurb,
+    image: [`https://makheshwarifoods.com/recipes/${r.slug}.jpg`],
     recipeYield: `${r.serves} servings`,
     totalTime: `PT${parseInt(r.time)}M`,
     recipeIngredient: r.ingredients.flatMap((g) => g.items),
@@ -44,7 +46,18 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
         <div className="max-w-5xl mx-auto">
           <Link href="/recipes" className="text-ink/45 text-[10px] tracking-tracksm uppercase hover:text-gold transition">&larr; All recipes</Link>
 
-          <div className="grid md:grid-cols-[1fr_auto] gap-10 items-end mt-8">
+          <div className="relative aspect-[16/9] w-full max-w-2xl rounded-[1.25rem] overflow-hidden mt-8 shadow-[0_24px_55px_-28px_rgba(18,53,42,0.4)]">
+            <Image
+              src={`/recipes/${r.slug}.jpg`}
+              alt={r.name}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 64rem"
+              className="object-cover"
+            />
+          </div>
+
+          <div className="grid md:grid-cols-[1fr_auto] gap-10 items-end mt-10">
             <div>
               <h1 className="font-display text-5xl md:text-7xl text-ink leading-[1.03]">{r.name}</h1>
               <div className={`h-1.5 w-20 ${bar[r.accent]} mt-6`} />
