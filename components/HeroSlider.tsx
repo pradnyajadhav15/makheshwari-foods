@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import LotusRing from "@/components/LotusRing";
 import { useEffect, useState } from "react";
 import SplitReveal from "@/components/SplitReveal";
 import SeedField from "@/components/SeedField";
+import LotusRing from "@/components/LotusRing";
 import { Magnetic, Ripple } from "@/components/Motion";
 
 const slides = [
@@ -35,48 +35,44 @@ export default function HeroSlider() {
     >
       <SeedField count={14} />
 
-      <div className="relative max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-12 px-6 md:px-12 py-16 md:py-24">
+      <div className="relative max-w-7xl mx-auto grid md:grid-cols-2 items-center min-h-[26rem] md:min-h-[36rem] py-10 md:py-16">
 
-        <div className="relative mx-auto w-full max-w-[26rem] md:max-w-[34rem]">
-          <div className="relative aspect-square w-full text-gold">
+        <div className="relative h-[22rem] sm:h-[28rem] md:h-full order-1">
+          <div className="absolute left-1/2 md:left-[46%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[92%] md:h-[96%] aspect-square text-gold">
             <LotusRing cycles={2} />
-          <div className="absolute inset-[12%] overflow-hidden rounded-full ring-1 ring-cream/25 shadow-2xl">
-            {slides.map((sl, idx) => (
-              <div
-                key={sl.src}
-                className="absolute inset-0 transition-all duration-[900ms] ease-out"
-                style={{ opacity: idx === i ? 1 : 0, transform: idx === i ? "scale(1)" : "scale(1.06)" }}
-              >
-                <Image src={sl.src} alt={sl.label} fill sizes="(max-width: 768px) 90vw, 34rem" priority={idx === 0} className="object-cover" />
-              </div>
-            ))}
-            <span className="absolute inset-0 rounded-full bg-gradient-to-t from-ink/35 via-transparent to-transparent" aria-hidden="true" />
-          </div>
-          </div>
 
-          <div key={s.src} className="mt-8 text-center animate-fade-up">
-            <p className="font-display text-cream text-3xl md:text-4xl leading-tight">{s.label}</p>
-            <p className="text-cream/70 text-[11px] tracking-tracksm uppercase mt-2.5">{s.note}</p>
+            <div className="absolute inset-[14%] rounded-full overflow-hidden shadow-[0_40px_90px_-35px_rgba(0,0,0,0.55)]">
+              {slides.map((sl, idx) => (
+                <div
+                  key={sl.src}
+                  className="absolute inset-0 transition-all duration-[900ms] ease-out"
+                  style={{ opacity: idx === i ? 1 : 0, transform: idx === i ? "scale(1)" : "scale(1.06)" }}
+                >
+                  <Image
+                    src={sl.src}
+                    alt={sl.label}
+                    fill
+                    sizes="(max-width: 768px) 90vw, 32rem"
+                    priority={idx === 0}
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="text-center md:text-left">
-          <span className="inline-flex items-center gap-2.5 text-cream/65 text-[11px] tracking-track uppercase mb-6">
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.tint, transition: "background-color 2s" }} />
-            Our most loved crunch
-          </span>
-
-          <h1 className="font-display text-cream text-5xl md:text-7xl leading-[1.03]">
+        <div className="relative z-10 order-2 px-6 md:pl-8 md:pr-12 py-10 md:py-16 text-center md:text-left">
+          <h1 className="font-display text-cream text-4xl sm:text-5xl md:text-[3.4rem] lg:text-[3.9rem] leading-[1.1] uppercase tracking-[0.01em]">
             <SplitReveal text={"Savour every.\nlast. bite."} delay={200} />
           </h1>
 
-          <p className="text-cream/65 text-lg font-light leading-relaxed max-w-md mx-auto md:mx-0 mt-7">
-            Roasted in Samastipur, never fried. Three flavours, one honest crunch.
-          </p>
-
-          <Magnetic className="mt-10">
-            <Ripple className="rounded-full text-cream/40">
-              <Link href="/shop" className="inline-block bg-gold text-ink px-12 py-4 rounded-full text-[11px] tracking-tracksm uppercase hover:bg-goldsoft transition duration-300">
+          <Magnetic className="mt-10 md:mt-12">
+            <Ripple className="rounded-lg text-cream/40">
+              <Link
+                href="/shop"
+                className="inline-block bg-ink text-cream px-12 py-5 rounded-lg text-[12px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition duration-300"
+              >
                 Shop all &rarr;
               </Link>
             </Ripple>
