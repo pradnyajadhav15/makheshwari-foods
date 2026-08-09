@@ -17,7 +17,6 @@ type Order = {
   city: string; state: string; pincode: string; total: number;
   items: { name: string; qty: number; price: number }[]; notes: string | null;
 };
-type Stats = { totalOrders: number; revenue: number; byStatus: Record<string, number> };
 
 const STATUSES = ["paid", "packed", "shipped", "delivered", "cancelled"] as const;
 const TABS = ["Dashboard", "Orders", "Products", "Coupons", "Customers", "Reviews", "Enquiries", "Settings"] as const;
@@ -35,22 +34,20 @@ export default function Admin() {
   const [page, setPage] = useState(1);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
-  const [stats, setStats] = useState<Stats | null>(null);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [listErr, setListErr] = useState("");
   const [updating, setUpdating] = useState<string | null>(null);
 
   const lastPage = Math.max(1, Math.ceil(total / 20));
-
-  const loadStats = async () => {
-    const r = await fetch("/api/admin/stats");
-    if (r.ok) setStats(await r.json());
-  };
 
   const loadOrders = async (p: number) => {
     setListErr("");
     const params = new URLSearchParams({ page: String(p) });
     if (q) params.set("q", q);
     if (status !== "all") params.set("status", status);
+    if (from) params.set("from", from);
+    if (to) params.set("to", to);
     const r = await fetch(`/api/admin/orders?${params}`);
     const d = await r.json();
     if (!r.ok) { setListErr(d.error || "Failed to load orders"); return; }
@@ -61,13 +58,13 @@ export default function Admin() {
     fetch("/api/admin/session").then((r) => {
       const ok = r.ok;
       setAuthed(ok);
-      if (ok) { loadStats(); loadOrders(1); }
+      if (ok) { loadOrders(1); }
     });
   }, []);
 
   useEffect(() => {
     if (authed) { const t = setTimeout(() => loadOrders(1), 300); return () => clearTimeout(t); }
-  }, [q, status, authed]);
+  }, [q, status, from, to, authed]);
 
   const login = async () => {
     setBusy(true); setLoginErr("");
@@ -76,7 +73,7 @@ export default function Admin() {
       body: JSON.stringify({ password: pw }),
     });
     if (!r.ok) { setLoginErr("Wrong password"); setBusy(false); return; }
-    setAuthed(true); loadStats(); loadOrders(1); setBusy(false);
+    setAuthed(true); loadOrders(1); setBusy(false);
   };
 
   const logout = async () => {
@@ -93,7 +90,7 @@ export default function Admin() {
     const out = await r.json().catch(() => ({}));
 
     setOrders((prev) => prev!.map((o) => (o.id === id ? { ...o, status: next } : o)));
-    loadStats(); setUpdating(null);
+    setUpdating(null);
 
     if (out?.emailed) console.log("Customer emailed:", next);
   };
@@ -116,7 +113,7 @@ export default function Admin() {
   }
 
   return (
-    <section className="min-h-screen bg-cream px-6 md:px-10 py-12">
+    <section className="min-h-screen bg-cream px-4 sm:px-6 md:px-10 py-8 md:py-12">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-wrap items-end justify-between gap-5 mb-8">
           <div>
@@ -129,18 +126,9 @@ export default function Admin() {
           </div>
         </div>
 
-        {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <StatCard label="Total orders" value={String(stats.totalOrders)} />
-            <StatCard label="Revenue" value={`\u20B9${stats.revenue.toLocaleString("en-IN")}`} />
-            <StatCard label="Awaiting dispatch" value={String((stats.byStatus.paid || 0) + (stats.byStatus.packed || 0))} />
-            <StatCard label="Delivered" value={String(stats.byStatus.delivered || 0)} />
-          </div>
-        )}
-
-        <div className="flex flex-wrap gap-3 mb-10">
+        <div className="flex gap-2.5 mb-10 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 md:flex-wrap md:gap-3 md:overflow-visible md:pb-0">
           {TABS.map((t) => (
-            <button key={t} type="button" onClick={() => setTab(t)} className={`rounded-full px-8 py-3 text-[11px] tracking-tracksm uppercase transition ${tab === t ? "bg-ink text-cream" : "border border-ink/20 text-ink/70 hover:border-gold hover:text-ink"}`}>
+            <button key={t} type="button" onClick={() => setTab(t)} className={`shrink-0 rounded-full px-6 md:px-8 py-3 text-[10px] md:text-[11px] tracking-tracksm uppercase transition ${tab === t ? "bg-ink text-cream" : "border border-ink/20 text-ink/70 hover:border-gold hover:text-ink"}`}>
               {t}
             </button>
           ))}
@@ -154,6 +142,12 @@ export default function Admin() {
                 <option value="all">All statuses</option>
                 {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
+                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} aria-label="From date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
+                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} aria-label="To date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
+                {(from || to) && (
+                  <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/60 hover:border-gold transition">Clear dates</button>
+                )}
+                <a href={`/api/admin/export?from=${from}&to=${to}&status=${status}`} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Export CSV</a>
             </div>
 
             {listErr && <p className="text-peri text-sm mb-5">{listErr}</p>}
@@ -161,17 +155,23 @@ export default function Admin() {
 
             <div className="space-y-4">
               {orders?.map((o) => (
-                <div key={o.id} className="bg-white rounded-[1.25rem] border border-ink/10 p-7">
+                <div key={o.id} className="bg-white rounded-[1.25rem] border border-ink/10 p-5 sm:p-7">
                   <div className="flex flex-wrap justify-between gap-4 mb-5 pb-5 border-b border-ink/10">
                     <div>
                       <p className="font-display text-xl text-ink">{o.customer_name}</p>
                       <p className="text-ink/45 text-xs mt-1">{new Date(o.created_at).toLocaleString("en-IN")}</p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
                       <span className="font-display text-xl text-ink">{"\u20B9"}{o.total}</span>
                       <select value={o.status} disabled={updating === o.id} onChange={(e) => setOrderStatus(o.id, e.target.value)} className="bg-cream/70 border border-ink/15 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase focus:outline-none focus:border-gold">
                         {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
+                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} aria-label="From date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
+                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} aria-label="To date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
+                {(from || to) && (
+                  <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/60 hover:border-gold transition">Clear dates</button>
+                )}
+                <a href={`/api/admin/export?from=${from}&to=${to}&status=${status}`} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Export CSV</a>
                     </div>
                   </div>
                   <div className="grid md:grid-cols-2 gap-6 text-sm font-light">
@@ -215,14 +215,5 @@ export default function Admin() {
         {tab === "Settings" && <AdminSettings />}
       </div>
     </section>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-white rounded-[1.25rem] border border-ink/10 p-6">
-      <p className="text-ink/45 text-[10px] tracking-tracksm uppercase mb-2">{label}</p>
-      <p className="font-display text-2xl text-ink">{value}</p>
-    </div>
   );
 }

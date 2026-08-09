@@ -11,6 +11,8 @@ export async function GET(req: NextRequest) {
   const q = params.get("q")?.trim() || "";
   const status = params.get("status") || "all";
   const page = Math.max(1, Number(params.get("page")) || 1);
+  const from = params.get("from");
+  const to = params.get("to");
 
   let query = supabaseAdmin
     .from("orders")
@@ -28,8 +30,11 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const from = (page - 1) * PAGE_SIZE;
-  query = query.range(from, from + PAGE_SIZE - 1);
+  if (from) query = query.gte("created_at", new Date(from + "T00:00:00").toISOString());
+  if (to) query = query.lte("created_at", new Date(to + "T23:59:59").toISOString());
+
+  const offset = (page - 1) * PAGE_SIZE;
+  query = query.range(offset, offset + PAGE_SIZE - 1);
 
   const { data, error, count } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

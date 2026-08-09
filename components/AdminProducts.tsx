@@ -128,12 +128,14 @@ export default function AdminProducts() {
           const out = (p.stock ?? 0) === 0;
           return (
             <div key={p.slug} className={`bg-white rounded-[1.25rem] border p-6 ${isDirty ? "border-gold/60" : "border-ink/10"}`}>
-              <div className="flex flex-wrap items-end gap-5">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-4 sm:gap-5">
                 <Image src={p.images?.[0] || `/products/${p.slug === "himalayan-pink-salt" ? "pink-salt" : p.slug}.jpg`} alt={p.name} width={64} height={64} className="w-16 h-16 object-contain shrink-0" />
-                <div className="min-w-[9rem] flex-1"><label className={lbl}>Name</label><input className={inp + " w-full"} value={p.name} onChange={(e) => edit(p.slug, "name", e.target.value)} /></div>
-                <div><label className={lbl}>Price</label><input type="number" className={inp + " w-20"} value={p.price} onChange={(e) => edit(p.slug, "price", Number(e.target.value))} /></div>
-                <div><label className={lbl}>MRP</label><input type="number" className={inp + " w-20"} value={p.mrp ?? 0} onChange={(e) => edit(p.slug, "mrp", Number(e.target.value))} /></div>
-                <div><label className={lbl}>Weight</label><input type="number" className={inp + " w-20"} value={p.weight_g} onChange={(e) => edit(p.slug, "weight_g", Number(e.target.value))} /></div>
+                <div className="w-full sm:w-auto sm:min-w-[9rem] sm:flex-1"><label className={lbl}>Name</label><input className={inp + " w-full"} value={p.name} onChange={(e) => edit(p.slug, "name", e.target.value)} /></div>
+                <div className="grid grid-cols-3 gap-3 w-full sm:w-auto sm:flex sm:gap-5">
+                  <div><label className={lbl}>Price</label><input type="number" className={inp + " w-full sm:w-20"} value={p.price} onChange={(e) => edit(p.slug, "price", Number(e.target.value))} /></div>
+                  <div><label className={lbl}>MRP</label><input type="number" className={inp + " w-full sm:w-20"} value={p.mrp ?? 0} onChange={(e) => edit(p.slug, "mrp", Number(e.target.value))} /></div>
+                  <div><label className={lbl}>Weight</label><input type="number" className={inp + " w-full sm:w-20"} value={p.weight_g} onChange={(e) => edit(p.slug, "weight_g", Number(e.target.value))} /></div>
+                </div>
 
                 <div>
                   <label className={lbl}>Stock</label>
@@ -155,11 +157,11 @@ export default function AdminProducts() {
                   </div>
                 </div>
 
-                <button type="button" onClick={() => save(p.slug, { in_stock: !p.in_stock })} className={`rounded-full px-5 py-2.5 text-[10px] tracking-tracksm uppercase transition ${p.in_stock ? "bg-mint/25 text-ink hover:bg-mint/40" : "bg-peri/20 text-peri hover:bg-peri/30"}`}>
+                <button type="button" onClick={() => save(p.slug, { in_stock: !p.in_stock })} className={`w-full sm:w-auto rounded-full px-5 py-3 sm:py-2.5 text-[10px] tracking-tracksm uppercase transition ${p.in_stock ? "bg-mint/25 text-ink hover:bg-mint/40" : "bg-peri/20 text-peri hover:bg-peri/30"}`}>
                   {p.in_stock ? "On sale" : "Off sale"}
                 </button>
 
-                <button type="button" disabled={saving === p.slug || !isDirty} onClick={() => save(p.slug, { name: p.name, price: p.price, mrp: p.mrp, weight_g: p.weight_g })} className="bg-ink text-cream rounded-full px-7 py-2.5 text-[10px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition disabled:opacity-30">
+                <button type="button" disabled={saving === p.slug || !isDirty} onClick={() => save(p.slug, { name: p.name, price: p.price, mrp: p.mrp, weight_g: p.weight_g })} className="w-full sm:w-auto bg-ink text-cream rounded-full px-7 py-3 sm:py-2.5 text-[10px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition disabled:opacity-30">
                   {saving === p.slug ? "Saving" : isDirty ? "Save changes" : "Saved"}
                 </button>
 

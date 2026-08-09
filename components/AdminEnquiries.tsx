@@ -6,6 +6,7 @@ type E = { id: string; created_at: string; name: string; company: string | null;
 
 export default function AdminEnquiries() {
   const [rows, setRows] = useState<E[] | null>(null);
+  const [confirm, setConfirm] = useState<string | null>(null);
 
   const load = async () => {
     const r = await fetch("/api/admin/enquiries");
@@ -22,6 +23,16 @@ export default function AdminEnquiries() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, status }),
     });
+    load();
+  };
+
+  const del = async (id: string) => {
+    await fetch("/api/admin/enquiries", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    setConfirm(null);
     load();
   };
 
@@ -62,6 +73,14 @@ export default function AdminEnquiries() {
             <div className="flex gap-3 mt-6 pt-5 border-t border-ink/10">
               <a href={`https://wa.me/91${e.phone.replace(/\D/g, "").slice(-10)}?text=${encodeURIComponent(`Namaste ${e.name.split(" ")[0]},\n\nThank you for your bulk enquiry with Makheshwari Foods. Let us know the quantity you need and we will send pricing today.\n\n- Makheshwari Foods, Samastipur`)}`} target="_blank" rel="noopener noreferrer" className="bg-mint/20 border border-mint/50 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink hover:bg-mint/35 transition">WhatsApp</a>
               <a href={`tel:${e.phone}`} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold transition">Call {e.phone}</a>
+              {confirm === e.id ? (
+                <span className="flex gap-2 ml-auto">
+                  <button type="button" onClick={() => del(e.id)} className="bg-peri text-cream rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase">Delete for good</button>
+                  <button type="button" onClick={() => setConfirm(null)} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/60">Keep</button>
+                </span>
+              ) : (
+                <button type="button" onClick={() => setConfirm(e.id)} className="border border-peri/40 text-peri rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase hover:bg-peri/10 transition ml-auto">Delete</button>
+              )}
             </div>
           </div>
         ))}
