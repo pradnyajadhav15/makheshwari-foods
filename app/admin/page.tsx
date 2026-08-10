@@ -29,13 +29,14 @@ export default function Admin() {
   const [busy, setBusy] = useState(false);
   const [tab, setTab] = useState<Tab>("Dashboard");
 
-  const [orders, setOrders] = useState<Order[] | null>(null);
+  const [orders, setOrders] = useState<(Order & { archived?: boolean })[] | null>(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
   const [listErr, setListErr] = useState("");
   const [updating, setUpdating] = useState<string | null>(null);
 
@@ -48,6 +49,7 @@ export default function Admin() {
     if (status !== "all") params.set("status", status);
     if (from) params.set("from", from);
     if (to) params.set("to", to);
+    if (showArchived) params.set("archived", "1");
     const r = await fetch(`/api/admin/orders?${params}`);
     const d = await r.json();
     if (!r.ok) { setListErr(d.error || "Failed to load orders"); return; }
@@ -64,7 +66,7 @@ export default function Admin() {
 
   useEffect(() => {
     if (authed) { const t = setTimeout(() => loadOrders(1), 300); return () => clearTimeout(t); }
-  }, [q, status, from, to, authed]);
+  }, [q, status, from, to, showArchived, authed]);
 
   const login = async () => {
     setBusy(true); setLoginErr("");
@@ -79,6 +81,25 @@ export default function Admin() {
   const logout = async () => {
     await fetch("/api/admin/logout", { method: "POST" });
     setAuthed(false); setOrders(null);
+  };
+
+  const toggleArchive = async (id: string, next: boolean) => {
+    setUpdating(id);
+    await fetch(`/api/admin/orders/${id}`, {
+      method: "PATCH", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived: next }),
+    });
+    loadOrders(page); setUpdating(null);
+  };
+
+  const deleteOrder = async (id: string) => {
+    if (!window.confirm("Delete this unpaid order? This cannot be undone.")) return;
+    setUpdating(id);
+    const r = await fetch(`/api/admin/orders/${id}`, {
+      method: "DELETE", headers: { "Content-Type": "application/json" },
+    });
+    if (!r.ok) { const d = await r.json().catch(() => ({})); setListErr(d.error || "Could not delete"); }
+    loadOrders(page); setUpdating(null);
   };
 
   const setOrderStatus = async (id: string, next: string) => {
@@ -147,6 +168,9 @@ export default function Admin() {
                 {(from || to) && (
                   <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/60 hover:border-gold transition">Clear dates</button>
                 )}
+                <button type="button" onClick={() => setShowArchived(!showArchived)} className={`rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase transition ${showArchived ? "bg-ink text-cream" : "bg-white border border-ink/15 text-ink/70 hover:border-gold"}`}>
+                  {showArchived ? "Viewing archived" : "Show archived"}
+                </button>
                 <a href={`/api/admin/export?from=${from}&to=${to}&status=${status}`} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Export CSV</a>
             </div>
 
@@ -171,6 +195,9 @@ export default function Admin() {
                 {(from || to) && (
                   <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/60 hover:border-gold transition">Clear dates</button>
                 )}
+                <button type="button" onClick={() => setShowArchived(!showArchived)} className={`rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase transition ${showArchived ? "bg-ink text-cream" : "bg-white border border-ink/15 text-ink/70 hover:border-gold"}`}>
+                  {showArchived ? "Viewing archived" : "Show archived"}
+                </button>
                 <a href={`/api/admin/export?from=${from}&to=${to}&status=${status}`} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Export CSV</a>
                     </div>
                   </div>
@@ -197,6 +224,24 @@ export default function Admin() {
                         >
                           Invoice PDF
                         </a>
+                      )}
+                      <button
+                        type="button"
+                        disabled={updating === o.id}
+                        onClick={() => toggleArchive(o.id, !o.archived)}
+                        className="border border-ink/20 text-ink/70 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase hover:border-gold hover:text-ink transition disabled:opacity-40"
+                      >
+                        {o.archived ? "Unarchive" : "Archive"}
+                      </button>
+                      {["pending", "failed"].includes(o.status) && (
+                        <button
+                          type="button"
+                          disabled={updating === o.id}
+                          onClick={() => deleteOrder(o.id)}
+                          className="border border-peri/40 text-peri rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase hover:bg-peri/10 transition disabled:opacity-40"
+                        >
+                          Delete
+                        </button>
                       )}
                       <OrderTracking order={o} onSaved={() => loadOrders(page)} />
                   </div>

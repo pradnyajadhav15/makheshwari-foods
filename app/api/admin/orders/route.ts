@@ -13,11 +13,14 @@ export async function GET(req: NextRequest) {
   const page = Math.max(1, Number(params.get("page")) || 1);
   const from = params.get("from");
   const to = params.get("to");
+  const showArchived = params.get("archived") === "1";
 
   let query = supabaseAdmin
     .from("orders")
     .select("*", { count: "exact" })
     .order("created_at", { ascending: false });
+
+  query = query.eq("archived", showArchived);
 
   if (status !== "all" && (ORDER_STATUSES as readonly string[]).includes(status)) {
     query = query.eq("status", status);
