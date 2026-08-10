@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { waLink, mailLink } from "@/lib/messages";
+import PasswordInput from "@/components/PasswordInput";
 import AdminProducts from "@/components/AdminProducts";
 import AdminEnquiries from "@/components/AdminEnquiries";
 import AdminReviews from "@/components/AdminReviews";
@@ -123,7 +124,14 @@ export default function Admin() {
       <section className="min-h-screen bg-cream flex items-center justify-center px-6">
         <div className="w-full max-w-sm bg-white rounded-[1.5rem] border border-ink/10 p-9">
           <h1 className="font-display text-2xl text-ink mb-7">Admin</h1>
-          <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} onKeyDown={(e) => e.key === "Enter" && login()} placeholder="Password" className="w-full bg-cream/60 border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition mb-5" />
+          <div className="mb-5">
+            <PasswordInput
+              value={pw}
+              onChange={setPw}
+              disabled={busy}
+              onKeyDown={(e) => { if (e.key === "Enter") login(); }}
+            />
+          </div>
           <button type="button" onClick={login} disabled={busy} className="w-full bg-ink text-cream rounded-full py-3.5 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition disabled:opacity-50">
             {busy ? "Checking" : "Sign in"}
           </button>
@@ -163,15 +171,15 @@ export default function Admin() {
                 <option value="all">All statuses</option>
                 {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
-                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} aria-label="From date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
-                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} aria-label="To date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
-                {(from || to) && (
-                  <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/60 hover:border-gold transition">Clear dates</button>
-                )}
-                <button type="button" onClick={() => setShowArchived(!showArchived)} className={`rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase transition ${showArchived ? "bg-ink text-cream" : "bg-white border border-ink/15 text-ink/70 hover:border-gold"}`}>
-                  {showArchived ? "Viewing archived" : "Show archived"}
-                </button>
-                <a href={`/api/admin/export?from=${from}&to=${to}&status=${status}`} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Export CSV</a>
+              <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} aria-label="From date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
+              <input type="date" value={to} onChange={(e) => setTo(e.target.value)} aria-label="To date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
+              {(from || to) && (
+                <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/60 hover:border-gold transition">Clear dates</button>
+              )}
+              <button type="button" onClick={() => setShowArchived(!showArchived)} className={`rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase transition ${showArchived ? "bg-ink text-cream" : "bg-white border border-ink/15 text-ink/70 hover:border-gold"}`}>
+                {showArchived ? "Viewing archived" : "Show archived"}
+              </button>
+              <a href={`/api/admin/export?from=${from}&to=${to}&status=${status}`} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Export CSV</a>
             </div>
 
             {listErr && <p className="text-peri text-sm mb-5">{listErr}</p>}
@@ -189,13 +197,10 @@ export default function Admin() {
                       <span className="font-display text-xl text-ink">{"\u20B9"}{o.total}</span>
                       <select value={o.status} disabled={updating === o.id} onChange={(e) => setOrderStatus(o.id, e.target.value)} className="bg-cream/70 border border-ink/15 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase focus:outline-none focus:border-gold">
                         {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                        {!STATUSES.includes(o.status as (typeof STATUSES)[number]) && (
+                          <option value={o.status}>{o.status}</option>
+                        )}
                       </select>
-                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} aria-label="From date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
-                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} aria-label="To date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
-                {(from || to) && (
-                  <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/60 hover:border-gold transition">Clear dates</button>
-                )}
-                <a href={`/api/admin/export?from=${from}&to=${to}&status=${status}`} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Export CSV</a>
                     </div>
                   </div>
                   <div className="grid md:grid-cols-2 gap-6 text-sm font-light">
@@ -214,33 +219,33 @@ export default function Admin() {
                     <a href={mailLink(o, o.email)} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Email update</a>
                     <a href={`tel:${o.phone}`} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Call {o.phone}</a>
                     <span className="text-ink/35 text-[10px] tracking-tracksm uppercase py-2">{o.razorpay_payment_id}</span>
-                      {["paid", "packed", "shipped", "delivered"].includes(o.status) && (
-                        <a
-                          href={`/api/admin/invoice/${o.id}`}
-                          className="border border-gold/50 text-ink rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase hover:bg-gold/15 transition"
-                        >
-                          Invoice PDF
-                        </a>
-                      )}
+                    {["paid", "packed", "shipped", "delivered"].includes(o.status) && (
+                      
+                        href={`/api/admin/invoice/${o.id}`}
+                        className="border border-gold/50 text-ink rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase hover:bg-gold/15 transition"
+                      >
+                        Invoice PDF
+                      </a>
+                    )}
+                    <button
+                      type="button"
+                      disabled={updating === o.id}
+                      onClick={() => toggleArchive(o.id, !o.archived)}
+                      className="border border-ink/20 text-ink/70 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase hover:border-gold hover:text-ink transition disabled:opacity-40"
+                    >
+                      {o.archived ? "Unarchive" : "Archive"}
+                    </button>
+                    {["pending", "failed"].includes(o.status) && (
                       <button
                         type="button"
                         disabled={updating === o.id}
-                        onClick={() => toggleArchive(o.id, !o.archived)}
-                        className="border border-ink/20 text-ink/70 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase hover:border-gold hover:text-ink transition disabled:opacity-40"
+                        onClick={() => deleteOrder(o.id)}
+                        className="border border-peri/40 text-peri rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase hover:bg-peri/10 transition disabled:opacity-40"
                       >
-                        {o.archived ? "Unarchive" : "Archive"}
+                        Delete
                       </button>
-                      {["pending", "failed"].includes(o.status) && (
-                        <button
-                          type="button"
-                          disabled={updating === o.id}
-                          onClick={() => deleteOrder(o.id)}
-                          className="border border-peri/40 text-peri rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase hover:bg-peri/10 transition disabled:opacity-40"
-                        >
-                          Delete
-                        </button>
-                      )}
-                      <OrderTracking order={o} onSaved={() => loadOrders(page)} />
+                    )}
+                    <OrderTracking order={o} onSaved={() => loadOrders(page)} />
                   </div>
                 </div>
               ))}
