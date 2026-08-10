@@ -195,9 +195,6 @@ export default function Admin() {
                 {(from || to) && (
                   <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/60 hover:border-gold transition">Clear dates</button>
                 )}
-                <button type="button" onClick={() => setShowArchived(!showArchived)} className={`rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase transition ${showArchived ? "bg-ink text-cream" : "bg-white border border-ink/15 text-ink/70 hover:border-gold"}`}>
-                  {showArchived ? "Viewing archived" : "Show archived"}
-                </button>
                 <a href={`/api/admin/export?from=${from}&to=${to}&status=${status}`} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Export CSV</a>
                     </div>
                   </div>
