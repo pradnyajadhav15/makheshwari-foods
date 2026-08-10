@@ -125,12 +125,7 @@ export default function Admin() {
         <div className="w-full max-w-sm bg-white rounded-[1.5rem] border border-ink/10 p-9">
           <h1 className="font-display text-2xl text-ink mb-7">Admin</h1>
           <div className="mb-5">
-            <PasswordInput
-              value={pw}
-              onChange={setPw}
-              disabled={busy}
-              onKeyDown={(e) => { if (e.key === "Enter") login(); }}
-            />
+            <PasswordInput value={pw} onChange={setPw} onEnter={login} />
           </div>
           <button type="button" onClick={login} disabled={busy} className="w-full bg-ink text-cream rounded-full py-3.5 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition disabled:opacity-50">
             {busy ? "Checking" : "Sign in"}
@@ -221,6 +216,7 @@ export default function Admin() {
                     <span className="text-ink/35 text-[10px] tracking-tracksm uppercase py-2">{o.razorpay_payment_id}</span>
                     {["paid", "packed", "shipped", "delivered"].includes(o.status) && (
                       
+                      <a
                         href={`/api/admin/invoice/${o.id}`}
                         className="border border-gold/50 text-ink rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase hover:bg-gold/15 transition"
                       >
