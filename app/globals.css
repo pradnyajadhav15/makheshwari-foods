@@ -88,3 +88,125 @@ body { -webkit-font-smoothing: antialiased; }
   to   { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-up { animation: fadeUp 2s ease-out both; }
+
+/* ==================== Hero video ==================== */
+.hero-v {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 68vh;
+  min-height: 460px;
+  overflow: hidden;
+  background: var(--color-ink);
+}
+
+.hero-v-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+.hero-v-media.is-ready { opacity: 1; }
+
+.hero-v-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(12, 28, 20, 0.55),
+    rgba(12, 28, 20, 0.25) 45%,
+    rgba(12, 28, 20, 0.65)
+  );
+}
+
+.hero-v-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.5rem;
+  color: #FFFFFF;
+}
+
+.hero-v-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.hero-v-title {
+  margin-top: 1rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.08;
+  font-weight: 600;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+}
+.hero-v-sub {
+  margin-top: 1.1rem;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+.hero-v-actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+.hero-v-btn {
+  border-radius: 999px;
+  padding: 0.85rem 2rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  transition: opacity 160ms ease;
+}
+.hero-v-btn:hover { opacity: 0.88; }
+.hero-v-btn--ghost {
+  background: transparent;
+  color: #FFFFFF;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+}
+.hero-v-btn--ghost:hover { background: rgba(255, 255, 255, 0.12); }
+.hero-v-note { margin-top: 1.5rem; font-size: 0.72rem; opacity: 0.75; }
+
+@media (max-width: 640px) {
+  .hero-v { height: 62vh; min-height: 400px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-v-media { display: none; }
+  .hero-v {
+    background-image: url("/video/poster.jpg");
+    background-size: cover;
+    background-position: center;
+  }
+}
+
+
+
+/* ==================== Focus visibility ==================== */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* dark backgrounds need a light ring */
+.bg-ink a:focus-visible,
+.bg-ink button:focus-visible {
+  outline-color: var(--color-cream);
+}
