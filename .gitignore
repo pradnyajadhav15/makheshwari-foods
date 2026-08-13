@@ -41,3 +41,11 @@ yarn-error.log*
 next-env.d.ts
 
 tsconfig.tsbuildinfo
+
+# local backups and video sources
+*.bak
+*.bak-*
+*.bak2-*
+raw-hero.mp4
+hero-loop.mp4
+_hero-tmp.mp4

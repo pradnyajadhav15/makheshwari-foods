@@ -2,16 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import ProductCard from "@/components/ProductCard";
-import HeroSlider from "@/components/HeroSlider";
 import { products } from "@/lib/products";
 
+
+import HeroVideo from "@/components/HeroVideo";
 export default function Home() {
   return (
     <>
-      <HeroSlider />
-
-      <section className="bg-cream border-y border-ink/10">
-        <div className="max-w-6xl mx-auto px-6 py-7 grid grid-cols-2 md:grid-cols-4 gap-6">
+      <HeroVideo />
+      <section className="bg-cream px-6 md:px-14 pb-10">
+        <div className="max-w-6xl mx-auto -mt-16 relative z-20 bg-ink rounded-[1.5rem] px-6 py-9 grid grid-cols-2 md:grid-cols-4 gap-8 shadow-[0_25px_50px_-20px_rgba(18,53,42,0.45)]">
           {[
             { t: "FSSAI licensed", s: "Lic. 10426330000072" },
             { t: "Roasted, never fried", s: "Hot air, small batch" },
@@ -19,8 +19,8 @@ export default function Home() {
             { t: "Sealed fresh", s: "Dated on every pack" },
           ].map((f) => (
             <div key={f.t} className="text-center">
-              <p className="text-ink text-[11px] tracking-tracksm uppercase">{f.t}</p>
-              <p className="text-ink/45 text-[10px] mt-1.5">{f.s}</p>
+              <p className="text-gold text-[11px] tracking-tracksm uppercase">{f.t}</p>
+              <p className="text-cream/50 text-[10px] mt-1.5">{f.s}</p>
             </div>
           ))}
         </div>
