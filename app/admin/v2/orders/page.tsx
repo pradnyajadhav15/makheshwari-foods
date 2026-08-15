@@ -338,6 +338,17 @@ function OrderDrawer({
           <p className="text-xs text-adminmuted mt-3">
             Razorpay · {order.razorpay_payment_id || "no payment id"} · GST inclusive
           </p>
+
+          {/* The invoice endpoint was only reachable from the old admin. */}
+          <a
+            href={`/api/admin/invoice/${order.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="adm-btn adm-btn-ghost adm-btn-sm mt-3"
+          >
+            <span className="w-3.5 h-3.5 block">{Icons.download}</span>
+            Download GST invoice
+          </a>
         </div>
       </div>
 
