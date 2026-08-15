@@ -42,9 +42,24 @@
   --font-display: var(--font-marcellus), Georgia, serif;
   --font-body: var(--font-jost), Helvetica, sans-serif;
 
+  /* admin dashboard surfaces */
+  --color-adminbg: #F6F4EF;
+  --color-adminpanel: #FFFFFF;
+  --color-adminline: #E4DFD3;
+  --color-adminmuted: #5C6B63;
+
   --tracking-track: 0.32em;
   --tracking-tracksm: 0.18em;
 }
+
+/* ============================================================
+   Everything below sits in the components layer on purpose.
+   Unlayered CSS outranks every layered Tailwind utility, so an
+   unlayered .field would make `field pr-14` silently ignore the
+   padding — and it did, until this wrapper was added.
+   ============================================================ */
+@layer components {
+
 
 /* ============================================================
    Base
@@ -517,3 +532,96 @@ textarea:focus-visible,
 /* Utility: hide scrollbar on horizontal scrollers */
 .no-bar { scrollbar-width: none; -ms-overflow-style: none; }
 .no-bar::-webkit-scrollbar { display: none; }
+
+/* ============================================================
+   ADMIN DASHBOARD (/admin/v2)
+   Denser and more utilitarian than the storefront, but built on
+   the same brand palette so it still reads as Makheshwari.
+   ============================================================ */
+
+.adm {
+  background: var(--color-adminbg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+.adm-card { background: var(--color-adminpanel); border: 1px solid var(--color-adminline); border-radius: 0.75rem; }
+.adm-card-pad { padding: clamp(1rem, 2vw, 1.5rem); }
+
+.adm-h1 { font-family: var(--font-display); font-size: clamp(1.4rem, 2.4vw, 1.85rem); line-height: 1.15; letter-spacing: -0.01em; }
+.adm-h2 { font-family: var(--font-display); font-size: 1.15rem; line-height: 1.2; }
+.adm-label { font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-adminmuted); }
+.adm-num  { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1; font-variant-numeric: tabular-nums; }
+
+.adm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 2.5rem; padding: 0.5rem 1rem; border-radius: 0.5rem;
+  font-size: 0.8rem; font-weight: 500; white-space: nowrap; cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, color .18s ease, opacity .18s ease;
+}
+.adm-btn:disabled { opacity: .45; cursor: not-allowed; }
+.adm-btn-primary { background: var(--color-ink); color: var(--color-cream); }
+.adm-btn-primary:hover:not(:disabled) { background: var(--color-inkmid); }
+.adm-btn-ghost { border: 1px solid var(--color-adminline); background: var(--color-adminpanel); color: var(--color-ink); }
+.adm-btn-ghost:hover:not(:disabled) { border-color: var(--color-ink); }
+.adm-btn-danger { border: 1px solid color-mix(in srgb, var(--color-perideep) 40%, transparent); color: var(--color-perideep); background: transparent; }
+.adm-btn-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--color-perideep) 10%, transparent); }
+.adm-btn-sm { min-height: 2rem; padding: 0.3rem 0.7rem; font-size: 0.74rem; }
+
+.adm-input, .adm-select, .adm-textarea {
+  width: 100%; min-height: 2.5rem; padding: 0.5rem 0.75rem;
+  background: var(--color-adminpanel);
+  border: 1px solid var(--color-adminline); border-radius: 0.5rem;
+  font-size: 0.875rem; color: var(--color-ink);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.adm-input::placeholder, .adm-textarea::placeholder { color: color-mix(in srgb, var(--color-ink) 45%, transparent); }
+.adm-input:focus, .adm-select:focus, .adm-textarea:focus {
+  outline: none; border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 20%, transparent);
+}
+.adm-field-label { display:block; font-size: 0.72rem; font-weight: 500; color: var(--color-ink); margin-bottom: 0.35rem; }
+.adm-hint { font-size: 0.7rem; color: var(--color-adminmuted); margin-top: 0.3rem; }
+
+.adm-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.82rem; }
+.adm-table th {
+  text-align: left; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--color-adminmuted); font-weight: 500; padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--color-adminline); white-space: nowrap; background: var(--color-adminbg);
+}
+.adm-table td { padding: 0.8rem 0.85rem; border-bottom: 1px solid var(--color-adminline); vertical-align: middle; }
+.adm-table tbody tr { transition: background-color .15s ease; }
+.adm-table tbody tr:hover { background: color-mix(in srgb, var(--color-sandsoft) 45%, transparent); }
+.adm-table tbody tr:last-child td { border-bottom: 0; }
+
+.adm-badge {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.2rem 0.6rem; border-radius: 999px;
+  font-size: 0.68rem; font-weight: 500; white-space: nowrap; border: 1px solid transparent;
+}
+.adm-badge::before { content:""; width: 0.4rem; height: 0.4rem; border-radius: 999px; background: currentColor; }
+.adm-badge-neutral { background: color-mix(in srgb, var(--color-ink) 7%, transparent); color: #3F4F47; }
+.adm-badge-info    { background: #E7EEF6; color: #274E6E; }
+.adm-badge-warn    { background: #FBF0D8; color: #6E520E; }
+.adm-badge-success { background: #E4EFDD; color: #375226; }
+.adm-badge-danger  { background: #F8E4E1; color: #8C2E1E; }
+.adm-badge-muted   { background: color-mix(in srgb, var(--color-ink) 5%, transparent); color: #4A5A52; }
+
+.adm-nav {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.55rem 0.75rem; border-radius: 0.5rem;
+  font-size: 0.85rem; color: color-mix(in srgb, var(--color-cream) 82%, transparent);
+  transition: background-color .16s ease, color .16s ease;
+}
+.adm-nav:hover { background: color-mix(in srgb, var(--color-cream) 10%, transparent); color: var(--color-cream); }
+.adm-nav[aria-current="page"] { background: color-mix(in srgb, var(--color-gold) 22%, transparent); color: var(--color-cream); }
+.adm-nav svg { width: 1.15rem; height: 1.15rem; flex: none; }
+
+.adm-scroll { overflow-x: auto; }
+.adm-scroll::-webkit-scrollbar { height: 8px; }
+.adm-scroll::-webkit-scrollbar-thumb { background: var(--color-adminline); border-radius: 999px; }
+
+.adm-toast { animation: admToast .22s ease both; }
+}
+
+@keyframes admToast { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
