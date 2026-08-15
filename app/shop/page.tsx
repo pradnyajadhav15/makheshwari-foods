@@ -41,10 +41,10 @@ export default async function Shop() {
       <div className="bg-paper border-b border-ink/10 sticky top-[calc(4rem+1px)] lg:top-[calc(5rem+1px)] z-30">
         <div className="wrap py-3.5 flex gap-2.5 overflow-x-auto no-bar">
           <span className="btn btn-primary shrink-0 min-h-0 py-2.5 px-5">Makhana</span>
-          <span className="shrink-0 inline-flex items-center rounded-full border border-ink/15 text-ink/35 px-5 py-2.5 text-[0.66rem] tracking-tracksm uppercase whitespace-nowrap">
+          <span className="shrink-0 inline-flex items-center rounded-full border border-ink/15 text-ink/70 px-5 py-2.5 text-[0.66rem] tracking-tracksm uppercase whitespace-nowrap">
             Namkeen · soon
           </span>
-          <span className="shrink-0 inline-flex items-center rounded-full border border-ink/15 text-ink/35 px-5 py-2.5 text-[0.66rem] tracking-tracksm uppercase whitespace-nowrap">
+          <span className="shrink-0 inline-flex items-center rounded-full border border-ink/15 text-ink/70 px-5 py-2.5 text-[0.66rem] tracking-tracksm uppercase whitespace-nowrap">
             Gift boxes · soon
           </span>
         </div>
@@ -52,10 +52,10 @@ export default async function Shop() {
 
       <section className="wrap section">
         <div className="flex items-baseline justify-between flex-wrap gap-3 mb-8 md:mb-10">
-          <p className="text-ink/50 text-sm font-light">
+          <p className="text-ink/70 text-sm font-light">
             {products.length} {products.length === 1 ? "product" : "products"}
           </p>
-          <p className="text-ink/50 text-sm font-light">
+          <p className="text-ink/70 text-sm font-light">
             Free shipping over ₹{FREE_SHIPPING_OVER}
           </p>
         </div>
@@ -77,7 +77,7 @@ export default async function Shop() {
             <h2 className="display-md text-ink">Buying by the carton?</h2>
           </div>
           <div>
-            <p className="text-ink/65 body-text mb-7">
+            <p className="text-ink/75 body-text mb-7">
               We supply retailers, distributors and corporate gifting direct from our Samastipur
               unit, with GST invoicing and custom pack sizes.
             </p>

@@ -82,7 +82,7 @@ export default function FAQ() {
                 <li key={grp.g}>
                   <a
                     href={`#${grp.g.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="text-ink/65 body-text hover:text-gold transition"
+                    className="text-ink/75 body-text hover:text-golddeep transition"
                   >
                     {grp.g}
                   </a>
@@ -109,13 +109,13 @@ export default function FAQ() {
                           <h3 className="font-display text-lg md:text-xl text-ink leading-snug">
                             {item.q}
                           </h3>
-                          <span className="shrink-0 mt-1 w-6 h-6 flex items-center justify-center text-gold transition-transform duration-300 group-open:rotate-45">
+                          <span className="shrink-0 mt-1 w-6 h-6 flex items-center justify-center text-golddeep transition-transform duration-300 group-open:rotate-45">
                             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8">
                               <path d="M12 5v14M5 12h14" strokeLinecap="round" />
                             </svg>
                           </span>
                         </summary>
-                        <p className="text-ink/65 body-text pb-5 pr-10 -mt-1">{item.a}</p>
+                        <p className="text-ink/75 body-text pb-5 pr-10 -mt-1">{item.a}</p>
                       </details>
                     ))}
                   </div>

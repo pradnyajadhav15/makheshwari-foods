@@ -1,26 +1,54 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import LottiePlayer from "@/components/LottiePlayer";
 
-/* NOTE: /video/poster.jpg and /video/hero.webm were referenced by the old
-   hero but do not exist in /public — the poster 404'd on every load. Using
-   the one landscape brand still we have until a real poster frame and a
-   webm encode are added. */
+/* No real poster frame exists yet — /video/poster.jpg was referenced by an
+   older build but never added, so this is the one landscape brand still we
+   have. Replace with a frame pulled from hero.mp4 when there is one. */
 const POSTER = "/brand/story-hero.jpg";
+
+/* Drop a .lottie or .json into /public/lottie and point this at it to use
+   an animated hero instead of the video. Null = use the video. */
+const LOTTIE_SRC: string | null = null;
+
+const WIDE = "(min-width: 1024px)";
+const REDUCED = "(prefers-reduced-motion: reduce)";
+
+function subscribeMedia(cb: () => void) {
+  const a = window.matchMedia(WIDE);
+  const b = window.matchMedia(REDUCED);
+  a.addEventListener("change", cb);
+  b.addEventListener("change", cb);
+  return () => {
+    a.removeEventListener("change", cb);
+    b.removeEventListener("change", cb);
+  };
+}
+
+/* hero.mp4 is ~38MB. Sending that to a phone on mobile data is not a
+   reasonable default, so small screens and data-saver get the still. */
+function shouldPlayVideo() {
+  if (LOTTIE_SRC) return false;
+  if (window.matchMedia(REDUCED).matches) return false;
+  if (!window.matchMedia(WIDE).matches) return false;
+  const conn = (navigator as Navigator & {
+    connection?: { saveData?: boolean; effectiveType?: string };
+  }).connection;
+  return !conn?.saveData && !/2g/.test(conn?.effectiveType ?? "");
+}
 
 export default function HeroVideo() {
   const ref = useRef<HTMLVideoElement>(null);
   const [ready, setReady] = useState(false);
 
-  useEffect(() => {
-    const v = ref.current;
-    if (!v) return;
+  const useVideo = useSyncExternalStore(subscribeMedia, shouldPlayVideo, () => false);
 
-    if (v.readyState >= 2) setReady(true);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    v.play().catch(() => {});
-  }, []);
+  useEffect(() => {
+    if (!useVideo) return;
+    ref.current?.play().catch(() => {});
+  }, [useVideo]);
 
   return (
     <section className="hero flex items-end lg:items-center">
@@ -30,22 +58,28 @@ export default function HeroVideo() {
         aria-hidden="true"
       />
 
-      <video
-        ref={ref}
-        className={`hero-media ${ready ? "is-ready" : ""}`}
-        poster={POSTER}
-        muted
-        loop
-        autoPlay
-        playsInline
-        preload="metadata"
-        aria-hidden="true"
-        tabIndex={-1}
-        onLoadedData={() => setReady(true)}
-        onCanPlay={() => setReady(true)}
-      >
-        <source src="/video/hero.mp4" type="video/mp4" />
-      </video>
+      {LOTTIE_SRC ? (
+        <LottiePlayer src={LOTTIE_SRC} className="absolute inset-0 w-full h-full object-cover" />
+      ) : (
+        useVideo && (
+          <video
+            ref={ref}
+            className={`hero-media ${ready ? "is-ready" : ""}`}
+            poster={POSTER}
+            muted
+            loop
+            autoPlay
+            playsInline
+            preload="none"
+            aria-hidden="true"
+            tabIndex={-1}
+            onLoadedData={() => setReady(true)}
+            onCanPlay={() => setReady(true)}
+          >
+            <source src="/video/hero.mp4" type="video/mp4" />
+          </video>
+        )
+      )}
 
       <div className="hero-scrim" />
 
@@ -85,7 +119,7 @@ export default function HeroVideo() {
           </div>
 
           <p
-            className="text-cream/50 text-[0.7rem] tracking-tracksm uppercase mt-8 animate-fade-up"
+            className="text-cream/70 text-[0.7rem] tracking-tracksm uppercase mt-8 animate-fade-up"
             style={{ animationDelay: "360ms" }}
           >
             FSSAI licensed · Free shipping over ₹499

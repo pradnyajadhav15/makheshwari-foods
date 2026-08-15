@@ -63,9 +63,9 @@ export default function KnowYourMakhana() {
                 </div>
 
                 <div className={i % 2 === 1 ? "md:order-1" : ""}>
-                  <p className="font-display text-gold text-3xl md:text-4xl tabular-nums">{s.n}</p>
+                  <p className="font-display text-golddeep text-3xl md:text-4xl tabular-nums">{s.n}</p>
                   <h2 className="display-md text-ink mt-3">{s.t}</h2>
-                  <p className="text-ink/65 lede mt-5 max-w-lg">{s.b}</p>
+                  <p className="text-ink/75 lede mt-5 max-w-lg">{s.b}</p>
                 </div>
               </article>
             </Reveal>

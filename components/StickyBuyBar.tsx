@@ -57,7 +57,7 @@ export default function StickyBuyBar({
       <div className="flex items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="font-display text-base text-ink truncate leading-tight">{name}</p>
-          <p className="text-ink/55 text-xs mt-0.5">{formatPrice(price)}</p>
+          <p className="text-ink/70 text-xs mt-0.5">{formatPrice(price)}</p>
         </div>
         <button
           type="button"

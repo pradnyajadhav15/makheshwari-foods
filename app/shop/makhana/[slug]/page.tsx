@@ -7,7 +7,7 @@ import BuyBox from "@/components/BuyBox";
 import StickyBuyBar from "@/components/StickyBuyBar";
 import Reviews from "@/components/Reviews";
 import { getLiveProducts } from "@/lib/liveProducts";
-import { products, accentClass, accentText, formatPrice } from "@/lib/products";
+import { products, accentClass, accentTextDeep, formatPrice } from "@/lib/products";
 
 export const revalidate = 60;
 
@@ -89,8 +89,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 
       <div className="wrap pt-6 pb-2">
-        <nav aria-label="Breadcrumb" className="text-[0.68rem] tracking-tracksm uppercase text-ink/45">
-          <Link href="/shop" className="hover:text-gold transition">Shop</Link>
+        <nav aria-label="Breadcrumb" className="text-[0.68rem] tracking-tracksm uppercase text-ink/70">
+          <Link href="/shop" className="hover:text-golddeep transition">Shop</Link>
           <span className="mx-2">/</span>
           <span className="text-ink/75">{product.name}</span>
         </nav>
@@ -108,14 +108,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
           <h1 className="display-lg text-ink">{product.name}</h1>
 
-          <p className={`${accentText[product.accent]} lede mt-3`}>{product.hook}</p>
+          <p className={`${accentTextDeep[product.accent]} lede mt-3`}>{product.hook}</p>
 
           <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mt-7">
             <span className="font-display text-3xl md:text-4xl text-ink">
               {formatPrice(product.price)}
             </span>
             {product.mrp && product.price && product.mrp > product.price && (
-              <span className="text-ink/35 text-lg line-through">{formatPrice(product.mrp)}</span>
+              <span className="text-ink/70 text-lg line-through">{formatPrice(product.mrp)}</span>
             )}
             {saving && (
               <span className="bg-mint/20 text-ink text-[0.68rem] tracking-tracksm uppercase px-2.5 py-1 rounded-full">
@@ -123,12 +123,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </span>
             )}
           </div>
-          <p className="text-ink/45 text-xs mt-1.5">
+          <p className="text-ink/70 text-xs mt-1.5">
             {product.weightG} g · inclusive of all taxes
           </p>
 
           {product.inStock && product.stock > 0 && product.stock < 10 && (
-            <p className="text-peri text-sm mt-5 font-light">
+            <p className="text-perideep text-sm mt-5 font-light">
               Only {product.stock} left in stock
             </p>
           )}
@@ -151,7 +151,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             {["Roasted, never fried", "No palm oil", "Gluten free", "FSSAI licensed"].map((t) => (
               <div
                 key={t}
-                className="border border-ink/12 px-4 py-3 text-[0.66rem] tracking-tracksm uppercase text-ink/65 text-center"
+                className="border border-ink/12 px-4 py-3 text-[0.66rem] tracking-tracksm uppercase text-ink/75 text-center"
               >
                 {t}
               </div>
@@ -167,7 +167,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <div>
             <p className="marker mb-4">The detail</p>
             <h2 className="display-md text-ink">What is in the pouch</h2>
-            <p className="text-ink/60 body-text mt-4 max-w-sm">
+            <p className="text-ink/70 body-text mt-4 max-w-sm">
               {product.description}
             </p>
           </div>
@@ -175,7 +175,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <dl className="divide-y divide-ink/10 border-t border-ink/10">
             {specs.map((s) => (
               <div key={s.k} className="py-4 grid sm:grid-cols-[10rem_1fr] gap-1 sm:gap-6">
-                <dt className="text-[0.66rem] tracking-tracksm uppercase text-ink/50 pt-0.5">
+                <dt className="text-[0.66rem] tracking-tracksm uppercase text-ink/70 pt-0.5">
                   {s.k}
                 </dt>
                 <dd className="text-ink/75 body-text">{s.v}</dd>
@@ -219,8 +219,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-display text-cream text-xl md:text-2xl leading-tight">{p.name}</h3>
-                    <p className={`${accentText[p.accent]} text-sm mt-1.5 font-light`}>{p.hook}</p>
-                    <p className="text-cream/55 text-sm mt-2">
+                    <p className={"text-cream/70 text-sm mt-1.5 font-light"}>{p.hook}</p>
+                    <p className="text-cream/70 text-sm mt-2">
                       {formatPrice(p.price)} · {p.weightG} g
                     </p>
                   </div>

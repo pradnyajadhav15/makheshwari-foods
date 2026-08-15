@@ -49,11 +49,11 @@ export default function BulkOrders() {
           {who.map((w, i) => (
             <Reveal key={w.t} delay={i * 80}>
               <div className="border-t border-ink/15 pt-6 pb-7 h-full">
-                <span className="font-display text-gold text-sm tabular-nums">
+                <span className="font-display text-golddeep text-sm tabular-nums">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3 className="display-sm text-ink mt-2.5">{w.t}</h3>
-                <p className="text-ink/60 body-text mt-2.5">{w.b}</p>
+                <p className="text-ink/70 body-text mt-2.5">{w.b}</p>
               </div>
             </Reveal>
           ))}
@@ -70,7 +70,7 @@ export default function BulkOrders() {
               {why.map((w) => (
                 <div key={w.t} className="border-b border-ink/15 py-5">
                   <dt className="font-display text-xl text-ink">{w.t}</dt>
-                  <dd className="text-ink/60 body-text mt-1.5">{w.b}</dd>
+                  <dd className="text-ink/70 body-text mt-1.5">{w.b}</dd>
                 </div>
               ))}
             </dl>
@@ -79,7 +79,7 @@ export default function BulkOrders() {
               <p className="marker mb-4">Prefer to talk</p>
               <a
                 href="tel:+917485001464"
-                className="block font-display text-2xl md:text-3xl text-ink hover:text-gold transition"
+                className="block font-display text-2xl md:text-3xl text-ink hover:text-golddeep transition"
               >
                 +91 74850 01464
               </a>
@@ -101,7 +101,7 @@ export default function BulkOrders() {
       </section>
 
       <section className="wrap py-12">
-        <p className="text-center text-ink/45 text-[11px] leading-relaxed">
+        <p className="text-center text-ink/70 text-[11px] leading-relaxed">
           {LEGAL_ENTITY}, Samastipur, Bihar 848101 · FSSAI Lic. {FSSAI} · GSTIN {GSTIN}
         </p>
       </section>

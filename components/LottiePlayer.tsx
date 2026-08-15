@@ -10,14 +10,30 @@ type Props = {
   fallback?: React.ReactNode;
 };
 
+/**
+ * Wraps dotLottie with the guards a hero needs:
+ *  - waits for the reduced-motion check before rendering anything, so the
+ *    animation never flashes in and then swaps out for the fallback
+ *  - falls back if the animation fails to load, rather than leaving a hole
+ *
+ * The dotLottie runtime fetches a WASM binary from a CDN. If the CSP in
+ * next.config.ts is ever actually wired up, `script-src`/`connect-src`
+ * will need to allow it or this will silently fall back everywhere.
+ */
 export default function LottiePlayer({ src, loop = true, className, fallback = null }: Props) {
-  const [reduced, setReduced] = useState(false);
+  const [state, setState] = useState<"checking" | "play" | "fallback">("checking");
 
   useEffect(() => {
-    setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => setState(mq.matches ? "fallback" : "play");
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
   }, []);
 
-  if (reduced) return <>{fallback}</>;
+  // Render the fallback while deciding: it is the safe default, and for
+  // a hero it means the poster is already painted for LCP.
+  if (state !== "play") return <>{fallback}</>;
 
   return (
     <DotLottieReact
@@ -26,6 +42,7 @@ export default function LottiePlayer({ src, loop = true, className, fallback = n
       autoplay
       className={className}
       aria-hidden="true"
+      onError={() => setState("fallback")}
     />
   );
 }

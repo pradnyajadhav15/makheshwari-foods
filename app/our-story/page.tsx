@@ -101,7 +101,7 @@ export default function OurStory() {
           <Reveal>
             <p className="marker marker-center mb-6">Where we are</p>
             <h2 className="display-md text-ink">In the middle of makhana country.</h2>
-            <p className="lede text-ink/65 mt-7 max-w-xl mx-auto">
+            <p className="lede text-ink/75 mt-7 max-w-xl mx-auto">
               Samastipur sits inside the Mithila belt. Bihar grows close to ninety percent of
               India&apos;s makhana, and the National Makhana Board was set up here to build the industry
               around it.
@@ -126,11 +126,11 @@ export default function OurStory() {
           {how.map((h, i) => (
             <Reveal key={h.t} delay={i * 100}>
               <div className="border-t border-ink/15 pt-7 h-full">
-                <span className="font-display text-gold text-sm tabular-nums">
+                <span className="font-display text-golddeep text-sm tabular-nums">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3 className="display-sm text-ink mt-3">{h.t}</h3>
-                <p className="text-ink/60 body-text mt-3">{h.b}</p>
+                <p className="text-ink/70 body-text mt-3">{h.b}</p>
               </div>
             </Reveal>
           ))}
@@ -173,13 +173,13 @@ export default function OurStory() {
             <Reveal key={v.t} delay={i * 70}>
               <div className="border-t border-ink/15 pt-6 pb-7 h-full">
                 <h3 className="display-sm text-ink">{v.t}</h3>
-                <p className="text-ink/55 body-text mt-2">{v.b}</p>
+                <p className="text-ink/70 body-text mt-2">{v.b}</p>
               </div>
             </Reveal>
           ))}
         </div>
 
-        <p className="text-ink/45 text-sm font-light mt-10">
+        <p className="text-ink/70 text-sm font-light mt-10">
           Run by Sonu Kumar and a team of five in Samastipur, Bihar.
         </p>
       </section>
@@ -194,7 +194,7 @@ export default function OurStory() {
             </h2>
           </div>
           <div>
-            <p className="text-ink/65 body-text mb-7">
+            <p className="text-ink/75 body-text mb-7">
               The roastery does not only do one thing, and Bihar does not only grow one crop.
             </p>
             <Link href="/shop" className="btn btn-primary">

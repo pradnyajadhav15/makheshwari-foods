@@ -56,10 +56,10 @@ export default function AdminCustomers() {
     return list;
   }, [rows, q, sort, only]);
 
-  if (!rows) return <p className="text-ink/40 font-light">Loading</p>;
+  if (!rows) return <p className="text-ink/70 font-light">Loading</p>;
 
   const card = "bg-white rounded-[1.25rem] border border-ink/10 p-7";
-  const eyebrow = "text-ink/45 text-[10px] tracking-tracksm uppercase";
+  const eyebrow = "text-ink/70 text-[10px] tracking-tracksm uppercase";
   const rate = meta.total ? Math.round((meta.repeat / meta.total) * 100) : 0;
   const totalSpent = rows.reduce((n, c) => n + c.spent, 0);
 
@@ -73,17 +73,17 @@ export default function AdminCustomers() {
         <div className={card}>
           <p className={eyebrow}>Everyone</p>
           <p className="font-display text-4xl text-ink mt-3">{meta.total}</p>
-          <p className="text-ink/50 text-sm mt-2 font-light">{rupee(totalSpent)} in total</p>
+          <p className="text-ink/70 text-sm mt-2 font-light">{rupee(totalSpent)} in total</p>
         </div>
         <div className={card}>
           <p className={eyebrow}>Came back</p>
           <p className="font-display text-4xl text-ink mt-3">{meta.repeat}</p>
-          <p className="text-ink/50 text-sm mt-2 font-light">{rate}% ordered more than once</p>
+          <p className="text-ink/70 text-sm mt-2 font-light">{rate}% ordered more than once</p>
         </div>
         <div className={card}>
           <p className={eyebrow}>Average spend</p>
           <p className="font-display text-4xl text-ink mt-3">{rupee(meta.total ? Math.round(totalSpent / meta.total) : 0)}</p>
-          <p className="text-ink/50 text-sm mt-2 font-light">per customer, all time</p>
+          <p className="text-ink/70 text-sm mt-2 font-light">per customer, all time</p>
         </div>
       </div>
 
@@ -108,7 +108,7 @@ export default function AdminCustomers() {
         </button>
       </div>
 
-      {shown.length === 0 && <p className="text-ink/50 font-light">No customers match that.</p>}
+      {shown.length === 0 && <p className="text-ink/70 font-light">No customers match that.</p>}
 
       <div className="space-y-3">
         {shown.map((c) => {
@@ -125,12 +125,12 @@ export default function AdminCustomers() {
                       </span>
                     )}
                   </p>
-                  <p className="text-ink/45 text-xs mt-1.5">
+                  <p className="text-ink/70 text-xs mt-1.5">
                     {c.phone}
                     {c.city ? ` \u00B7 ${c.city}` : ""}
                     {c.state ? `, ${c.state}` : ""}
                   </p>
-                  {c.email && <p className="text-ink/35 text-xs mt-1">{c.email}</p>}
+                  {c.email && <p className="text-ink/70 text-xs mt-1">{c.email}</p>}
                 </div>
 
                 <div className="flex flex-wrap gap-7 text-sm">
@@ -145,7 +145,7 @@ export default function AdminCustomers() {
                   <div>
                     <p className={eyebrow}>Last order</p>
                     <p className="text-ink mt-2">{shortDate(c.last)}</p>
-                    <p className="text-ink/40 text-xs mt-0.5">
+                    <p className="text-ink/70 text-xs mt-0.5">
                       {quiet === 0 ? "today" : `${quiet} day${quiet === 1 ? "" : "s"} ago`}
                     </p>
                   </div>
@@ -162,7 +162,7 @@ export default function AdminCustomers() {
               </div>
 
               {c.orders > 1 && (
-                <p className="text-ink/40 text-xs mt-4 pt-4 border-t border-ink/8 font-light">
+                <p className="text-ink/70 text-xs mt-4 pt-4 border-t border-ink/8 font-light">
                   First ordered {shortDate(c.first)} &middot; {rupee(Math.round(c.spent / c.orders))} average order
                 </p>
               )}

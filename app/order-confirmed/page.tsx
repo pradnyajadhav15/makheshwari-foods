@@ -17,12 +17,12 @@ function Inner() {
 
       <h1 className="display-lg text-ink">Order confirmed</h1>
 
-      <p className="lede text-ink/65 max-w-md mx-auto mt-6">
+      <p className="lede text-ink/75 max-w-md mx-auto mt-6">
         Thank you. We will pack it fresh and send tracking details shortly.
       </p>
 
       {id && (
-        <p className="text-ink/40 text-xs mt-4 break-words">
+        <p className="text-ink/70 text-xs mt-4 break-words">
           Payment ID <span className="tabular-nums">{id}</span>
         </p>
       )}
@@ -32,7 +32,7 @@ function Inner() {
         <Link href="/account" className="btn btn-outline">Track your order</Link>
       </div>
 
-      <p className="text-ink/45 body-text mt-10">
+      <p className="text-ink/70 body-text mt-10">
         Questions?{" "}
         <a
           href="https://wa.me/917485001464"

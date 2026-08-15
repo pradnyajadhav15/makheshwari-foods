@@ -14,7 +14,7 @@ export function LegalLayout({
           <div className="max-w-3xl">
             <p className="marker marker-light mb-6">Legal</p>
             <h1 className="display-lg text-cream">{title}</h1>
-            <p className="text-cream/50 text-[0.66rem] tracking-tracksm uppercase mt-6">
+            <p className="text-cream/70 text-[0.66rem] tracking-tracksm uppercase mt-6">
               Last updated {updated}
             </p>
           </div>

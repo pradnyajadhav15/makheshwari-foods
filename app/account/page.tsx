@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabaseBrowser } from "@/lib/supabaseClient";
 import { formatPrice } from "@/lib/products";
+import { Skeleton, OrderSkeleton } from "@/components/Skeleton";
 
 type O = {
   id: string; created_at: string; razorpay_payment_id: string; status: string;
@@ -43,7 +44,23 @@ export default function Account() {
     router.refresh();
   };
 
-  if (!orders) return <div className="min-h-[60vh]" />;
+  /* The old build rendered an empty div here, so the page looked broken
+     for the whole round trip. */
+  if (!orders) {
+    return (
+      <section className="wrap-mid section" aria-busy="true">
+        <p className="marker mb-4">Your account</p>
+        <Skeleton className="h-10 w-64 mb-3" />
+        <Skeleton className="h-4 w-48 mb-10" />
+        <Skeleton className="h-6 w-24 mb-7" />
+        <div className="space-y-6">
+          <OrderSkeleton />
+          <OrderSkeleton />
+        </div>
+        <span className="sr-only">Loading your orders</span>
+      </section>
+    );
+  }
 
   return (
     <section className="wrap-mid section">
@@ -53,7 +70,7 @@ export default function Account() {
           <h1 className="display-md text-ink">
             {me.name ? `Hello, ${me.name.split(" ")[0]}` : "Your account"}
           </h1>
-          <p className="text-ink/45 text-sm mt-2 break-words">{me.email}</p>
+          <p className="text-ink/70 text-sm mt-2 break-words">{me.email}</p>
         </div>
         <button type="button" onClick={out} className="btn btn-outline">
           Log out
@@ -64,7 +81,7 @@ export default function Account() {
 
       {orders.length === 0 && (
         <div className="border border-ink/12 bg-paper p-10 md:p-14 text-center">
-          <p className="text-ink/60 body-text mb-7">No orders yet.</p>
+          <p className="text-ink/70 body-text mb-7">No orders yet.</p>
           <Link href="/shop" className="btn btn-primary">Shop the range</Link>
         </div>
       )}
@@ -76,9 +93,9 @@ export default function Account() {
             <article key={o.id} className="border border-ink/12 bg-paper p-6 sm:p-8">
               <div className="flex flex-wrap justify-between gap-4 pb-6 mb-6 border-b border-ink/12">
                 <div className="min-w-0">
-                  <p className="text-ink/45 text-[0.62rem] tracking-tracksm uppercase mb-1.5">Order</p>
+                  <p className="text-ink/70 text-[0.62rem] tracking-tracksm uppercase mb-1.5">Order</p>
                   <p className="font-display text-lg text-ink break-words">{o.razorpay_payment_id}</p>
-                  <p className="text-ink/40 text-xs mt-1">
+                  <p className="text-ink/70 text-xs mt-1">
                     {new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
                   </p>
                 </div>
@@ -95,7 +112,7 @@ export default function Account() {
                     <div key={s} className="flex items-center flex-1 last:flex-none">
                       <div className="flex flex-col items-center">
                         <span className={`w-3 h-3 rounded-full shrink-0 ${i <= at ? "bg-gold" : "bg-ink/15"}`} />
-                        <span className={`text-[0.55rem] sm:text-[0.6rem] tracking-tracksm uppercase mt-2 whitespace-nowrap ${i <= at ? "text-ink" : "text-ink/35"}`}>
+                        <span className={`text-[0.55rem] sm:text-[0.6rem] tracking-tracksm uppercase mt-2 whitespace-nowrap ${i <= at ? "text-ink" : "text-ink/70"}`}>
                           {LABEL[s]}
                         </span>
                       </div>
@@ -116,7 +133,7 @@ export default function Account() {
 
               <div className="grid sm:grid-cols-2 gap-7">
                 <div>
-                  <p className="text-ink/45 text-[0.62rem] tracking-tracksm uppercase mb-3">Items</p>
+                  <p className="text-ink/70 text-[0.62rem] tracking-tracksm uppercase mb-3">Items</p>
                   {o.items.map((i, n) => (
                     <p key={n} className="text-ink/70 body-text flex justify-between gap-4">
                       <span>{i.name} ×{i.qty}</span>
@@ -125,7 +142,7 @@ export default function Account() {
                   ))}
                 </div>
                 <div>
-                  <p className="text-ink/45 text-[0.62rem] tracking-tracksm uppercase mb-3">Delivered to</p>
+                  <p className="text-ink/70 text-[0.62rem] tracking-tracksm uppercase mb-3">Delivered to</p>
                   <p className="text-ink/70 body-text">
                     {o.customer_name}
                     <br />

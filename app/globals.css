@@ -18,14 +18,26 @@
   --color-inkmid: #1B4635;
   --color-inkline: #2A5544;
   --color-goldsoft: #E3C766;
-  --color-golddeep: #A8861B;
   --color-paper: #FDFBF5;
   --color-sandsoft: #EFE7D6;
 
-  /* --- flavour accents --- */
+  /* --- flavour accents ---
+     These are the packaging colours. They are strong enough as fills and
+     as large type, but all three fail WCAG AA as small text on cream, so
+     each has a -deep partner below for anything set at body size. */
   --color-peri: #D8503C;
   --color-mint: #7FA860;
   --color-salt: #DB8C9E;
+
+  /* --- accessible text partners (measured against --color-paper) ---
+     gold #C9A227 is only 2.34:1 on cream, so it must never carry small
+     text; these are the values that clear 4.5:1. */
+  /* Dark enough to clear 4.5:1 on the *darkest* surface it lands on
+     (sandsoft), not just on paper. */
+  --color-golddeep: #775E0A;   /* paper 5.99 · cream 5.59 · sandsoft 5.04 */
+  --color-mintdeep: #55763B;   /* 5.02:1 */
+  --color-perideep: #A63523;   /* 6.43:1 */
+  --color-saltdeep: #A34E60;   /* 4.97:1 */
 
   --font-display: var(--font-marcellus), Georgia, serif;
   --font-body: var(--font-jost), Helvetica, sans-serif;
@@ -297,6 +309,37 @@ p, li, h1, h2, h3, dd, dt { overflow-wrap: break-word; }
 @keyframes toastIn {
   from { opacity: 0; transform: translate(-50%, 20px); }
   to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Loading skeletons — a slow shimmer rather than a spinner, so the page
+   keeps its shape while data arrives instead of collapsing to blank. */
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+.skel {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-ink) 8%, transparent);
+  border-radius: 0.35rem;
+}
+
+.skel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-paper) 65%, transparent),
+    transparent
+  );
+  animation: shimmer 1.6s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skel::after { animation: none; }
 }
 
 @keyframes marquee {

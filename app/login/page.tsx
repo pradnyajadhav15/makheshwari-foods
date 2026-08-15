@@ -31,10 +31,10 @@ export default function Login() {
       <input className={authInput} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <div className="mt-4"><PasswordInput value={pw} onChange={setPw} onEnter={go} /></div>
       <div className="text-right mt-3 mb-7">
-        <Link href="/forgot-password" className="text-ink/50 text-xs hover:text-gold transition underline underline-offset-2">Forgot password?</Link>
+        <Link href="/forgot-password" className="text-ink/70 text-xs hover:text-golddeep transition underline underline-offset-2">Forgot password?</Link>
       </div>
       <button type="button" onClick={go} disabled={busy} className={authBtn}>{busy ? "Logging in" : "Log in"}</button>
-      {err && <p className="text-peri text-xs text-center mt-5">{err}</p>}
+      {err && <p className="text-perideep text-xs text-center mt-5">{err}</p>}
     </AuthCard>
   );
 }

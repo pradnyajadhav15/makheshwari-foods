@@ -48,7 +48,7 @@ export default function OrderTracking({ order, onSaved }: { order: Order; onSave
           <span className="bg-cream/80 border border-ink/15 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink">
             {order.courier || "Courier"} &middot; {order.tracking_id}
           </span>
-          <button type="button" onClick={() => setOpen(true)} className="text-ink/45 text-[10px] tracking-tracksm uppercase hover:text-gold transition">
+          <button type="button" onClick={() => setOpen(true)} className="text-ink/70 text-[10px] tracking-tracksm uppercase hover:text-golddeep transition">
             Edit
           </button>
         </div>
@@ -64,7 +64,7 @@ export default function OrderTracking({ order, onSaved }: { order: Order; onSave
         <div className="bg-cream/60 border border-ink/15 rounded-xl p-5">
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-ink/50 text-[10px] tracking-tracksm uppercase mb-2" htmlFor={`t-${order.id}`}>Tracking number</label>
+              <label className="block text-ink/70 text-[10px] tracking-tracksm uppercase mb-2" htmlFor={`t-${order.id}`}>Tracking number</label>
               <input
                 id={`t-${order.id}`}
                 value={tracking}
@@ -74,7 +74,7 @@ export default function OrderTracking({ order, onSaved }: { order: Order; onSave
               />
             </div>
             <div>
-              <label className="block text-ink/50 text-[10px] tracking-tracksm uppercase mb-2" htmlFor={`c-${order.id}`}>Courier</label>
+              <label className="block text-ink/70 text-[10px] tracking-tracksm uppercase mb-2" htmlFor={`c-${order.id}`}>Courier</label>
               <select
                 id={`c-${order.id}`}
                 value={courier}
@@ -86,7 +86,7 @@ export default function OrderTracking({ order, onSaved }: { order: Order; onSave
             </div>
           </div>
 
-          <label className="flex items-center gap-2.5 mt-4 text-ink/65 text-sm font-light cursor-pointer">
+          <label className="flex items-center gap-2.5 mt-4 text-ink/75 text-sm font-light cursor-pointer">
             <input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} className="accent-[#12352A] w-4 h-4" />
             Email the customer{order.email ? ` at ${order.email}` : ""}
           </label>
@@ -102,7 +102,7 @@ export default function OrderTracking({ order, onSaved }: { order: Order; onSave
         </div>
       )}
 
-      {msg && <p className="text-ink/50 text-xs mt-3 font-light">{msg}</p>}
+      {msg && <p className="text-ink/70 text-xs mt-3 font-light">{msg}</p>}
     </div>
   );
 }

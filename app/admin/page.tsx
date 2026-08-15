@@ -142,7 +142,7 @@ export default function Admin() {
         <div className="flex flex-wrap items-end justify-between gap-5 mb-8">
           <div>
             <h1 className="font-display text-4xl text-ink">Dashboard</h1>
-            <p className="text-ink/45 text-sm mt-1.5">Makheshwari Foods</p>
+            <p className="text-ink/70 text-sm mt-1.5">Makheshwari Foods</p>
           </div>
           <div className="flex gap-3">
             <a href="/api/admin/export" className="border border-ink/20 rounded-full px-6 py-2.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Export CSV</a>
@@ -169,7 +169,7 @@ export default function Admin() {
               <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} aria-label="From date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
               <input type="date" value={to} onChange={(e) => setTo(e.target.value)} aria-label="To date" className="bg-white border border-ink/15 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-gold transition" />
               {(from || to) && (
-                <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/60 hover:border-gold transition">Clear dates</button>
+                <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="border border-ink/20 rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold transition">Clear dates</button>
               )}
               <button type="button" onClick={() => setShowArchived(!showArchived)} className={`rounded-xl px-5 py-3.5 text-[10px] tracking-tracksm uppercase transition ${showArchived ? "bg-ink text-cream" : "bg-white border border-ink/15 text-ink/70 hover:border-gold"}`}>
                 {showArchived ? "Viewing archived" : "Show archived"}
@@ -178,7 +178,7 @@ export default function Admin() {
             </div>
 
             {listErr && <p className="text-peri text-sm mb-5">{listErr}</p>}
-            {orders?.length === 0 && <p className="text-ink/50 font-light">No orders found.</p>}
+            {orders?.length === 0 && <p className="text-ink/70 font-light">No orders found.</p>}
 
             <div className="space-y-4">
               {orders?.map((o) => (
@@ -186,7 +186,7 @@ export default function Admin() {
                   <div className="flex flex-wrap justify-between gap-4 mb-5 pb-5 border-b border-ink/10">
                     <div>
                       <p className="font-display text-xl text-ink">{o.customer_name}</p>
-                      <p className="text-ink/45 text-xs mt-1">{new Date(o.created_at).toLocaleString("en-IN")}</p>
+                      <p className="text-ink/70 text-xs mt-1">{new Date(o.created_at).toLocaleString("en-IN")}</p>
                     </div>
                     <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
                       <span className="font-display text-xl text-ink">{"\u20B9"}{o.total}</span>
@@ -200,20 +200,20 @@ export default function Admin() {
                   </div>
                   <div className="grid md:grid-cols-2 gap-6 text-sm font-light">
                     <div>
-                      <p className="text-ink/45 text-[10px] tracking-tracksm uppercase mb-2">Items</p>
+                      <p className="text-ink/70 text-[10px] tracking-tracksm uppercase mb-2">Items</p>
                       {o.items.map((i, n) => <p key={n} className="text-ink/70">{i.name} {"\u00D7"}{i.qty}</p>)}
                     </div>
                     <div>
-                      <p className="text-ink/45 text-[10px] tracking-tracksm uppercase mb-2">Ship to</p>
+                      <p className="text-ink/70 text-[10px] tracking-tracksm uppercase mb-2">Ship to</p>
                       <p className="text-ink/70 leading-relaxed">{o.address_line}<br />{o.city}, {o.state} {o.pincode}</p>
-                      {o.notes && <p className="text-ink/50 text-xs mt-2">Note: {o.notes}</p>}
+                      {o.notes && <p className="text-ink/70 text-xs mt-2">Note: {o.notes}</p>}
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-3 mt-6 pt-5 border-t border-ink/10">
                     <a href={waLink(o)} target="_blank" rel="noopener noreferrer" className="bg-mint/20 border border-mint/50 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink hover:bg-mint/35 transition">WhatsApp update</a>
                     <a href={mailLink(o, o.email)} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Email update</a>
                     <a href={`tel:${o.phone}`} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition">Call {o.phone}</a>
-                    <span className="text-ink/35 text-[10px] tracking-tracksm uppercase py-2">{o.razorpay_payment_id}</span>
+                    <span className="text-ink/70 text-[10px] tracking-tracksm uppercase py-2">{o.razorpay_payment_id}</span>
                     {["paid", "packed", "shipped", "delivered"].includes(o.status) && (
                       
                       <a
@@ -250,7 +250,7 @@ export default function Admin() {
             {lastPage > 1 && (
               <div className="flex items-center gap-4 mt-10">
                 <button type="button" disabled={page <= 1} onClick={() => loadOrders(page - 1)} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold transition disabled:opacity-30">Previous</button>
-                <span className="text-ink/50 text-xs">Page {page} of {lastPage}</span>
+                <span className="text-ink/70 text-xs">Page {page} of {lastPage}</span>
                 <button type="button" disabled={page >= lastPage} onClick={() => loadOrders(page + 1)} className="border border-ink/20 rounded-full px-5 py-2 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold transition disabled:opacity-30">Next</button>
               </div>
             )}

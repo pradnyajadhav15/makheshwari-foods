@@ -76,7 +76,7 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
           <dl className="border border-ink/12 bg-paper p-6 min-w-full lg:min-w-[14rem] grid grid-cols-2 lg:block gap-x-6">
             {meta.map(([k, v]) => (
               <div key={k} className="py-2.5 lg:border-b border-ink/10 last:border-0">
-                <dt className="text-ink/45 text-[0.6rem] tracking-tracksm uppercase">{k}</dt>
+                <dt className="text-ink/70 text-[0.6rem] tracking-tracksm uppercase">{k}</dt>
                 <dd className="text-ink body-text mt-0.5">{v}</dd>
               </div>
             ))}
@@ -122,14 +122,14 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
               >
                 <span className={`w-1 h-12 rounded-full shrink-0 ${bar[o.accent]}`} />
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-display text-xl text-ink group-hover:text-gold transition">
+                  <h3 className="font-display text-xl text-ink group-hover:text-golddeep transition">
                     {o.name}
                   </h3>
-                  <p className="text-ink/45 text-xs mt-1">
+                  <p className="text-ink/70 text-xs mt-1">
                     {o.time} · Serves {o.serves}
                   </p>
                 </div>
-                <svg viewBox="0 0 24 24" className="w-5 h-5 text-gold shrink-0 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 text-golddeep shrink-0 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </Link>

@@ -47,7 +47,7 @@ export default function Signup() {
       <input className={authInput + " mt-4"} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <div className="mt-4 mb-7"><PasswordInput value={pw} onChange={setPw} placeholder="Password, at least 8 characters" onEnter={go} /></div>
       <button type="button" onClick={go} disabled={busy} className={authBtn}>{busy ? "Creating" : "Create account"}</button>
-      {err && <p className="text-peri text-xs text-center mt-5">{err}</p>}
+      {err && <p className="text-perideep text-xs text-center mt-5">{err}</p>}
     </AuthCard>
   );
 }

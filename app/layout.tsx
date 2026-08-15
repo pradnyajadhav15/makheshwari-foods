@@ -3,6 +3,7 @@ import { Marcellus, Jost } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { CartProvider } from "@/components/CartContext";
+import CartDrawer from "@/components/CartDrawer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { ADDRESS, EMAIL, INSTAGRAM } from "@/lib/products";
 import { Analytics } from "@vercel/analytics/react";
@@ -77,10 +78,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
         />
-        <CartProvider><Header />
-        <main>{children}</main>
-        <Footer />
-        <WhatsAppButton /></CartProvider>
+        <CartProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+          <WhatsAppButton />
+          <CartDrawer />
+        </CartProvider>
         <Analytics />
         <SpeedInsights />
       </body>

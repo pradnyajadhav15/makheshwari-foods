@@ -83,7 +83,7 @@ export default function AdminProducts() {
   if (!rows) return null;
 
   const inp = "bg-cream/60 border border-ink/15 rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-gold transition";
-  const lbl = "block text-ink/45 text-[10px] tracking-tracksm uppercase mb-2";
+  const lbl = "block text-ink/70 text-[10px] tracking-tracksm uppercase mb-2";
   const step = "w-9 h-9 rounded-full border border-ink/20 text-ink/70 text-lg leading-none hover:border-gold hover:text-ink transition disabled:opacity-30";
 
   const soldOut = rows.filter((p) => (p.stock ?? 0) === 0).length;
@@ -95,7 +95,7 @@ export default function AdminProducts() {
         <div>
           <h2 className="font-display text-3xl text-ink">Products</h2>
           {(soldOut > 0 || low > 0) && (
-            <p className="text-ink/50 text-sm mt-1.5 font-light">
+            <p className="text-ink/70 text-sm mt-1.5 font-light">
               {soldOut > 0 && <span className="text-peri">{soldOut} sold out</span>}
               {soldOut > 0 && low > 0 && " \u00B7 "}
               {low > 0 && <span className="text-gold">{low} running low</span>}
@@ -150,7 +150,7 @@ export default function AdminProducts() {
                   <label className={lbl}>Restock</label>
                   <div className="flex gap-2">
                     {[10, 25, 50].map((n) => (
-                      <button key={n} type="button" onClick={() => bumpStock(p, n)} disabled={saving === p.slug} className="border border-ink/20 rounded-lg px-3 py-2 text-[10px] tracking-tracksm text-ink/60 hover:border-gold hover:text-ink transition disabled:opacity-30">
+                      <button key={n} type="button" onClick={() => bumpStock(p, n)} disabled={saving === p.slug} className="border border-ink/20 rounded-lg px-3 py-2 text-[10px] tracking-tracksm text-ink/70 hover:border-gold hover:text-ink transition disabled:opacity-30">
                         +{n}
                       </button>
                     ))}
@@ -168,7 +168,7 @@ export default function AdminProducts() {
                 {confirm === p.slug ? (
                   <span className="flex gap-2">
                     <button type="button" onClick={() => del(p.slug)} className="bg-peri text-cream rounded-full px-5 py-2.5 text-[10px] tracking-tracksm uppercase">Confirm</button>
-                    <button type="button" onClick={() => setConfirm(null)} className="border border-ink/20 rounded-full px-5 py-2.5 text-[10px] tracking-tracksm uppercase text-ink/60">No</button>
+                    <button type="button" onClick={() => setConfirm(null)} className="border border-ink/20 rounded-full px-5 py-2.5 text-[10px] tracking-tracksm uppercase text-ink/70">No</button>
                   </span>
                 ) : (
                   <button type="button" onClick={() => setConfirm(p.slug)} className="border border-peri/40 text-peri rounded-full px-5 py-2.5 text-[10px] tracking-tracksm uppercase hover:bg-peri/10 transition">Delete</button>

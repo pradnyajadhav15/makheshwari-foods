@@ -7,13 +7,19 @@ type Line = { slug: string; qty: number };
 type LivePrice = { slug: string; price: number | null; mrp: number | null; stock: number; inStock: boolean };
 type Ctx = {
   lines: Line[];
-  add: (slug: string, qty?: number) => void;
+  add: (slug: string, qty?: number, silent?: boolean) => void;
   setQty: (slug: string, qty: number) => void;
   remove: (slug: string) => void;
   clear: () => void;
   count: number;
   subtotal: number;
   items: { product: Product; qty: number }[];
+  /** Slide-out cart panel. `add` opens it unless told otherwise. */
+  drawerOpen: boolean;
+  openDrawer: () => void;
+  closeDrawer: () => void;
+  /** True until the cart has been rehydrated from localStorage. */
+  ready: boolean;
 };
 
 const CartContext = createContext<Ctx | null>(null);
@@ -46,12 +52,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return () => { cancelled = true; };
   }, []);
 
-  const add = (slug: string, qty = 1) =>
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const openDrawer = () => setDrawerOpen(true);
+  const closeDrawer = () => setDrawerOpen(false);
+
+  /* `silent` is for callers that already show their own confirmation and
+     must not pop the drawer — Buy-it-now, which navigates to checkout. */
+  const add = (slug: string, qty = 1, silent = false) => {
     setLines((prev) => {
       const found = prev.find((l) => l.slug === slug);
       if (found) return prev.map((l) => (l.slug === slug ? { ...l, qty: l.qty + qty } : l));
       return [...prev, { slug, qty }];
     });
+    if (!silent) setDrawerOpen(true);
+  };
 
   const setQty = (slug: string, qty: number) =>
     setLines((prev) => (qty < 1 ? prev.filter((l) => l.slug !== slug) : prev.map((l) => (l.slug === slug ? { ...l, qty } : l))));
@@ -75,7 +89,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const subtotal = items.reduce((n, i) => n + (i.product.price ?? 0) * i.qty, 0);
 
   return (
-    <CartContext.Provider value={{ lines, add, setQty, remove, clear, count, subtotal, items }}>
+    <CartContext.Provider
+      value={{ lines, add, setQty, remove, clear, count, subtotal, items, drawerOpen, openDrawer, closeDrawer, ready }}
+    >
       {children}
     </CartContext.Provider>
   );

@@ -51,12 +51,12 @@ export default function ProductCard({ product: p }: { product: CardProduct }) {
 
       <div className="flex flex-col flex-1 p-4 sm:p-5 lg:p-6">
         <h3 className="font-display text-xl sm:text-2xl leading-tight text-ink">
-          <Link href={href} className="hover:text-gold transition">
+          <Link href={href} className="hover:text-golddeep transition">
             {p.name}
           </Link>
         </h3>
 
-        <p className="text-ink/55 text-[0.82rem] font-light leading-snug mt-2 line-clamp-2">
+        <p className="text-ink/70 text-[0.82rem] font-light leading-snug mt-2 line-clamp-2">
           {p.hook}
         </p>
 
@@ -67,10 +67,10 @@ export default function ProductCard({ product: p }: { product: CardProduct }) {
               {formatPrice(p.price)}
             </span>
             {p.mrp && p.price && p.mrp > p.price && (
-              <span className="text-ink/35 text-sm line-through">{formatPrice(p.mrp)}</span>
+              <span className="text-ink/70 text-sm line-through">{formatPrice(p.mrp)}</span>
             )}
           </div>
-          <p className="text-ink/45 text-[0.72rem] mt-1">
+          <p className="text-ink/70 text-[0.72rem] mt-1">
             {p.weightG} g · incl. of all taxes
           </p>
         </div>

@@ -38,7 +38,7 @@ export default function SearchOverlay({ open, onClose }: { open: boolean; onClos
       <div className="relative px-4 sm:px-6 pt-20 sm:pt-24 pb-6 h-full overflow-y-auto">
         <div className="w-full max-w-3xl mx-auto bg-paper border border-ink/12 shadow-[0_40px_80px_-24px_rgba(12,36,28,0.5)]">
           <div className="flex items-center gap-4 px-5 sm:px-7 py-5 border-b border-ink/12">
-            <svg viewBox="0 0 24 24" className="w-5 h-5 text-ink/40 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.7">
+            <svg viewBox="0 0 24 24" className="w-5 h-5 text-ink/70 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.7">
               <circle cx="11" cy="11" r="7" />
               <path d="M20 20l-3.5-3.5" strokeLinecap="round" />
             </svg>
@@ -48,13 +48,13 @@ export default function SearchOverlay({ open, onClose }: { open: boolean; onClos
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search products"
               aria-label="Search products"
-              className="flex-1 min-w-0 bg-transparent text-base sm:text-lg text-ink placeholder:text-ink/35 focus:outline-none"
+              className="flex-1 min-w-0 bg-transparent text-base sm:text-lg text-ink placeholder:text-ink/55 focus:outline-none"
             />
             <button
               type="button"
               onClick={onClose}
               aria-label="Close search"
-              className="w-10 h-10 -mr-2 flex items-center justify-center text-ink/45 hover:text-ink transition shrink-0"
+              className="w-10 h-10 -mr-2 flex items-center justify-center text-ink/70 hover:text-ink transition shrink-0"
             >
               <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
                 <path d="M6 6l12 12M18 6L6 18" />
@@ -68,7 +68,7 @@ export default function SearchOverlay({ open, onClose }: { open: boolean; onClos
             </p>
 
             {hits.length === 0 && (
-              <p className="text-ink/55 body-text py-6">Nothing matches that.</p>
+              <p className="text-ink/70 body-text py-6">Nothing matches that.</p>
             )}
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
@@ -83,10 +83,10 @@ export default function SearchOverlay({ open, onClose }: { open: boolean; onClos
                       className="max-h-full w-auto object-contain"
                     />
                   </div>
-                  <p className="font-display text-ink text-base mt-3 leading-tight group-hover:text-gold transition">
+                  <p className="font-display text-ink text-base mt-3 leading-tight group-hover:text-golddeep transition">
                     {p.name}
                   </p>
-                  <p className="text-ink/50 text-sm mt-1">{formatPrice(p.price)}</p>
+                  <p className="text-ink/70 text-sm mt-1">{formatPrice(p.price)}</p>
                 </Link>
               ))}
             </div>

@@ -30,7 +30,9 @@ export default function BuyBox({
   };
 
   const buyNow = () => {
-    add(slug, qty);
+    // silent: we are navigating to checkout, so popping the drawer first
+    // would just flash a panel on the way out.
+    add(slug, qty, true);
     router.push("/checkout");
   };
 
@@ -40,7 +42,7 @@ export default function BuyBox({
         <button type="button" disabled className="btn btn-primary btn-block">
           Out of stock
         </button>
-        <p className="text-ink/50 text-sm text-center mt-3 font-light">
+        <p className="text-ink/70 text-sm text-center mt-3 font-light">
           Back soon.{" "}
           <a
             href="https://wa.me/917485001464"
@@ -97,7 +99,7 @@ export default function BuyBox({
       </button>
 
       {atMax && typeof stock === "number" && stock < 20 && (
-        <p className="text-ink/50 text-xs mt-3 font-light">That is all we have right now.</p>
+        <p className="text-ink/70 text-xs mt-3 font-light">That is all we have right now.</p>
       )}
 
       {/* Reassurance sits directly under the CTA, where it does the most work */}
@@ -107,8 +109,8 @@ export default function BuyBox({
           "Dispatched within 2 working days",
           "Sealed the day it is packed",
         ].map((t) => (
-          <li key={t} className="flex items-center gap-2.5 text-ink/60 text-[0.84rem] font-light">
-            <svg viewBox="0 0 24 24" className="w-4 h-4 text-mint shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <li key={t} className="flex items-center gap-2.5 text-ink/70 text-[0.84rem] font-light">
+            <svg viewBox="0 0 24 24" className="w-4 h-4 text-mintdeep shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
               <path d="M4 12.5l5 5L20 6.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             {t}

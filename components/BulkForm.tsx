@@ -95,7 +95,7 @@ export default function BulkForm() {
         <textarea id="b-notes" rows={4} className="field resize-none" placeholder="Delivery timeline, packaging needs, questions" value={f.notes} onChange={(e) => set("notes", e.target.value)} />
       </div>
 
-      {err && <p className="text-peri text-sm mt-5" role="alert">{err}</p>}
+      {err && <p className="text-perideep text-sm mt-5" role="alert">{err}</p>}
 
       <button type="button" onClick={submit} className="btn btn-primary btn-block mt-7">
         Send enquiry
@@ -104,7 +104,7 @@ export default function BulkForm() {
       {sent && (
         <div className="border border-mint/50 bg-mint/10 px-6 py-5 text-center mt-6" role="status">
           <p className="font-display text-xl text-ink mb-2">Enquiry received</p>
-          <p className="text-ink/65 body-text">
+          <p className="text-ink/75 body-text">
             We have it on record and will send pricing today. WhatsApp should have opened too.
           </p>
         </div>

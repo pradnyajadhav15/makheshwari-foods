@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartContext";
 import { formatPrice, FREE_SHIPPING_OVER } from "@/lib/products";
+import { Skeleton } from "@/components/Skeleton";
 
 declare global {
   interface Window { Razorpay: any }
@@ -13,7 +14,7 @@ declare global {
 const STATES = ["Bihar", "Uttar Pradesh", "Jharkhand", "West Bengal", "Delhi", "Maharashtra", "Karnataka", "Tamil Nadu", "Telangana", "Gujarat", "Rajasthan", "Madhya Pradesh", "Punjab", "Haryana", "Other"];
 
 export default function Checkout() {
-  const { items, subtotal, count, clear } = useCart();
+  const { items, subtotal, count, clear, ready } = useCart();
   const [f, setF] = useState({ name: "", email: "", phone: "", address: "", city: "", state: "Bihar", pincode: "", notes: "" });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -139,6 +140,22 @@ export default function Checkout() {
     }
   };
 
+  /* Wait for the cart to rehydrate before deciding it is empty, or a
+     customer arriving straight on /checkout sees the empty state. */
+  if (!ready) {
+    return (
+      <section className="wrap section" aria-busy="true">
+        <p className="marker mb-5">Step 2 of 2</p>
+        <Skeleton className="h-10 w-52 mb-9" />
+        <div className="grid lg:grid-cols-[1.6fr_1fr] gap-8 lg:gap-12 items-start">
+          <Skeleton className="h-96 w-full" />
+          <Skeleton className="h-80 w-full" />
+        </div>
+        <span className="sr-only">Loading checkout</span>
+      </section>
+    );
+  }
+
   if (count === 0) {
     return (
       <section className="wrap section-lg text-center">
@@ -208,7 +225,7 @@ export default function Checkout() {
             <div className="space-y-3 body-text border-b border-ink/12 pb-5 mb-5">
               {items.map(({ product: p, qty }) => (
                 <div key={p.slug} className="flex justify-between gap-3">
-                  <span className="text-ink/60">{p.name} ×{qty}</span>
+                  <span className="text-ink/70">{p.name} ×{qty}</span>
                   <span className="text-ink shrink-0">{formatPrice((p.price ?? 0) * qty)}</span>
                 </div>
               ))}
@@ -220,7 +237,7 @@ export default function Checkout() {
                   <span className="inline-flex items-center gap-2 bg-gold/15 border border-gold/45 rounded-full px-4 py-2 text-[0.64rem] tracking-tracksm uppercase text-ink">
                     {coupon.code}
                   </span>
-                  <button type="button" onClick={removeCoupon} className="text-ink/40 text-[0.64rem] tracking-tracksm uppercase hover:text-peri transition py-2">
+                  <button type="button" onClick={removeCoupon} className="text-ink/70 text-[0.64rem] tracking-tracksm uppercase hover:text-perideep transition py-2">
                     Remove
                   </button>
                 </div>
@@ -247,12 +264,12 @@ export default function Checkout() {
                   </div>
                 </>
               )}
-              {couponMsg && <p className="text-peri text-xs mt-3 font-light" role="alert">{couponMsg}</p>}
+              {couponMsg && <p className="text-perideep text-xs mt-3 font-light" role="alert">{couponMsg}</p>}
             </div>
 
             <div className="space-y-3 body-text border-b border-ink/12 pb-5 mb-5">
               <div className="flex justify-between">
-                <span className="text-ink/60">Subtotal</span>
+                <span className="text-ink/70">Subtotal</span>
                 <span className="text-ink">{formatPrice(subtotal)}</span>
               </div>
               {discount > 0 && (
@@ -262,16 +279,16 @@ export default function Checkout() {
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-ink/60">Shipping</span>
+                <span className="text-ink/70">Shipping</span>
                 <span className="text-ink">{shipping === 0 ? "Free" : formatPrice(shipping)}</span>
               </div>
             </div>
 
             <div className="flex justify-between items-baseline">
-              <span className="text-ink/60 text-sm">Total</span>
+              <span className="text-ink/70 text-sm">Total</span>
               <span className="font-display text-2xl md:text-3xl text-ink">{formatPrice(total)}</span>
             </div>
-            <p className="text-ink/40 text-[11px] mt-1 mb-7">Inclusive of all taxes</p>
+            <p className="text-ink/70 text-[11px] mt-1 mb-7">Inclusive of all taxes</p>
 
             {closed && (
               <div className="border border-gold/45 bg-gold/10 px-5 py-4 mb-5 text-ink/75 body-text">
@@ -288,16 +305,16 @@ export default function Checkout() {
               {busy ? "Opening payment" : `Pay ${formatPrice(total)}`}
             </button>
 
-            {err && <p className="text-peri text-xs text-center mt-4 font-light" role="alert">{err}</p>}
+            {err && <p className="text-perideep text-xs text-center mt-4 font-light" role="alert">{err}</p>}
 
-            <p className="flex items-center justify-center gap-2 text-ink/45 text-[11px] mt-5">
+            <p className="flex items-center justify-center gap-2 text-ink/70 text-[11px] mt-5">
               <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="1.6">
                 <path d="M12 3l7 3v6c0 4-3 7.5-7 9-4-1.5-7-5-7-9V6l7-3z" strokeLinejoin="round" />
               </svg>
               Secure payment via Razorpay
             </p>
 
-            <Link href="/cart" className="block text-center text-ink/50 text-[0.66rem] tracking-tracksm uppercase mt-4 py-2 hover:text-gold transition">
+            <Link href="/cart" className="block text-center text-ink/70 text-[0.66rem] tracking-tracksm uppercase mt-4 py-2 hover:text-golddeep transition">
               Back to cart
             </Link>
           </div>

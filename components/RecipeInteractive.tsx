@@ -18,7 +18,7 @@ export function IngredientList({ groups }: { groups: { group: string; items: str
     <div className="border border-ink/12 bg-paper p-6 sm:p-8">
       <div className="flex items-baseline justify-between mb-6">
         <h2 className="display-sm text-ink">Ingredients</h2>
-        <span className="text-ink/45 text-xs tabular-nums">{left} to go</span>
+        <span className="text-ink/70 text-xs tabular-nums">{left} to go</span>
       </div>
 
       {groups.map((g) => (
@@ -46,7 +46,7 @@ export function IngredientList({ groups }: { groups: { group: string; items: str
                         </svg>
                       )}
                     </span>
-                    <span className={`body-text transition ${on ? "text-ink/30 line-through" : "text-ink/75"}`}>
+                    <span className={`body-text transition ${on ? "text-ink/70 line-through" : "text-ink/75"}`}>
                       {it}
                     </span>
                   </button>
@@ -98,10 +98,10 @@ export function StepList({ steps }: { steps: { t: string; b: string }[] }) {
                 )}
               </span>
               <div className="min-w-0">
-                <h3 className={`font-display text-xl transition ${on ? "text-ink/45" : "text-ink"}`}>
+                <h3 className={`font-display text-xl transition ${on ? "text-ink/70" : "text-ink"}`}>
                   {s.t}
                 </h3>
-                <p className={`body-text mt-1.5 transition ${on ? "text-ink/35" : "text-ink/65"}`}>
+                <p className={`body-text mt-1.5 transition ${on ? "text-ink/70" : "text-ink/75"}`}>
                   {s.b}
                 </p>
               </div>
