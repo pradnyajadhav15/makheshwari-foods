@@ -1,41 +1,310 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Makheshwari Foods — design system
+   Editorial, mobile-first. Brand colours are fixed (they live on
+   the physical pouches); everything else is built around them.
+   ============================================================ */
+
 @theme {
+  /* --- brand core (matches packaging, do not drift) --- */
   --color-ink: #12352A;
   --color-inkdeep: #0C241C;
   --color-gold: #C9A227;
-  --color-goldsoft: #E3C766;
   --color-cream: #F7F3E9;
   --color-sand: #E5DAC3;
+
+  /* --- extended range: same hues, more steps to build with --- */
+  --color-inkmid: #1B4635;
+  --color-inkline: #2A5544;
+  --color-goldsoft: #E3C766;
+  --color-golddeep: #A8861B;
+  --color-paper: #FDFBF5;
+  --color-sandsoft: #EFE7D6;
+
+  /* --- flavour accents --- */
   --color-peri: #D8503C;
   --color-mint: #7FA860;
   --color-salt: #DB8C9E;
+
   --font-display: var(--font-marcellus), Georgia, serif;
   --font-body: var(--font-jost), Helvetica, sans-serif;
+
   --tracking-track: 0.32em;
   --tracking-tracksm: 0.18em;
 }
 
-html { scroll-behavior: smooth; }
-body { -webkit-font-smoothing: antialiased; }
+/* ============================================================
+   Base
+   ============================================================ */
 
-@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
-@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@keyframes kenburns { 0% { transform: scale(1); } 100% { transform: scale(1.12); } }
-
-.animate-floaty { animation: floaty 6s ease-in-out infinite; }
-.animate-marquee { animation: marquee 30s linear infinite; }
-.animate-kenburns { animation: kenburns 20s ease-out infinite alternate; }
-.perspective { perspective: 1400px; }
-
-.reveal { opacity: 0; transform: translateY(40px); transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1); }
-.reveal.is-visible { opacity: 1; transform: translateY(0); }
-@keyframes toastIn {
-  from { opacity: 0; transform: translate(-50%, 20px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
-/* ---- motion foundation ---- */
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Stop long words (emails, licence numbers) blowing out narrow phones */
+p, li, h1, h2, h3, dd, dt { overflow-wrap: break-word; }
+
+::selection { background: var(--color-gold); color: var(--color-ink); }
+
+/* ============================================================
+   Layout primitives
+   Fluid gutters and vertical rhythm — one source of truth so
+   sections stop each inventing their own padding.
+   ============================================================ */
+
+.wrap {
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.15rem, 5vw, 3.5rem);
+}
+
+.wrap-narrow {
+  width: 100%;
+  max-width: 46rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.15rem, 5vw, 3.5rem);
+}
+
+.wrap-mid {
+  width: 100%;
+  max-width: 62rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.15rem, 5vw, 3.5rem);
+}
+
+/* Vertical rhythm. Mobile gets meaningfully less than desktop —
+   the old fixed py-28 ate a whole phone screen. */
+.section { padding-block: clamp(3.5rem, 9vw, 8rem); }
+.section-sm { padding-block: clamp(2.5rem, 6vw, 5rem); }
+.section-lg { padding-block: clamp(4.5rem, 12vw, 11rem); }
+
+/* ============================================================
+   Typography
+   Fluid display scale, tight leading, slight negative tracking.
+   This is the main lever that moves the site from "template"
+   to "editorial".
+   ============================================================ */
+
+.display-xl,
+.display-lg,
+.display-md,
+.display-sm {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+
+.display-xl { font-size: clamp(2.6rem, 8.5vw, 6.5rem); }
+.display-lg { font-size: clamp(2.1rem, 6vw, 4.5rem); line-height: 1.05; }
+.display-md { font-size: clamp(1.75rem, 4vw, 3rem);  line-height: 1.1; }
+.display-sm { font-size: clamp(1.35rem, 2.6vw, 2rem); line-height: 1.15; letter-spacing: -0.01em; }
+
+/* Body copy. The old site sat everything at ink/60 + font-light,
+   which reads as washed out and is poor contrast on mobile. */
+.lede {
+  font-size: clamp(1.02rem, 1.6vw, 1.25rem);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+.body-text {
+  font-size: 0.975rem;
+  line-height: 1.72;
+  font-weight: 300;
+}
+
+/* ============================================================
+   Section marker
+   Replaces the gold uppercase eyebrow that sat centred above
+   every single heading. Left-aligned, ruled, quieter.
+   ============================================================ */
+
+.marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 0.65rem;
+  letter-spacing: var(--tracking-tracksm);
+  text-transform: uppercase;
+  color: var(--color-golddeep);
+}
+
+.marker::before {
+  content: "";
+  width: clamp(1.5rem, 4vw, 2.75rem);
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.marker-light { color: var(--color-goldsoft); }
+.marker-center { justify-content: center; }
+.marker-center::after {
+  content: "";
+  width: clamp(1.5rem, 4vw, 2.75rem);
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+/* ============================================================
+   Buttons
+   One system, real hierarchy, 48px minimum tap target.
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.9rem 1.9rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: var(--tracking-tracksm);
+  text-transform: uppercase;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 220ms ease, color 220ms ease,
+              border-color 220ms ease, transform 220ms ease;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn-primary { background: var(--color-ink); color: var(--color-cream); }
+.btn-primary:hover { background: var(--color-inkmid); }
+
+.btn-gold { background: var(--color-gold); color: var(--color-ink); }
+.btn-gold:hover { background: var(--color-goldsoft); }
+
+.btn-outline {
+  border: 1px solid color-mix(in srgb, var(--color-ink) 32%, transparent);
+  color: var(--color-ink);
+  background: transparent;
+}
+.btn-outline:hover { border-color: var(--color-ink); background: var(--color-ink); color: var(--color-cream); }
+
+/* on dark fields */
+.btn-light { background: var(--color-cream); color: var(--color-ink); }
+.btn-light:hover { background: var(--color-gold); }
+
+.btn-ghost-light {
+  border: 1px solid color-mix(in srgb, var(--color-cream) 42%, transparent);
+  color: var(--color-cream);
+  background: transparent;
+}
+.btn-ghost-light:hover { background: color-mix(in srgb, var(--color-cream) 14%, transparent); }
+
+.btn-block { width: 100%; }
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.42;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Editorial link
+   ============================================================ */
+
+.link-quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  letter-spacing: var(--tracking-tracksm);
+  text-transform: uppercase;
+  padding-block: 0.35rem;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 320ms cubic-bezier(0.2, 0.7, 0.2, 1), color 220ms ease;
+}
+.link-quiet:hover { background-size: 100% 1px; }
+
+/* ============================================================
+   Rules and frames — the flat alternative to drop-shadow cards
+   ============================================================ */
+
+.hairline { border-color: color-mix(in srgb, var(--color-ink) 14%, transparent); }
+.hairline-light { border-color: color-mix(in srgb, var(--color-cream) 16%, transparent); }
+
+/* ============================================================
+   Forms
+   ============================================================ */
+
+.field {
+  width: 100%;
+  min-height: 3rem;
+  background: var(--color-paper);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+  border-radius: 0.6rem;
+  padding: 0.8rem 1rem;
+  font-size: 1rem; /* 16px — stops iOS zooming the page on focus */
+  color: var(--color-ink);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.field::placeholder { color: color-mix(in srgb, var(--color-ink) 40%, transparent); }
+
+.field:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 22%, transparent);
+}
+
+.field-label {
+  display: block;
+  font-size: 0.66rem;
+  letter-spacing: var(--tracking-tracksm);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+  margin-bottom: 0.5rem;
+}
+
+/* ============================================================
+   Motion
+   Restrained. The old build had tilt, ken burns, floaty, marquee
+   and word-by-word reveals all running at once.
+   ============================================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 800ms cubic-bezier(0.2, 0.7, 0.2, 1),
+              transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+.animate-fade-up { animation: fadeUp 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 42s linear infinite; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -46,167 +315,162 @@ body { -webkit-font-smoothing: antialiased; }
   .reveal { opacity: 1 !important; transform: none !important; }
 }
 
-@keyframes wordUp {
-  from { opacity: 0; transform: translate3d(0, 0.7em, 0) rotate(1.5deg); }
-  to   { opacity: 1; transform: translate3d(0, 0, 0) rotate(0); }
-}
-.word {
-  display: inline-block;
-  opacity: 0;
-  will-change: transform, opacity;
-  animation: wordUp 0.85s cubic-bezier(0.16, 0.84, 0.24, 1) forwards;
-}
+/* ============================================================
+   Hero
+   ============================================================ */
 
-@keyframes pondRipple {
-  from { transform: scale(0); opacity: 0.45; }
-  to   { transform: scale(3.2); opacity: 0; }
-}
-.ripple {
-  position: absolute;
-  border-radius: 9999px;
-  background: currentColor;
-  pointer-events: none;
-  animation: pondRipple 0.75s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
-}
-
-.magnet, .tilt-inner {
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-}
-.tilt {
-  perspective: 1000px;
-}
-.tilt-inner {
-  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
-  transform-style: preserve-3d;
-}
-@keyframes spinSlow { to { transform: rotate(360deg); } }
-.spin-slow { animation: spinSlow 90s linear infinite; }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-up { animation: fadeUp 2s ease-out both; }
-
-/* ==================== Hero video ==================== */
-.hero-v {
+.hero {
   position: relative;
   isolation: isolate;
-  width: 100%;
-  height: 68vh;
-  min-height: 460px;
   overflow: hidden;
-  background: var(--color-ink);
+  background: var(--color-inkdeep);
+  min-height: 34rem;
+  height: 88svh;
+  max-height: 52rem;
 }
 
-.hero-v-media {
+/* On phones the hero is content-driven so the CTAs always land above the
+   fold, but it keeps a floor so the imagery still has some presence. */
+@media (max-width: 640px) {
+  .hero { height: auto; min-height: 30rem; max-height: none; }
+}
+
+.hero-media {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 600ms ease;
+  transition: opacity 700ms ease;
 }
-.hero-v-media.is-ready { opacity: 1; }
+.hero-media.is-ready { opacity: 1; }
 
-.hero-v-scrim {
+.hero-scrim {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    rgba(12, 28, 20, 0.55),
-    rgba(12, 28, 20, 0.25) 45%,
-    rgba(12, 28, 20, 0.65)
-  );
+  background:
+    linear-gradient(to right, rgba(12, 36, 28, 0.88) 0%, rgba(12, 36, 28, 0.55) 45%, rgba(12, 36, 28, 0.25) 100%),
+    linear-gradient(to top, rgba(12, 36, 28, 0.8) 0%, transparent 45%);
 }
-
-.hero-v-content {
-  position: relative;
-  z-index: 1;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0 1.5rem;
-  color: #FFFFFF;
-}
-
-.hero-v-eyebrow {
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-.hero-v-title {
-  margin-top: 1rem;
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  line-height: 1.08;
-  font-weight: 600;
-  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
-}
-.hero-v-sub {
-  margin-top: 1.1rem;
-  max-width: 34rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  opacity: 0.9;
-}
-.hero-v-actions {
-  margin-top: 2rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-}
-.hero-v-btn {
-  border-radius: 999px;
-  padding: 0.85rem 2rem;
-  font-size: 0.88rem;
-  font-weight: 500;
-  background: var(--color-cream);
-  color: var(--color-ink);
-  transition: opacity 160ms ease;
-}
-.hero-v-btn:hover { opacity: 0.88; }
-.hero-v-btn--ghost {
-  background: transparent;
-  color: #FFFFFF;
-  border: 1.5px solid rgba(255, 255, 255, 0.5);
-}
-.hero-v-btn--ghost:hover { background: rgba(255, 255, 255, 0.12); }
-.hero-v-note { margin-top: 1.5rem; font-size: 0.72rem; opacity: 0.75; }
 
 @media (max-width: 640px) {
-  .hero-v { height: 62vh; min-height: 400px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-v-media { display: none; }
-  .hero-v {
-    background-image: url("/video/poster.jpg");
-    background-size: cover;
-    background-position: center;
+  .hero-scrim {
+    background: linear-gradient(to top, rgba(12, 36, 28, 0.92) 12%, rgba(12, 36, 28, 0.55) 60%, rgba(12, 36, 28, 0.5) 100%);
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .hero-media { display: none; }
+}
 
+/* ============================================================
+   Product card
+   ============================================================ */
 
-/* ==================== Focus visibility ==================== */
+.pcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-paper);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  overflow: hidden;
+  transition: border-color 320ms ease, background-color 320ms ease;
+}
+.pcard:hover { border-color: color-mix(in srgb, var(--color-ink) 30%, transparent); }
+
+/* White, not sand: the pouch photography has a white background baked
+   into the JPEG, so any tinted tile shows as a visible white rectangle. */
+.pcard-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #FFFFFF;
+}
+
+.pcard-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: clamp(1rem, 4vw, 2.25rem);
+  transition: transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.pcard:hover .pcard-media img { transform: scale(1.045); }
+
+/* ============================================================
+   Sticky mobile buy bar
+   ============================================================ */
+
+.buybar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--color-paper) 96%, transparent);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
+  padding: 0.7rem clamp(1.15rem, 5vw, 2rem);
+  padding-bottom: max(0.7rem, env(safe-area-inset-bottom));
+  transform: translateY(110%);
+  transition: transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.buybar.is-shown { transform: none; }
+
+@media (min-width: 1024px) { .buybar { display: none; } }
+
+/* ============================================================
+   Prose (legal / long-form pages)
+   ============================================================ */
+
+.prose-mk { color: color-mix(in srgb, var(--color-ink) 78%, transparent); }
+.prose-mk h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  line-height: 1.2;
+  color: var(--color-ink);
+  margin-top: 2.75rem;
+  margin-bottom: 0.9rem;
+}
+.prose-mk h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--color-ink);
+  margin-top: 1.9rem;
+  margin-bottom: 0.6rem;
+}
+.prose-mk p, .prose-mk li { font-size: 0.975rem; line-height: 1.75; font-weight: 300; }
+.prose-mk p { margin-bottom: 1.05rem; }
+.prose-mk ul { list-style: disc; padding-left: 1.25rem; margin-bottom: 1.05rem; }
+.prose-mk li { margin-bottom: 0.5rem; }
+.prose-mk a { color: var(--color-golddeep); text-decoration: underline; text-underline-offset: 3px; }
+.prose-mk strong { font-weight: 500; color: var(--color-ink); }
+
+/* ============================================================
+   Focus visibility
+   ============================================================ */
+
 a:focus-visible,
 button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
 [tabindex]:focus-visible {
   outline: 3px solid var(--color-gold);
   outline-offset: 3px;
   border-radius: 4px;
 }
 
-/* dark backgrounds need a light ring */
 .bg-ink a:focus-visible,
-.bg-ink button:focus-visible {
+.bg-ink button:focus-visible,
+.bg-inkdeep a:focus-visible,
+.bg-inkdeep button:focus-visible {
   outline-color: var(--color-cream);
 }
+
+/* Utility: hide scrollbar on horizontal scrollers */
+.no-bar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-bar::-webkit-scrollbar { display: none; }

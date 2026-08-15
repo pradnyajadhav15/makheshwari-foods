@@ -141,99 +141,165 @@ export default function Checkout() {
 
   if (count === 0) {
     return (
-      <section className="bg-cream px-6 py-32 text-center">
-        <h1 className="font-display text-4xl text-ink mb-5">Your cart is empty</h1>
-        <Link href="/shop" className="inline-block mt-4 bg-ink text-cream rounded-full px-11 py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition">Shop the range</Link>
+      <section className="wrap section-lg text-center">
+        <h1 className="display-lg text-ink">Your cart is empty</h1>
+        <Link href="/shop" className="btn btn-primary mt-8">Shop the range</Link>
       </section>
     );
   }
 
-  const inp = "w-full bg-cream/60 border border-ink/15 rounded-xl px-5 py-3.5 text-sm text-ink placeholder:text-ink/35 focus:outline-none focus:border-gold transition";
-  const lbl = "block text-ink/50 text-[10px] tracking-tracksm uppercase mb-2";
-
   return (
-    <section className="bg-cream px-6 md:px-14 py-16">
-      <div className="max-w-5xl mx-auto">
-        <h1 className="font-display text-4xl md:text-5xl text-ink mb-10">Checkout</h1>
-        <div className="grid md:grid-cols-3 gap-10">
-          <div className="md:col-span-2 bg-white rounded-[1.5rem] border border-ink/10 p-8 md:p-10">
-            <h2 className="font-display text-xl text-ink mb-7">Delivery address</h2>
-            <div className="grid sm:grid-cols-2 gap-5 mb-5">
-              <div><label className={lbl} htmlFor="k-name">Full name</label><input id="k-name" className={inp} value={f.name} onChange={(e) => set("name", e.target.value)} /></div>
-              <div><label className={lbl} htmlFor="k-phone">Phone</label><input id="k-phone" className={inp} placeholder="10 digit mobile" value={f.phone} onChange={(e) => set("phone", e.target.value)} /></div>
+    <section className="wrap section">
+      <p className="marker mb-5">Step 2 of 2</p>
+      <h1 className="display-lg text-ink mb-9">Checkout</h1>
+
+      <div className="grid lg:grid-cols-[1.6fr_1fr] gap-8 lg:gap-12 items-start">
+        <div className="border border-ink/12 bg-paper p-6 sm:p-8 md:p-10">
+          <h2 className="display-sm text-ink mb-7">Delivery address</h2>
+
+          <div className="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label className="field-label" htmlFor="k-name">Full name</label>
+              <input id="k-name" autoComplete="name" className="field" value={f.name} onChange={(e) => set("name", e.target.value)} />
             </div>
-            <div className="mb-5"><label className={lbl} htmlFor="k-email">Email</label><input id="k-email" type="email" className={inp} value={f.email} onChange={(e) => set("email", e.target.value)} /></div>
-            <div className="mb-5"><label className={lbl} htmlFor="k-addr">Address</label><textarea id="k-addr" rows={3} className={inp + " resize-none"} placeholder="House, street, landmark" value={f.address} onChange={(e) => set("address", e.target.value)} /></div>
-            <div className="grid sm:grid-cols-3 gap-5 mb-5">
-              <div><label className={lbl} htmlFor="k-city">City</label><input id="k-city" className={inp} value={f.city} onChange={(e) => set("city", e.target.value)} /></div>
-              <div><label className={lbl} htmlFor="k-state">State</label><select id="k-state" className={inp} value={f.state} onChange={(e) => set("state", e.target.value)}>{STATES.map((s) => <option key={s}>{s}</option>)}</select></div>
-              <div><label className={lbl} htmlFor="k-pin">PIN code</label><input id="k-pin" className={inp} placeholder="6 digits" value={f.pincode} onChange={(e) => set("pincode", e.target.value)} /></div>
+            <div>
+              <label className="field-label" htmlFor="k-phone">Phone</label>
+              <input id="k-phone" type="tel" inputMode="numeric" autoComplete="tel" className="field" placeholder="10 digit mobile" value={f.phone} onChange={(e) => set("phone", e.target.value)} />
             </div>
-            <div><label className={lbl} htmlFor="k-notes">Delivery notes</label><input id="k-notes" className={inp} placeholder="Optional" value={f.notes} onChange={(e) => set("notes", e.target.value)} /></div>
           </div>
 
-          <div>
-            <div className="bg-white rounded-[1.5rem] border border-ink/10 p-7 sticky top-28">
-              <h2 className="font-display text-xl text-ink mb-6">Summary</h2>
-              <div className="space-y-3 text-sm font-light border-b border-ink/10 pb-5 mb-5">
-                {items.map(({ product: p, qty }) => (
-                  <div key={p.slug} className="flex justify-between gap-3"><span className="text-ink/60">{p.name} &times;{qty}</span><span className="text-ink">{formatPrice((p.price ?? 0) * qty)}</span></div>
-                ))}
-              </div>
+          <div className="mt-5">
+            <label className="field-label" htmlFor="k-email">Email</label>
+            <input id="k-email" type="email" inputMode="email" autoComplete="email" className="field" value={f.email} onChange={(e) => set("email", e.target.value)} />
+          </div>
 
-              <div className="border-b border-ink/10 pb-5 mb-5">
-                {coupon ? (
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="inline-flex items-center gap-2 bg-gold/15 border border-gold/40 rounded-full px-4 py-2 text-[10px] tracking-tracksm uppercase text-ink">
-                      {coupon.code}
-                    </span>
-                    <button type="button" onClick={removeCoupon} className="text-ink/40 text-[10px] tracking-tracksm uppercase hover:text-peri transition">Remove</button>
-                  </div>
-                ) : (
-                  <>
-                    <label className={lbl} htmlFor="k-code">Discount code</label>
-                    <div className="flex gap-2">
-                      <input
-                        id="k-code"
-                        className={inp + " uppercase"}
-                        placeholder="Enter code"
-                        value={codeInput}
-                        onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
-                        onKeyDown={(e) => { if (e.key === "Enter") applyCoupon(); }}
-                      />
-                      <button
-                        type="button"
-                        onClick={applyCoupon}
-                        disabled={checking || !codeInput.trim()}
-                        className="shrink-0 border border-ink text-ink rounded-xl px-5 text-[10px] tracking-tracksm uppercase hover:bg-ink hover:text-cream transition disabled:opacity-40"
-                      >
-                        {checking ? "..." : "Apply"}
-                      </button>
-                    </div>
-                  </>
-                )}
-                {couponMsg && <p className="text-peri text-xs mt-3 font-light">{couponMsg}</p>}
-              </div>
+          <div className="mt-5">
+            <label className="field-label" htmlFor="k-addr">Address</label>
+            <textarea id="k-addr" rows={3} autoComplete="street-address" className="field resize-none" placeholder="House, street, landmark" value={f.address} onChange={(e) => set("address", e.target.value)} />
+          </div>
 
-              <div className="space-y-3 text-sm font-light border-b border-ink/10 pb-5 mb-5">
-                <div className="flex justify-between"><span className="text-ink/60">Subtotal</span><span className="text-ink">{formatPrice(subtotal)}</span></div>
-                {discount > 0 && (
-                  <div className="flex justify-between"><span className="text-gold">Discount</span><span className="text-gold">&minus;{formatPrice(discount)}</span></div>
-                )}
-                <div className="flex justify-between"><span className="text-ink/60">Shipping</span><span className="text-ink">{shipping === 0 ? "Free" : formatPrice(shipping)}</span></div>
-              </div>
-
-              <div className="flex justify-between items-baseline mb-2"><span className="text-ink/60 text-sm">Total</span><span className="font-display text-2xl text-ink">{formatPrice(total)}</span></div>
-              <p className="text-ink/40 text-[11px] mb-7">Inclusive of all taxes</p>
-              {closed && (
-                <div className="bg-gold/15 border border-gold/40 rounded-xl px-5 py-4 mb-5 text-ink/75 text-sm font-light">{closed}</div>
-              )}
-              <button type="button" onClick={pay} disabled={busy || Boolean(closed)} className="w-full bg-ink text-cream rounded-full py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition disabled:opacity-50">
-                {busy ? "Opening payment" : `Pay ${formatPrice(total)}`}
-              </button>
-              {err && <p className="text-peri text-xs text-center mt-4 font-light">{err}</p>}
-              <Link href="/cart" className="block text-center text-ink/50 text-[11px] tracking-tracksm uppercase mt-5 hover:text-gold transition">Back to cart</Link>
+          <div className="grid sm:grid-cols-3 gap-5 mt-5">
+            <div>
+              <label className="field-label" htmlFor="k-city">City</label>
+              <input id="k-city" autoComplete="address-level2" className="field" value={f.city} onChange={(e) => set("city", e.target.value)} />
             </div>
+            <div>
+              <label className="field-label" htmlFor="k-state">State</label>
+              <select id="k-state" autoComplete="address-level1" className="field" value={f.state} onChange={(e) => set("state", e.target.value)}>
+                {STATES.map((s) => <option key={s}>{s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="field-label" htmlFor="k-pin">PIN code</label>
+              <input id="k-pin" inputMode="numeric" autoComplete="postal-code" maxLength={6} className="field" placeholder="6 digits" value={f.pincode} onChange={(e) => set("pincode", e.target.value)} />
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <label className="field-label" htmlFor="k-notes">Delivery notes</label>
+            <input id="k-notes" className="field" placeholder="Optional" value={f.notes} onChange={(e) => set("notes", e.target.value)} />
+          </div>
+        </div>
+
+        <div className="lg:sticky lg:top-28">
+          <div className="border border-ink/12 bg-paper p-6 sm:p-7">
+            <h2 className="display-sm text-ink mb-6">Summary</h2>
+
+            <div className="space-y-3 body-text border-b border-ink/12 pb-5 mb-5">
+              {items.map(({ product: p, qty }) => (
+                <div key={p.slug} className="flex justify-between gap-3">
+                  <span className="text-ink/60">{p.name} ×{qty}</span>
+                  <span className="text-ink shrink-0">{formatPrice((p.price ?? 0) * qty)}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-b border-ink/12 pb-5 mb-5">
+              {coupon ? (
+                <div className="flex items-center justify-between gap-3">
+                  <span className="inline-flex items-center gap-2 bg-gold/15 border border-gold/45 rounded-full px-4 py-2 text-[0.64rem] tracking-tracksm uppercase text-ink">
+                    {coupon.code}
+                  </span>
+                  <button type="button" onClick={removeCoupon} className="text-ink/40 text-[0.64rem] tracking-tracksm uppercase hover:text-peri transition py-2">
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <label className="field-label" htmlFor="k-code">Discount code</label>
+                  <div className="flex gap-2">
+                    <input
+                      id="k-code"
+                      className="field uppercase"
+                      placeholder="Enter code"
+                      value={codeInput}
+                      onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => { if (e.key === "Enter") applyCoupon(); }}
+                    />
+                    <button
+                      type="button"
+                      onClick={applyCoupon}
+                      disabled={checking || !codeInput.trim()}
+                      className="shrink-0 border border-ink text-ink px-5 rounded-lg text-[0.64rem] tracking-tracksm uppercase hover:bg-ink hover:text-cream transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {checking ? "…" : "Apply"}
+                    </button>
+                  </div>
+                </>
+              )}
+              {couponMsg && <p className="text-peri text-xs mt-3 font-light" role="alert">{couponMsg}</p>}
+            </div>
+
+            <div className="space-y-3 body-text border-b border-ink/12 pb-5 mb-5">
+              <div className="flex justify-between">
+                <span className="text-ink/60">Subtotal</span>
+                <span className="text-ink">{formatPrice(subtotal)}</span>
+              </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-golddeep">
+                  <span>Discount</span>
+                  <span>−{formatPrice(discount)}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-ink/60">Shipping</span>
+                <span className="text-ink">{shipping === 0 ? "Free" : formatPrice(shipping)}</span>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-baseline">
+              <span className="text-ink/60 text-sm">Total</span>
+              <span className="font-display text-2xl md:text-3xl text-ink">{formatPrice(total)}</span>
+            </div>
+            <p className="text-ink/40 text-[11px] mt-1 mb-7">Inclusive of all taxes</p>
+
+            {closed && (
+              <div className="border border-gold/45 bg-gold/10 px-5 py-4 mb-5 text-ink/75 body-text">
+                {closed}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={pay}
+              disabled={busy || Boolean(closed)}
+              className="btn btn-primary btn-block"
+            >
+              {busy ? "Opening payment" : `Pay ${formatPrice(total)}`}
+            </button>
+
+            {err && <p className="text-peri text-xs text-center mt-4 font-light" role="alert">{err}</p>}
+
+            <p className="flex items-center justify-center gap-2 text-ink/45 text-[11px] mt-5">
+              <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <path d="M12 3l7 3v6c0 4-3 7.5-7 9-4-1.5-7-5-7-9V6l7-3z" strokeLinejoin="round" />
+              </svg>
+              Secure payment via Razorpay
+            </p>
+
+            <Link href="/cart" className="block text-center text-ink/50 text-[0.66rem] tracking-tracksm uppercase mt-4 py-2 hover:text-gold transition">
+              Back to cart
+            </Link>
           </div>
         </div>
       </div>
