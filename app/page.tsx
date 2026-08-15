@@ -2,217 +2,305 @@ import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import ProductCard from "@/components/ProductCard";
-import { products } from "@/lib/products";
-
-
 import HeroVideo from "@/components/HeroVideo";
-export default function Home() {
+import { getLiveProducts } from "@/lib/liveProducts";
+
+export const revalidate = 60;
+
+const TRUST = [
+  "FSSAI licensed · 10426330000072",
+  "Roasted, never fried",
+  "Free shipping over ₹499",
+  "Sealed the day it is packed",
+  "Hand sorted in Samastipur",
+];
+
+const REASONS = [
+  {
+    t: "Roasted at source",
+    b: "We roast in Samastipur, inside the belt where the crop grows. No long haul before it reaches the pouch.",
+  },
+  {
+    t: "Small batch, always",
+    b: "Batches are sized so nothing sits waiting. Every pouch is sealed the day it is packed and carries a date.",
+  },
+  {
+    t: "Hand sorted",
+    b: "Graded by size and colour before packing, so what you open is even rather than a mix of whatever came up.",
+  },
+  {
+    t: "Never deep fried",
+    b: "Hot air only, and no palm oil. It takes longer and costs more, and it is the only way to keep makhana light.",
+  },
+  {
+    t: "FSSAI licensed",
+    b: "Licence 10426330000072, GST invoiced, and every claim on the pack is one we can stand behind.",
+  },
+  {
+    t: "Answered by a person",
+    b: "Message the WhatsApp number and Sonu or someone on the team replies. Not a bot, not a ticket queue.",
+  },
+];
+
+const RECIPES = [
+  { t: "Makhana kheer", b: "Slow simmered in milk with cardamom and jaggery. The Kojagara classic.", time: "30 min", href: "/recipes/makhana-kheer", img: "/recipes/makhana-kheer.jpg" },
+  { t: "Makhana chaat", b: "Roasted, then tossed with onion, tomato, lemon and chaat masala.", time: "10 min", href: "/recipes/makhana-chaat", img: "/recipes/makhana-chaat.jpg" },
+  { t: "Makhana in curry", b: "Dropped into a tomato gravy at the end so it stays crisp.", time: "25 min", href: "/recipes/makhana-curry", img: "/recipes/makhana-curry.jpg" },
+];
+
+const MARKETPLACES = [
+  { n: "Amazon", f: "amazon", u: "https://www.amazon.in/Makheshwari-Makhana-Roasted-Non-Fried-Crunchy/dp/B0H4ZW8W6N" },
+  { n: "Flipkart", f: "flipkart", u: "https://www.flipkart.com/makheshwari-makhana-gm01-fox-nut/p/itm936f89f66380e" },
+  { n: "IndiaMART", f: "indiamart", u: "https://www.indiamart.com/proddetail/makheshwari-makhana-sonu-enterprises-2859488333273.html" },
+];
+
+export default async function Home() {
+  const products = await getLiveProducts();
+
   return (
     <>
       <HeroVideo />
-      <section className="bg-cream px-6 md:px-14 pb-10">
-        <div className="max-w-6xl mx-auto -mt-16 relative z-20 bg-ink rounded-[1.5rem] px-6 py-9 grid grid-cols-2 md:grid-cols-4 gap-8 shadow-[0_25px_50px_-20px_rgba(18,53,42,0.45)]">
-          {[
-            { t: "FSSAI licensed", s: "Lic. 10426330000072" },
-            { t: "Roasted, never fried", s: "Hot air, small batch" },
-            { t: "Ships across India", s: "Free over 499" },
-            { t: "Sealed fresh", s: "Dated on every pack" },
-          ].map((f) => (
-            <div key={f.t} className="text-center">
-              <p className="text-gold text-[11px] tracking-tracksm uppercase">{f.t}</p>
-              <p className="text-cream/50 text-[10px] mt-1.5">{f.s}</p>
+
+      {/* Trust strip — a quiet marquee rather than a floating card that
+          overlapped the hero and stacked badly on phones */}
+      <div className="bg-ink text-cream/70 overflow-hidden border-b border-cream/10">
+        <div className="flex whitespace-nowrap animate-marquee py-3.5">
+          {[0, 1].map((dup) => (
+            <div key={dup} className="flex shrink-0" aria-hidden={dup === 1}>
+              {TRUST.map((t) => (
+                <span
+                  key={t}
+                  className="flex items-center gap-3 px-6 text-[0.65rem] tracking-tracksm uppercase"
+                >
+                  <span className="w-1 h-1 rounded-full bg-gold shrink-0" />
+                  {t}
+                </span>
+              ))}
             </div>
           ))}
         </div>
-      </section>
+      </div>
 
-      <section className="bg-cream px-6 md:px-14 py-28">
-        <Reveal className="max-w-3xl mx-auto text-center">
-          <p className="text-gold text-[11px] tracking-track uppercase mb-5">Raw and natural</p>
-          <h2 className="font-display text-4xl md:text-6xl text-ink leading-tight mb-8">
-            Pure, natural,
-            <br />
-            and nothing else.
-          </h2>
-          <p className="text-ink/65 text-lg font-light leading-relaxed mb-5">
-            Our raw makhana is 100% plant based and naturally gluten free, sourced from the ponds of
-            the Mithila belt and sorted by hand for size and colour.
-          </p>
-          <p className="text-ink/65 text-lg font-light leading-relaxed mb-12">
-            Perfect on its own or added to your own cooking. Just the natural crunch, with no
-            additives, no preservatives and nothing to hide behind.
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {[
-              { t: "100% plant based", d: "M12 3v18M8 7c0 2 1.8 3.5 4 3.5M16 11c0 2-1.8 3.5-4 3.5" },
-              { t: "Naturally gluten free", d: "M12 3v18M12 8c-2.5-1.5-4-1-4-1s.5 2.5 4 3.5M12 8c2.5-1.5 4-1 4-1s-.5 2.5-4 3.5M12 14c-2.5-1.5-4-1-4-1s.5 2.5 4 3.5M12 14c2.5-1.5 4-1 4-1s-.5 2.5-4 3.5" },
-              { t: "No additives", d: "M12 4a8 8 0 100 16 8 8 0 000-16zM8 8l8 8" },
-              { t: "No preservatives", d: "M12 3l7 3v6c0 4-3 7.5-7 9-4-1.5-7-5-7-9V6l7-3z" },
-              { t: "Single ingredient", d: "M12 4a8 8 0 100 16 8 8 0 000-16zM12 9v6M9 12h6" },
-              { t: "Hand sorted", d: "M8 12V6a1.5 1.5 0 013 0v5M11 11V5a1.5 1.5 0 013 0v6M14 11V7a1.5 1.5 0 013 0v8a5 5 0 01-5 5H10a4 4 0 01-3.5-2L5 15" },
-              { t: "Roasted, never fried", d: "M12 3c2.5 3 4.5 5 4.5 8a4.5 4.5 0 01-9 0c0-3 2-5 4.5-8z" },
-              { t: "Exclusively vegetarian", d: "M12 3a9 9 0 100 18 9 9 0 000-18zM8 12h8" },
-            ].map((b) => (
-              <span key={b.t} className="inline-flex items-center gap-2.5 border border-ink/20 rounded-full pl-4 pr-5 py-2.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold hover:text-ink transition duration-300">
-                <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0 text-gold" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d={b.d} /></svg>
-                {b.t}
-              </span>
-            ))}
-          </div>
-
-          <Link href="/shop" className="inline-block bg-ink text-cream rounded-full px-10 py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition">
-            Explore all
-          </Link>
-        </Reveal>
-      </section>
-
-      <section className="bg-cream px-6 md:px-14 pb-24">
+      {/* PRODUCTS — moved directly under the hero. Previously these sat
+          below a long essay section, a third of the way down the page. */}
+      <section className="wrap section">
         <Reveal>
-          <p className="text-gold text-[11px] tracking-track uppercase mb-4">The range</p>
-          <h2 className="font-display text-4xl md:text-5xl text-ink mb-3">Flavoured makhana</h2>
-          <p className="text-ink/60 font-light max-w-xl mb-14">
-            Whole makhana, roasted in small batches and seasoned by hand. Three flavours now, more
-            on the way.
-          </p>
+          <div className="flex items-end justify-between flex-wrap gap-5 mb-9 md:mb-12">
+            <div className="max-w-xl">
+              <p className="marker mb-5">The range</p>
+              <h2 className="display-lg text-ink">Three flavours,<br />one honest crunch.</h2>
+            </div>
+            <Link href="/shop" className="link-quiet text-ink/60 hover:text-ink">
+              All products →
+            </Link>
+          </div>
         </Reveal>
 
-        <div className="grid md:grid-cols-3 gap-8 perspective">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 lg:gap-7">
           {products.map((p, i) => (
-            <Reveal key={p.slug} delay={i * 130}>
+            <Reveal key={p.slug} delay={i * 90} className="h-full">
               <ProductCard product={p} />
             </Reveal>
           ))}
         </div>
       </section>
 
-      <section className="bg-cream">
-        <div className="grid md:grid-cols-2 items-stretch">
+      {/* Origin — asymmetric split, image bleeding to the edge */}
+      <section className="bg-ink text-cream overflow-hidden">
+        <div className="grid lg:grid-cols-2 items-stretch">
+          <div className="relative min-h-[15rem] sm:min-h-[22rem] lg:min-h-[34rem] order-1 lg:order-none">
+            <Image
+              src="/brand/harvest.jpg"
+              alt="Makhana harvest in the ponds of Mithila"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
+          </div>
+
           <Reveal>
-            <div className="h-full min-h-[16rem] md:min-h-[20rem] bg-sand/40">
-              <Image src="/brand/harvest.jpg" alt="Makhana harvest in the ponds of Mithila" width={900} height={700} sizes="(max-width: 768px) 100vw, 50vw" className="w-full h-full object-cover" />
-            </div>
-          </Reveal>
-          <Reveal delay={160}>
-            <div className="px-8 md:px-12 py-12 flex flex-col justify-center h-full">
-              <p className="text-gold text-[11px] tracking-track uppercase mb-5">Know your makhana</p>
-              <h2 className="font-display text-3xl md:text-4xl text-ink mb-5 leading-tight">It begins waist-deep in water.</h2>
-              <p className="text-ink/65 font-light leading-relaxed mb-8">Makhana does not grow on a plant you can walk up to. It grows underwater, on a prickly water lily rooted in the pond bed, and every seed is brought up by hand. We buy from those ponds, roast in Samastipur, and seal the same day.</p>
-              <Link href="/know-your-makhana" className="self-start bg-ink text-cream rounded-full px-11 py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition">
-                Know more
+            <div className="h-full flex flex-col justify-center px-[clamp(1.15rem,5vw,4.5rem)] py-14 md:py-20">
+              <p className="marker marker-light mb-5">Know your makhana</p>
+              <h2 className="display-lg text-cream">It begins waist-deep in water.</h2>
+              <p className="lede text-cream/65 mt-6 max-w-md">
+                Makhana does not grow on a plant you can walk up to. It grows underwater, on a
+                prickly water lily rooted in the pond bed, and every seed is brought up by hand.
+              </p>
+              <p className="text-cream/55 body-text mt-4 max-w-md">
+                We buy from those ponds, roast in Samastipur, and seal the same day.
+              </p>
+              <Link href="/know-your-makhana" className="btn btn-light self-start mt-9">
+                See how it is made
               </Link>
             </div>
           </Reveal>
         </div>
       </section>
 
-<section className="bg-sand/30 px-6 md:px-14 py-24">
-        <Reveal className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-gold text-[11px] tracking-track uppercase mb-4">Why choose us</p>
-            <h2 className="font-display text-4xl md:text-5xl text-ink mb-5">
-              Closer to the pond than anyone else.
-            </h2>
-            <p className="text-ink/60 font-light max-w-2xl mx-auto leading-relaxed">
-              Most makhana leaves Bihar in sacks and gets packed under someone else&apos;s name. Ours
-              never leaves.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-7">
-            {[
-              { t: "Roasted at source", b: "We roast in Samastipur, inside the belt where the crop grows. No long haul before it reaches the pouch.", d: "M12 3c2.5 3 4.5 5 4.5 8a4.5 4.5 0 01-9 0c0-3 2-5 4.5-8z" },
-              { t: "Small batch, always", b: "Batches are sized so nothing sits waiting. Every pouch is sealed the day it is packed and carries a date.", d: "M5 8h14l-1.5 12h-11L5 8zM9 8V6a3 3 0 016 0v2" },
-              { t: "Hand sorted", b: "Graded by size and colour before packing, so what you open is even rather than a mix of whatever came up.", d: "M8 12V6a1.5 1.5 0 013 0v5M11 11V5a1.5 1.5 0 013 0v6M14 11V7a1.5 1.5 0 013 0v8a5 5 0 01-5 5H10a4 4 0 01-3.5-2L5 15" },
-              { t: "Never deep fried", b: "Hot air only, and no palm oil. It takes longer and costs more, and it is the only way to keep makhana light.", d: "M4 12h16M7 8c1.5-2 3-2 5 0s3.5 2 5 0M7 16c1.5 2 3 2 5 0s3.5-2 5 0" },
-              { t: "FSSAI licensed", b: "Licence 10426330000072, GST invoiced, and every claim on the pack is one we can stand behind.", d: "M12 3l7 3v6c0 4-3 7.5-7 9-4-1.5-7-5-7-9V6l7-3zM9 12l2 2 4-4" },
-              { t: "Answered by a person", b: "Message the WhatsApp number and Sonu or someone on the team replies. Not a bot, not a ticket queue.", d: "M21 12a8 8 0 11-3.2-6.4L21 4l-1 4M4 12a8 8 0 0013.5 5.8" },
-            ].map((c, i) => (
-              <Reveal key={c.t} delay={i * 90}>
-                <div className="bg-white rounded-[1.5rem] border border-ink/10 p-9 h-full transition-all duration-500 hover:-translate-y-2 hover:border-gold/60 hover:shadow-[0_25px_50px_-22px_rgba(18,53,42,0.3)]">
-                  <span className="inline-flex w-12 h-12 rounded-full bg-gold/15 items-center justify-center mb-6">
-                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-gold" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={c.d} /></svg>
-                  </span>
-                  <h3 className="font-display text-2xl text-ink mb-3">{c.t}</h3>
-                  <p className="text-ink/55 text-sm font-light leading-relaxed">{c.b}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+      {/* Why us — numbered editorial list. Replaces six white drop-shadow
+          cards with icons, which was the most template-like block on the page. */}
+      <section className="wrap section">
+        <Reveal className="max-w-2xl mb-12 md:mb-16">
+          <p className="marker mb-5">Why choose us</p>
+          <h2 className="display-lg text-ink">Closer to the pond than anyone else.</h2>
+          <p className="lede text-ink/60 mt-6">
+            Most makhana leaves Bihar in sacks and gets packed under someone else&apos;s name. Ours
+            never leaves.
+          </p>
         </Reveal>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 lg:gap-x-14 gap-y-0">
+          {REASONS.map((c, i) => (
+            <Reveal key={c.t} delay={i * 70}>
+              <div className="border-t border-ink/15 py-7 md:py-9 h-full">
+                <span className="font-display text-gold text-sm tabular-nums">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="display-sm text-ink mt-3">{c.t}</h3>
+                <p className="text-ink/60 body-text mt-3">{c.b}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
       </section>
 
-      <section className="bg-cream px-6 md:px-14 py-24">
-        <Reveal className="max-w-6xl mx-auto">
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-4">
-            <div>
-              <p className="text-gold text-[11px] tracking-track uppercase mb-4">From the kitchen</p>
-              <h2 className="font-display text-4xl md:text-5xl text-ink">More than a snack</h2>
+      {/* Purity — full-bleed sand field, centred for contrast with the
+          left-aligned sections above and below */}
+      <section className="bg-sandsoft/70 border-y border-ink/10">
+        <div className="wrap-mid section text-center">
+          <Reveal>
+            <p className="marker marker-center mb-6">Raw and natural</p>
+            <h2 className="display-lg text-ink">Pure, natural,<br />and nothing else.</h2>
+            <p className="lede text-ink/65 mt-7 max-w-xl mx-auto">
+              Sourced from the ponds of the Mithila belt and sorted by hand for size and colour. No
+              additives, no preservatives, and nothing to hide behind.
+            </p>
+
+            <ul className="flex flex-wrap justify-center gap-x-2 gap-y-2.5 mt-10">
+              {[
+                "100% plant based",
+                "Naturally gluten free",
+                "No additives",
+                "No preservatives",
+                "Single ingredient",
+                "Hand sorted",
+                "Roasted, never fried",
+                "Exclusively vegetarian",
+              ].map((t) => (
+                <li
+                  key={t}
+                  className="border border-ink/20 rounded-full px-4 py-2 text-[0.64rem] tracking-tracksm uppercase text-ink/65"
+                >
+                  {t}
+                </li>
+              ))}
+            </ul>
+
+            <Link href="/shop" className="btn btn-primary mt-10">
+              Explore all
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Recipes — now with the images that already sit unused in /public */}
+      <section className="wrap section">
+        <Reveal>
+          <div className="flex items-end justify-between flex-wrap gap-5 mb-9 md:mb-12">
+            <div className="max-w-xl">
+              <p className="marker mb-5">From the kitchen</p>
+              <h2 className="display-lg text-ink">More than a snack</h2>
+              <p className="text-ink/60 body-text mt-5">
+                Makhana has been cooked in Mithila kitchens for generations, long before anyone put
+                it in a pouch.
+              </p>
             </div>
-            <Link href="/recipes" className="text-ink/60 text-[11px] tracking-tracksm uppercase hover:text-gold transition">
-              All recipes &rarr;
+            <Link href="/recipes" className="link-quiet text-ink/60 hover:text-ink">
+              All recipes →
             </Link>
           </div>
-          <p className="text-ink/60 font-light max-w-xl mb-14">
-            Makhana has been cooked in Mithila kitchens for generations, long before anyone put it
-            in a pouch.
-          </p>
+        </Reveal>
 
-          <div className="grid md:grid-cols-3 gap-7">
-            {[
-              { t: "Makhana kheer", b: "Slow simmered in milk with cardamom and jaggery. The Kojagara classic.", time: "30 min", href: "/recipes/makhana-kheer" },
-              { t: "Makhana chaat", b: "Roasted, then tossed with onion, tomato, lemon and chaat masala.", time: "10 min", href: "/recipes/makhana-chaat" },
-              { t: "Makhana in curry", b: "Dropped into a tomato gravy at the end so it stays crisp.", time: "25 min", href: "/recipes/makhana-curry" },
-            ].map((r, i) => (
-              <Reveal key={r.t} delay={i * 120}>
-                <Link href={r.href} className="block group rounded-[1.5rem] bg-white border border-ink/10 p-9 h-full transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_28px_55px_-20px_rgba(18,53,42,0.25)]">
-                  <span className="inline-block text-[9px] tracking-track uppercase text-ink/45 mb-6">
+        <div className="grid sm:grid-cols-3 gap-4 md:gap-7">
+          {RECIPES.map((r, i) => (
+            <Reveal key={r.t} delay={i * 90} className="h-full">
+              <Link href={r.href} className="group block h-full">
+                <div className="relative aspect-[4/3] overflow-hidden bg-sandsoft">
+                  <Image
+                    src={r.img}
+                    alt={r.t}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-[900ms] group-hover:scale-105"
+                  />
+                  <span className="absolute top-3 left-3 bg-paper/90 text-ink text-[0.6rem] tracking-tracksm uppercase px-3 py-1.5 rounded-full">
                     {r.time}
                   </span>
-                  <h3 className="font-display text-2xl text-ink mb-4 group-hover:text-gold transition">
-                    {r.t}
-                  </h3>
-                  <p className="text-ink/55 text-sm font-light leading-relaxed">{r.b}</p>
-                  <span className="inline-block mt-7 text-gold text-[10px] tracking-tracksm uppercase">
-                    Read recipe &rarr;
-                  </span>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </Reveal>
+                </div>
+                <h3 className="display-sm text-ink mt-5 group-hover:text-gold transition">{r.t}</h3>
+                <p className="text-ink/60 body-text mt-2">{r.b}</p>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
       </section>
 
-<section className="bg-gold px-6 md:px-14 py-20">
-        <Reveal className="max-w-5xl mx-auto text-center">
-          <p className="text-ink/60 text-[11px] tracking-track uppercase mb-4">Also available on</p>
-          <h2 className="font-display text-ink text-3xl md:text-4xl mb-4">Buy where you already shop</h2>
-          <p className="text-ink/60 font-light mb-14">Same makhana, same Samastipur roastery.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {[{ n: "Amazon", f: "amazon", u: "https://www.amazon.in/Makheshwari-Makhana-Roasted-Non-Fried-Crunchy/dp/B0H4ZW8W6N" }, { n: "Flipkart", f: "flipkart", u: "https://www.flipkart.com/makheshwari-makhana-gm01-fox-nut/p/itm936f89f66380e" }, { n: "IndiaMART", f: "indiamart", u: "https://www.indiamart.com/proddetail/makheshwari-makhana-sonu-enterprises-2859488333273.html" }].map((m) => (
-              <a key={m.n} href={m.u} target="_blank" rel="noopener noreferrer" title={`Buy on ${m.n}`} className="group bg-white rounded-[1.25rem] h-24 flex items-center justify-center px-8 transition-all duration-400 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-16px_rgba(18,53,42,0.4)]">
-                <Image src={`/marketplaces/${m.f}.jpg`} alt={m.n} width={160} height={48} className="max-h-11 max-w-[70%] w-auto object-contain transition-transform duration-400 group-hover:scale-105" />
-              </a>
-            ))}
-          </div>
-        </Reveal>
+      {/* Marketplaces */}
+      <section className="bg-ink text-cream">
+        <div className="wrap section-sm">
+          <Reveal className="flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-16">
+            <div className="lg:w-1/3">
+              <p className="marker marker-light mb-5">Also available on</p>
+              <h2 className="display-md text-cream">Buy where you already shop</h2>
+              <p className="text-cream/55 body-text mt-4">
+                Same makhana, same Samastipur roastery.
+              </p>
+            </div>
+
+            <div className="lg:flex-1 grid grid-cols-3 gap-3 md:gap-5">
+              {MARKETPLACES.map((m) => (
+                <a
+                  key={m.n}
+                  href={m.u}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`Buy on ${m.n}`}
+                  className="group bg-paper h-20 md:h-28 flex items-center justify-center transition-colors hover:bg-gold"
+                >
+                  {/* These three logos have very different aspect ratios and
+                      differing amounts of baked-in whitespace, so scale each
+                      to fit its tile rather than capping a shared height. */}
+                  <Image
+                    src={`/marketplaces/${m.f}.jpg`}
+                    alt={m.n}
+                    width={220}
+                    height={220}
+                    className="w-full h-full object-contain p-3 md:p-4 mix-blend-multiply"
+                  />
+                </a>
+              ))}
+            </div>
+          </Reveal>
+        </div>
       </section>
 
-<section className="bg-cream px-6 md:px-14 py-24">
-        <Reveal className="max-w-4xl mx-auto">
-          <div className="rounded-[2rem] bg-gradient-to-br from-mint/20 to-gold/25 p-12 md:p-16 text-center">
-            <p className="text-gold text-[11px] tracking-track uppercase mb-5">Bulk and reseller</p>
-            <h2 className="font-display text-3xl md:text-5xl text-ink mb-5">Buying by the carton?</h2>
-            <p className="text-ink/60 font-light max-w-xl mx-auto leading-relaxed">
-              We supply retailers, distributors and corporate gifting direct from our Samastipur
-              unit.
-            </p>
-            <Link
-              href="/bulk-orders"
-              className="inline-block mt-9 bg-ink text-cream rounded-full px-10 py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition"
-            >
-              Request bulk pricing
-            </Link>
+      {/* Bulk */}
+      <section className="wrap section">
+        <Reveal>
+          <div className="border border-ink/15 bg-paper px-6 py-12 md:px-16 md:py-16 grid lg:grid-cols-[1.2fr_1fr] gap-8 lg:gap-16 items-center">
+            <div>
+              <p className="marker mb-5">Bulk & reseller</p>
+              <h2 className="display-md text-ink">Buying by the carton?</h2>
+              <p className="text-ink/60 body-text mt-5 max-w-md">
+                We supply retailers, distributors and corporate gifting direct from our Samastipur
+                unit, with GST invoicing and custom pack sizes.
+              </p>
+            </div>
+            <div className="lg:justify-self-end">
+              <Link href="/bulk-orders" className="btn btn-primary">
+                Request bulk pricing
+              </Link>
+            </div>
           </div>
         </Reveal>
       </section>

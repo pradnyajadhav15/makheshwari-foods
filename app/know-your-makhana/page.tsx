@@ -5,7 +5,8 @@ import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Know your makhana",
-  description: "How makhana travels from the pond beds of Mithila to a sealed pouch. Nine steps, most of them still done by hand.",
+  description:
+    "How makhana travels from the pond beds of Mithila to a sealed pouch. Nine steps, most of them still done by hand.",
 };
 
 const steps = [
@@ -23,51 +24,70 @@ const steps = [
 export default function KnowYourMakhana() {
   return (
     <>
-      <section className="bg-ink px-6 md:px-14 pt-20 pb-14 text-center">
-        <Reveal>
-          <p className="text-gold text-[11px] tracking-track uppercase mb-5">The process</p>
-          <h1 className="font-display text-cream text-4xl md:text-6xl mb-7 leading-tight">Know your makhana</h1>
-          <p className="text-cream/65 font-light max-w-2xl mx-auto leading-relaxed">
-            Most people meet makhana in a bowl. Nine steps happen before that, and most of them are
-            still done by hand.
-          </p>
-        </Reveal>
+      <section className="bg-ink text-cream">
+        <div className="wrap pt-14 pb-16 md:pt-20 md:pb-24">
+          <div className="max-w-3xl">
+            <p className="marker marker-light mb-6">The process</p>
+            <h1 className="display-xl text-cream">
+              Know your
+              <br />
+              makhana
+            </h1>
+            <p className="lede text-cream/65 mt-7 max-w-xl">
+              Most people meet makhana in a bowl. Nine steps happen before that, and most of them
+              are still done by hand.
+            </p>
+          </div>
+        </div>
       </section>
-      
 
-      <section className="bg-cream px-6 md:px-14 py-16">
-        <div className="max-w-5xl mx-auto space-y-4">
+      <section className="wrap section">
+        <div className="space-y-16 md:space-y-24">
           {steps.map((s, i) => (
-            <Reveal key={s.n} delay={60}>
-              <div className={`grid md:grid-cols-2 gap-8 md:gap-12 items-center ${i % 2 === 1 ? "md:[direction:rtl]" : ""}`}>
-                <div className="md:[direction:ltr] rounded-[1.5rem] overflow-hidden bg-sand/40 aspect-[4/3]">
-                  <Image src={`/brand/process/${s.n}.jpg`} alt={s.t} width={800} height={600} sizes="(max-width: 768px) 100vw, 45vw" className="w-full h-full object-cover" />
+            <Reveal key={s.n}>
+              {/* Alternating sides via grid order — the old build used
+                  `direction: rtl` overrides, which flipped punctuation too. */}
+              <article className="grid md:grid-cols-2 gap-6 md:gap-12 lg:gap-16 items-center">
+                <div
+                  className={`relative aspect-[4/3] overflow-hidden bg-sandsoft ${
+                    i % 2 === 1 ? "md:order-2" : ""
+                  }`}
+                >
+                  <Image
+                    src={`/brand/process/${s.n}.jpg`}
+                    alt={s.t}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 45vw"
+                    className="object-cover"
+                  />
                 </div>
-                <div className="md:[direction:ltr] py-4">
-                  <p className="font-display text-gold text-4xl mb-4">{s.n}</p>
-                  <h2 className="font-display text-3xl md:text-4xl text-ink mb-5 leading-tight">{s.t}</h2>
-                  <p className="text-ink/60 font-light leading-relaxed">{s.b}</p>
+
+                <div className={i % 2 === 1 ? "md:order-1" : ""}>
+                  <p className="font-display text-gold text-3xl md:text-4xl tabular-nums">{s.n}</p>
+                  <h2 className="display-md text-ink mt-3">{s.t}</h2>
+                  <p className="text-ink/65 lede mt-5 max-w-lg">{s.b}</p>
                 </div>
-              </div>
+              </article>
             </Reveal>
           ))}
         </div>
       </section>
 
-      
-      <section className="bg-ink px-6 md:px-14 py-20 text-center">
-        <Reveal>
-          <h2 className="font-display text-cream text-3xl md:text-4xl mb-6 leading-tight">
+      <section className="bg-ink text-cream">
+        <div className="wrap section-sm grid md:grid-cols-2 gap-8 md:gap-14 items-center">
+          <h2 className="display-md text-cream">
             Nine steps, and only the last one has our name on it.
           </h2>
-          <p className="text-cream/60 font-light max-w-xl mx-auto leading-relaxed mb-10">
-            Everything before that belongs to the pond, the season and the people who have been
-            doing this in Mithila for generations.
-          </p>
-          <Link href="/shop" className="inline-block bg-gold text-ink rounded-full px-12 py-4 text-[11px] tracking-tracksm uppercase hover:bg-goldsoft transition">
-            Shop the range
-          </Link>
-        </Reveal>
+          <div>
+            <p className="text-cream/60 body-text mb-8">
+              Everything before that belongs to the pond, the season and the people who have been
+              doing this in Mithila for generations.
+            </p>
+            <Link href="/shop" className="btn btn-gold">
+              Shop the range
+            </Link>
+          </div>
+        </div>
       </section>
     </>
   );

@@ -3,97 +3,89 @@
 import Link from "next/link";
 import Image from "next/image";
 import AddToCart from "@/components/AddToCart";
-import Tilt from "@/components/Tilt";
-import { accentClass, accentText, formatPrice, type Product } from "@/lib/products";
+import { accentClass, formatPrice, type Product } from "@/lib/products";
 
 type CardProduct = Product & { stock?: number; lowStock?: boolean };
 
 export default function ProductCard({ product: p }: { product: CardProduct }) {
   const img = `/products/${p.slug === "himalayan-pink-salt" ? "pink-salt" : p.slug}.jpg`;
   const sold = p.inStock === false;
+  const href = `/shop/makhana/${p.slug}`;
+
+  const saving =
+    p.mrp && p.price && p.mrp > p.price
+      ? Math.round(((p.mrp - p.price) / p.mrp) * 100)
+      : null;
 
   return (
-    <Tilt className="h-full"><article className="group bg-white rounded-[1.5rem] border border-ink/10 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-20px_rgba(18,53,42,0.28)]">
-      <div className="relative p-5">
-        <div className="relative rounded-[1rem] overflow-hidden bg-cream/70">
-          <svg className="absolute inset-0 w-full h-full opacity-[0.13]" aria-hidden="true">
-            <defs>
-              <pattern id={`p-${p.slug}`} width="52" height="52" patternUnits="userSpaceOnUse">
-                <path d="M26 12 C20 18 20 30 26 36 C32 30 32 18 26 12 Z" fill="none" stroke="#12352A" strokeWidth="1" />
-                <circle cx="6" cy="6" r="1.6" fill="#C9A227" />
-                <circle cx="46" cy="46" r="1.6" fill="#C9A227" />
-                <path d="M0 26 H8 M44 26 H52" stroke="#12352A" strokeWidth="0.8" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill={`url(#p-${p.slug})`} />
-          </svg>
+    <article className="pcard">
+      {/* Flavour accent — a real field at the top of the card rather than a 1px stripe */}
+      <div className={`h-1.5 ${accentClass[p.accent]}`} />
 
-          <div className="absolute inset-3 border border-gold/35 rounded-[0.7rem] pointer-events-none" />
-          <div className="absolute inset-[0.9rem] border border-gold/20 rounded-[0.5rem] pointer-events-none" />
+      <Link href={href} className="pcard-media" aria-label={p.name}>
+        <Image
+          src={img}
+          alt={p.name}
+          width={520}
+          height={520}
+          sizes="(max-width: 640px) 46vw, (max-width: 1024px) 32vw, 340px"
+          className={sold ? "opacity-40 grayscale" : ""}
+        />
 
-          {sold && (
-            <span className="absolute top-4 left-4 z-10 bg-ink/85 text-cream text-[9px] tracking-tracksm uppercase px-3.5 py-1.5 rounded-full">
-              Sold out
-            </span>
-          )}
-          {!sold && p.lowStock && (
-            <span className="absolute top-4 left-4 z-10 bg-gold text-ink text-[9px] tracking-tracksm uppercase px-3.5 py-1.5 rounded-full">
-              Only {p.stock} left
-            </span>
-          )}
+        {sold && (
+          <span className="absolute top-3 left-3 bg-ink text-cream text-[0.6rem] tracking-tracksm uppercase px-3 py-1.5 rounded-full">
+            Sold out
+          </span>
+        )}
+        {!sold && p.lowStock && (
+          <span className="absolute top-3 left-3 bg-gold text-ink text-[0.6rem] tracking-tracksm uppercase px-3 py-1.5 rounded-full">
+            Only {p.stock} left
+          </span>
+        )}
+        {!sold && saving && (
+          <span className="absolute top-3 right-3 bg-ink/90 text-cream text-[0.6rem] tracking-tracksm uppercase px-3 py-1.5 rounded-full">
+            {saving}% off
+          </span>
+        )}
+      </Link>
 
-          <Link href={`/shop/makhana/${p.slug}`} className={`relative block aspect-square flex items-center justify-center p-8 ${sold ? "opacity-45 grayscale" : ""}`}>
-            <Image
-              src={img}
-              alt={p.name}
-              width={400}
-              height={400}
-              sizes="(max-width: 768px) 45vw, 320px"
-              className="max-h-full w-auto mx-auto transition-transform duration-700 group-hover:scale-105"
-            />
-          </Link>
-
-          {!sold && (
-            <Link
-              href={`/shop/makhana/${p.slug}`}
-              aria-label={`Add ${p.name}`}
-              className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-ink text-cream flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-gold hover:text-ink"
-            >
-              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.7">
-                <path d="M12 6v12M6 12h12" strokeLinecap="round" />
-              </svg>
-            </Link>
-          )}
-        </div>
-      </div>
-
-      <div className={`h-1 mx-5 rounded-full ${accentClass[p.accent]}`} />
-
-      <div className="px-7 pt-6 pb-8 text-center">
-        <p className="text-gold text-[9px] tracking-track uppercase mb-3">Makheshwari</p>
-        <h3 className="font-display text-2xl text-ink leading-tight">
-          <Link href={`/shop/makhana/${p.slug}`} className="hover:text-gold transition">
+      <div className="flex flex-col flex-1 p-4 sm:p-5 lg:p-6">
+        <h3 className="font-display text-xl sm:text-2xl leading-tight text-ink">
+          <Link href={href} className="hover:text-gold transition">
             {p.name}
           </Link>
         </h3>
-        <p className={`${accentText[p.accent]} text-sm mt-3 font-light`}>{p.hook}</p>
 
-        <div className="flex items-center justify-center gap-3 mt-6 pt-5 border-t border-ink/10">
-          <span className="font-display text-xl text-ink">{formatPrice(p.price)}</span>
-          <span className="w-1 h-1 rounded-full bg-ink/25" />
-          <span className="text-ink/50 text-xs">{p.weightG} g</span>
+        <p className="text-ink/55 text-[0.82rem] font-light leading-snug mt-2 line-clamp-2">
+          {p.hook}
+        </p>
+
+        {/* Price block — prominent, with MRP and pack size sitting under it */}
+        <div className="mt-4 sm:mt-5 pt-4 border-t border-ink/10">
+          <div className="flex items-baseline flex-wrap gap-x-2.5 gap-y-1">
+            <span className="font-display text-xl sm:text-2xl text-ink">
+              {formatPrice(p.price)}
+            </span>
+            {p.mrp && p.price && p.mrp > p.price && (
+              <span className="text-ink/35 text-sm line-through">{formatPrice(p.mrp)}</span>
+            )}
+          </div>
+          <p className="text-ink/45 text-[0.72rem] mt-1">
+            {p.weightG} g · incl. of all taxes
+          </p>
         </div>
 
-        <div className="mt-6">
+        {/* Always-visible action. The old card hid this behind :hover. */}
+        <div className="mt-auto pt-4 sm:pt-5">
           {sold ? (
-            <button type="button" disabled className="w-full bg-ink/15 text-ink/40 rounded-full py-4 text-[11px] tracking-tracksm uppercase cursor-not-allowed">
+            <button type="button" disabled className="btn btn-outline btn-block">
               Sold out
             </button>
           ) : (
-            <AddToCart slug={p.slug} />
+            <AddToCart slug={p.slug} className="btn btn-primary btn-block" />
           )}
         </div>
       </div>
-    </article></Tilt>
+    </article>
   );
 }
