@@ -14,6 +14,7 @@ const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: `${BASE}/products`, label: "Products", icon: "products" },
   { href: `${BASE}/orders`, label: "Orders", icon: "orders" },
   { href: `${BASE}/customers`, label: "Customers", icon: "customers" },
+  { href: `${BASE}/enquiries`, label: "Bulk enquiries", icon: "content" },
   { href: `${BASE}/inventory`, label: "Inventory", icon: "inventory" },
   { href: `${BASE}/categories`, label: "Categories", icon: "categories" },
   { href: `${BASE}/coupons`, label: "Coupons & Offers", icon: "coupons" },
