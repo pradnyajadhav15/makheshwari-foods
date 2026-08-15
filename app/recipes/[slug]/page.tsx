@@ -6,7 +6,6 @@ import { IngredientList, StepList } from "@/components/RecipeInteractive";
 import { recipes, getRecipe } from "@/lib/recipes";
 
 const bar = { peri: "bg-peri", mint: "bg-mint", salt: "bg-salt" };
-const soft = { peri: "bg-peri/10", mint: "bg-mint/10", salt: "bg-salt/10" };
 
 export function generateStaticParams() {
   return recipes.map((r) => ({ slug: r.slug }));
@@ -38,94 +37,108 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
     author: { "@type": "Organization", name: "Makheshwari Foods" },
   };
 
+  const meta: [string, string][] = [
+    ["Time", r.time],
+    ["Serves", r.serves],
+    ["Level", r.difficulty],
+    ["Uses", r.uses],
+  ];
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 
-      <section className={`${soft[r.accent]} px-6 md:px-14 pt-10 pb-16`}>
-        <div className="max-w-5xl mx-auto">
-          <Link href="/recipes" className="text-ink/45 text-[10px] tracking-tracksm uppercase hover:text-gold transition">&larr; All recipes</Link>
+      {/* Full-bleed image hero with the title over it */}
+      <section className="relative isolate overflow-hidden bg-inkdeep flex items-end min-h-[24rem] md:min-h-[32rem]">
+        <Image
+          src={`/recipes/${r.slug}.jpg`}
+          alt={r.name}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <span className="hero-scrim" aria-hidden="true" />
 
-          <div className="relative aspect-[16/9] w-full max-w-2xl rounded-[1.25rem] overflow-hidden mt-8 shadow-[0_24px_55px_-28px_rgba(18,53,42,0.4)]">
-            <Image
-              src={`/recipes/${r.slug}.jpg`}
-              alt={r.name}
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, 64rem"
-              className="object-cover"
-            />
-          </div>
-
-          <div className="grid md:grid-cols-[1fr_auto] gap-10 items-end mt-10">
-            <div>
-              <h1 className="font-display text-5xl md:text-7xl text-ink leading-[1.03]">{r.name}</h1>
-              <div className={`h-1.5 w-20 ${bar[r.accent]} mt-6`} />
-              <p className="text-ink/65 text-lg font-light leading-relaxed max-w-xl mt-7">{r.intro}</p>
-            </div>
-
-            <div className="bg-white rounded-[1.25rem] border border-ink/10 p-7 min-w-[13rem]">
-              {[
-                ["Time", r.time],
-                ["Serves", r.serves],
-                ["Level", r.difficulty],
-                ["Uses", r.uses],
-              ].map(([k, v]) => (
-                <div key={k} className="py-2.5 border-b border-ink/10 last:border-0">
-                  <p className="text-ink/40 text-[9px] tracking-tracksm uppercase">{k}</p>
-                  <p className="text-ink text-sm font-light mt-0.5">{v}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="wrap relative z-10 pt-20 pb-10 md:pb-14">
+          <Link href="/recipes" className="link-quiet text-cream/70 hover:text-gold mb-5">
+            ← All recipes
+          </Link>
+          <h1 className="display-xl text-cream max-w-3xl">{r.name}</h1>
+          <div className={`h-1.5 w-20 ${bar[r.accent]} mt-6`} />
         </div>
       </section>
 
-      <section className="bg-cream px-6 md:px-14 py-14">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-[20rem_1fr] gap-8 items-start">
-          <div className="md:sticky md:top-28">
+      <section className="wrap section-sm">
+        <div className="grid lg:grid-cols-[1fr_auto] gap-8 lg:gap-14 items-start">
+          <p className="lede text-ink/70 max-w-2xl">{r.intro}</p>
+
+          <dl className="border border-ink/12 bg-paper p-6 min-w-full lg:min-w-[14rem] grid grid-cols-2 lg:block gap-x-6">
+            {meta.map(([k, v]) => (
+              <div key={k} className="py-2.5 lg:border-b border-ink/10 last:border-0">
+                <dt className="text-ink/45 text-[0.6rem] tracking-tracksm uppercase">{k}</dt>
+                <dd className="text-ink body-text mt-0.5">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <section className="wrap pb-14 md:pb-20">
+        <div className="grid lg:grid-cols-[20rem_1fr] gap-8 lg:gap-12 items-start">
+          <div className="lg:sticky lg:top-28">
             <IngredientList groups={r.ingredients} />
           </div>
 
           <div>
-            <h2 className="font-display text-2xl text-ink mb-6">Method</h2>
+            <h2 className="display-sm text-ink mb-5">Method</h2>
             <StepList steps={r.steps} />
 
-            <div className="mt-12 bg-ink rounded-[1.5rem] p-9">
-              <h2 className="font-display text-cream text-2xl mb-7">Worth knowing</h2>
-              <div className="space-y-5">
+            <div className="mt-12 bg-ink text-cream p-7 sm:p-9">
+              <h2 className="display-sm text-cream mb-6">Worth knowing</h2>
+              <ul className="space-y-4">
                 {r.tips.map((t) => (
-                  <div key={t} className="flex gap-4">
-                    <span className="text-gold shrink-0 mt-1">&bull;</span>
-                    <p className="text-cream/70 text-sm font-light leading-relaxed">{t}</p>
-                  </div>
+                  <li key={t} className="flex gap-4">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold shrink-0 mt-2.5" />
+                    <p className="text-cream/70 body-text">{t}</p>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-cream px-6 md:px-14 pb-20">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid sm:grid-cols-2 gap-6 mb-10">
+      <section className="bg-sandsoft/60 border-t border-ink/10">
+        <div className="wrap section-sm">
+          <p className="marker mb-6">Keep cooking</p>
+
+          <div className="grid sm:grid-cols-2 gap-4 md:gap-6 mb-10">
             {others.map((o) => (
-              <Link key={o.slug} href={`/recipes/${o.slug}`} className="group bg-white rounded-[1.25rem] border border-ink/10 p-7 flex items-center gap-5 transition-all duration-400 hover:-translate-y-1.5 hover:border-gold/60">
-                <span className={`w-1 h-12 rounded-full ${bar[o.accent]}`} />
-                <div className="flex-1">
-                  <h3 className="font-display text-xl text-ink group-hover:text-gold transition">{o.name}</h3>
-                  <p className="text-ink/40 text-xs mt-1">{o.time} &middot; Serves {o.serves}</p>
+              <Link
+                key={o.slug}
+                href={`/recipes/${o.slug}`}
+                className="group border border-ink/12 bg-paper p-6 flex items-center gap-5 transition hover:border-gold/60"
+              >
+                <span className={`w-1 h-12 rounded-full shrink-0 ${bar[o.accent]}`} />
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-display text-xl text-ink group-hover:text-gold transition">
+                    {o.name}
+                  </h3>
+                  <p className="text-ink/45 text-xs mt-1">
+                    {o.time} · Serves {o.serves}
+                  </p>
                 </div>
-                <span className="text-gold transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+                <svg viewBox="0 0 24 24" className="w-5 h-5 text-gold shrink-0 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </Link>
             ))}
           </div>
 
-          <div className="text-center">
-            <Link href="/shop" className="inline-block bg-ink text-cream rounded-full px-12 py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition">
-              Get the makhana
-            </Link>
-          </div>
+          <Link href="/shop" className="btn btn-primary">
+            Get the makhana
+          </Link>
         </div>
       </section>
     </>

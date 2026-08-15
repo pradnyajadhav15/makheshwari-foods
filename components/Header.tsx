@@ -2,109 +2,271 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { FREE_SHIPPING_OVER } from "@/lib/products";
-import { useCart } from "@/components/CartContext";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
+import { useCart } from "@/components/CartContext";
 import SearchOverlay from "@/components/SearchOverlay";
 import AnnouncementBar from "@/components/AnnouncementBar";
 
+/* Subscribing to scroll position via useSyncExternalStore rather than an
+   effect keeps the initial value correct on a page loaded mid-scroll
+   without setting state during the effect. */
+function subscribeScroll(cb: () => void) {
+  window.addEventListener("scroll", cb, { passive: true });
+  return () => window.removeEventListener("scroll", cb);
+}
+
 const nav = [
-  { href: "/", label: "Home" },
-  { href: "/our-story", label: "About us" },
-  { href: "/shop", label: "Our products" },
-  { href: "/contact", label: "Contact us" },
+  { href: "/shop", label: "Shop" },
+  { href: "/our-story", label: "Our story" },
+  { href: "/know-your-makhana", label: "Know your makhana" },
+  { href: "/recipes", label: "Recipes" },
   { href: "/bulk-orders", label: "Bulk orders" },
+  { href: "/contact", label: "Contact" },
 ];
 
-function Elephant() {
-  return (
-    <svg viewBox="0 0 200 200" className="w-14 h-14 md:w-16 md:h-16 shrink-0" aria-hidden="true">
-      <circle cx="100" cy="100" r="97" fill="none" stroke="#C9A227" strokeWidth="2" opacity="0.55" />
-      <circle cx="100" cy="100" r="88" fill="none" stroke="#C9A227" strokeWidth="1" opacity="0.35" />
-      <g fill="#C9A227">
-        <path d="M44 96 C38 103 38 114 43 121" fill="none" stroke="#C9A227" strokeWidth="7" strokeLinecap="round" />
-        <ellipse cx="93" cy="103" rx="44" ry="31" />
-        <circle cx="144" cy="96" r="26" />
-        <path d="M56 122 h19 a6 6 0 0 1 6 6 v28 a7 7 0 0 1 -7 7 h-17 a7 7 0 0 1 -7 -7 v-28 a6 6 0 0 1 6 -6 z" />
-        <path d="M85 126 h17 a6 6 0 0 1 6 6 v24 a7 7 0 0 1 -7 7 h-15 a7 7 0 0 1 -7 -7 v-24 a6 6 0 0 1 6 -6 z" />
-        <path d="M112 124 h18 a6 6 0 0 1 6 6 v26 a7 7 0 0 1 -7 7 h-16 a7 7 0 0 1 -7 -7 v-26 a6 6 0 0 1 6 -6 z" />
-        <path d="M139 122 h19 a6 6 0 0 1 6 6 v28 a7 7 0 0 1 -7 7 h-17 a7 7 0 0 1 -7 -7 v-28 a6 6 0 0 1 6 -6 z" />
-        <path d="M155 106 C172 118 175 143 165 163 L151 158 C159 142 157 124 142 116 Z" />
-      </g>
-      <path d="M125 78 C113 88 113 104 123 114" fill="none" stroke="#12352A" strokeWidth="4" strokeLinecap="round" />
-      <path d="M151 130 C162 134 169 142 172 152" fill="none" stroke="#12352A" strokeWidth="5" strokeLinecap="round" />
-      <path d="M80 158 v6 M108 158 v6 M136 158 v6" stroke="#12352A" strokeWidth="3.5" strokeLinecap="round" />
-    </svg>
-  );
-}
+/* Shown in the mobile drawer only — secondary destinations. */
+const navSecondary = [
+  { href: "/faq", label: "FAQ" },
+  { href: "/shipping-returns", label: "Shipping & returns" },
+];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState(false);
   const { count } = useCart();
   const pathname = usePathname();
-  const [search, setSearch] = useState(false);
+
+  /* Condense the bar once the user leaves the top of the page. */
+  const scrolled = useSyncExternalStore(
+    subscribeScroll,
+    () => window.scrollY > 12,
+    () => false
+  );
+
+  /* Lock the page behind the open drawer. */
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   if (pathname?.startsWith("/admin")) return null;
+
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname?.startsWith(href);
 
   return (
     <>
       <AnnouncementBar />
 
-      <header className="bg-[#FDF6EC] sticky top-0 z-50 border-b border-ink/15">
-        <div className="max-w-6xl mx-auto px-6 h-32 flex items-center justify-between">
-          <Link href="/" aria-label="Makheshwari Foods home" className="shrink-0"><Image src="/brand/logo.png" alt="Makheshwari Foods" width={330} height={190} priority className="h-24 md:h-28 w-auto" /></Link>
+      <header className="sticky top-0 z-50 bg-paper/95 backdrop-blur-md border-b border-ink/10">
+        <div className="wrap">
+          <div
+            className={`flex items-center justify-between gap-4 transition-[height] duration-300 ${
+              scrolled ? "h-16 lg:h-20" : "h-[4.5rem] lg:h-24"
+            }`}
+          >
+            {/* Left: menu on mobile, wordmark on desktop */}
+            <div className="flex items-center gap-1 lg:hidden">
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                aria-label="Open menu"
+                aria-expanded={open}
+                className="-ml-2 w-11 h-11 flex items-center justify-center text-ink"
+              >
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M3 7h18M3 12h18M3 17h18" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
 
-          <nav className="hidden md:flex items-center gap-6 lg:gap-9 text-ink/75 text-[13px] tracking-tracksm uppercase">
-            {nav.map((n) => (
-              <Link key={n.href} href={n.href} className="hover:text-gold transition">
-                {n.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <button type="button" onClick={() => setSearch(true)} aria-label="Search" className="w-10 h-10 flex items-center justify-center text-ink/70 hover:text-gold transition">
-              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" strokeLinecap="round" /></svg>
-            </button>
-            <Link href="/account" aria-label="Account" className="w-10 h-10 flex items-center justify-center text-ink/70 hover:text-gold transition">
-              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="12" cy="8" r="3.5" /><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" strokeLinecap="round" /></svg>
-            </Link>
-            <Link href="/cart" aria-label="Cart" className="relative w-10 h-10 flex items-center justify-center text-ink/70 hover:text-gold transition">
-              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M6 7h12l-1 12H7L6 7z" strokeLinejoin="round" /><path d="M9 7a3 3 0 016 0" strokeLinecap="round" /></svg>
-              {count > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-gold text-ink text-[10px] flex items-center justify-center px-1">{count}</span>}
-            </Link>
-            <button
-              onClick={() => setOpen(!open)}
-              aria-label="Toggle menu"
-              aria-expanded={open}
-              className="md:hidden text-ink w-9 h-9 flex items-center justify-center"
+            <Link
+              href="/"
+              aria-label="Makheshwari Foods — home"
+              className="shrink-0 lg:mr-4"
             >
-              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.6">
-                {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 8h16M4 16h16" />}
+              <Image
+                src="/brand/logo.png"
+                alt="Makheshwari Foods"
+                width={330}
+                height={190}
+                priority
+                className={`w-auto transition-[height] duration-300 ${
+                  scrolled ? "h-11 lg:h-14" : "h-12 lg:h-16"
+                }`}
+              />
+            </Link>
+
+            {/* Desktop nav */}
+            <nav className="hidden lg:flex items-center gap-7 xl:gap-9 flex-1">
+              {nav.map((n) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  className={`link-quiet ${
+                    isActive(n.href) ? "text-ink" : "text-ink/65 hover:text-ink"
+                  }`}
+                  aria-current={isActive(n.href) ? "page" : undefined}
+                >
+                  {n.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Right: utilities */}
+            <div className="flex items-center gap-0.5 sm:gap-1">
+              <button
+                type="button"
+                onClick={() => setSearch(true)}
+                aria-label="Search"
+                className="w-11 h-11 flex items-center justify-center text-ink/70 hover:text-gold transition"
+              >
+                <svg viewBox="0 0 24 24" className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="M20 20l-3.6-3.6" strokeLinecap="round" />
+                </svg>
+              </button>
+
+              <Link
+                href="/account"
+                aria-label="Account"
+                className="hidden sm:flex w-11 h-11 items-center justify-center text-ink/70 hover:text-gold transition"
+              >
+                <svg viewBox="0 0 24 24" className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <circle cx="12" cy="8" r="3.4" />
+                  <path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" strokeLinecap="round" />
+                </svg>
+              </Link>
+
+              <Link
+                href="/cart"
+                aria-label={count > 0 ? `Cart, ${count} item${count === 1 ? "" : "s"}` : "Cart"}
+                className="relative w-11 h-11 flex items-center justify-center text-ink/70 hover:text-gold transition"
+              >
+                <svg viewBox="0 0 24 24" className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <path d="M6 7h12l-1 12H7L6 7z" strokeLinejoin="round" />
+                  <path d="M9 7a3 3 0 016 0" strokeLinecap="round" />
+                </svg>
+                {count > 0 && (
+                  <span className="absolute top-1 right-0.5 min-w-[17px] h-[17px] rounded-full bg-gold text-ink text-[10px] font-medium flex items-center justify-center px-1 tabular-nums">
+                    {count}
+                  </span>
+                )}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile drawer */}
+      <div
+        className={`lg:hidden fixed inset-0 z-[60] transition-opacity duration-300 ${
+          open ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        aria-hidden={!open}
+      >
+        {/* Backdrop is decorative — the labelled close control is the X
+            button inside the panel, so this must not also be a button or
+            the accessible name is duplicated. */}
+        <div
+          aria-hidden="true"
+          onClick={() => setOpen(false)}
+          className="absolute inset-0 bg-inkdeep/55 backdrop-blur-sm"
+        />
+
+        <nav
+          className={`absolute inset-y-0 left-0 w-[86%] max-w-sm bg-paper flex flex-col transition-transform duration-300 ease-out ${
+            open ? "translate-x-0" : "-translate-x-full"
+          }`}
+          aria-label="Main"
+        >
+          <div className="flex items-center justify-between px-6 h-[4.5rem] border-b border-ink/10">
+            <span className="marker">Menu</span>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close menu"
+              className="-mr-2 w-11 h-11 flex items-center justify-center text-ink"
+            >
+              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
               </svg>
             </button>
           </div>
-        </div>
 
-        {open && (
-          <nav className="md:hidden border-t border-ink/10 bg-cream px-6 pb-6">
-            {nav.map((n) => (
-              <Link
-                key={n.href}
-                href={n.href}
-                onClick={() => setOpen(false)}
-                className="block py-4 text-ink/75 text-[13px] tracking-tracksm uppercase border-b border-cream/10 last:border-0"
-              >
-                {n.label}
-              </Link>
-            ))}
-          </nav>
-        )}
+          <div className="flex-1 overflow-y-auto px-6 py-6">
+            <ul>
+              {nav.map((n) => (
+                <li key={n.href}>
+                  <Link
+                    href={n.href}
+                    onClick={() => setOpen(false)}
+                    className={`flex items-center justify-between py-4 border-b border-ink/10 font-display text-2xl ${
+                      isActive(n.href) ? "text-gold" : "text-ink"
+                    }`}
+                  >
+                    {n.label}
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 text-ink/30" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <ul className="mt-7 space-y-1">
+              {navSecondary.map((n) => (
+                <li key={n.href}>
+                  <Link
+                    href={n.href}
+                    onClick={() => setOpen(false)}
+                    className="block py-2.5 text-ink/60 body-text"
+                  >
+                    {n.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  href="/account"
+                  onClick={() => setOpen(false)}
+                  className="block py-2.5 text-ink/60 body-text"
+                >
+                  Your account
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="px-6 py-5 border-t border-ink/10 bg-sandsoft/50">
+            <a
+              href="https://wa.me/917485001464"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary btn-block"
+            >
+              Message us on WhatsApp
+            </a>
+            <p className="text-center text-ink/45 text-[11px] mt-3">
+              Samastipur, Bihar · FSSAI licensed
+            </p>
+          </div>
+        </nav>
+      </div>
+
       <SearchOverlay open={search} onClose={() => setSearch(false)} />
-      </header>
     </>
   );
 }
-
-
-

@@ -43,88 +43,115 @@ export default function Account() {
     router.refresh();
   };
 
-  if (!orders) return <div className="bg-cream min-h-[60vh]" />;
+  if (!orders) return <div className="min-h-[60vh]" />;
 
   return (
-    <section className="bg-cream px-6 md:px-14 py-16">
-      <div className="max-w-3xl mx-auto">
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
-          <div>
-            <h1 className="font-display text-4xl text-ink">{me.name ? `Hello, ${me.name.split(" ")[0]}` : "Your account"}</h1>
-            <p className="text-ink/45 text-sm mt-1.5">{me.email}</p>
-          </div>
-          <button type="button" onClick={out} className="border border-ink/20 rounded-full px-6 py-2.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold transition">Log out</button>
+    <section className="wrap-mid section">
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
+        <div>
+          <p className="marker mb-4">Your account</p>
+          <h1 className="display-md text-ink">
+            {me.name ? `Hello, ${me.name.split(" ")[0]}` : "Your account"}
+          </h1>
+          <p className="text-ink/45 text-sm mt-2 break-words">{me.email}</p>
         </div>
+        <button type="button" onClick={out} className="btn btn-outline">
+          Log out
+        </button>
+      </div>
 
-        <h2 className="font-display text-2xl text-ink mb-6">Orders</h2>
+      <h2 className="display-sm text-ink pb-4 border-b border-ink/15 mb-7">Orders</h2>
 
-        {orders.length === 0 && (
-          <div className="bg-white rounded-[1.5rem] border border-ink/10 p-12 text-center">
-            <p className="text-ink/55 font-light mb-8">No orders yet.</p>
-            <Link href="/shop" className="inline-block bg-ink text-cream rounded-full px-10 py-4 text-[11px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition">Shop the range</Link>
-          </div>
-        )}
+      {orders.length === 0 && (
+        <div className="border border-ink/12 bg-paper p-10 md:p-14 text-center">
+          <p className="text-ink/60 body-text mb-7">No orders yet.</p>
+          <Link href="/shop" className="btn btn-primary">Shop the range</Link>
+        </div>
+      )}
 
-        <div className="space-y-5">
-          {orders.map((o) => {
-            const at = STEPS.indexOf(o.status);
-            return (
-              <div key={o.id} className="bg-white rounded-[1.5rem] border border-ink/10 p-8">
-                <div className="flex flex-wrap justify-between gap-4 pb-6 mb-6 border-b border-ink/10">
-                  <div>
-                    <p className="text-ink/45 text-[10px] tracking-tracksm uppercase mb-1.5">Order</p>
-                    <p className="font-display text-lg text-ink">{o.razorpay_payment_id}</p>
-                    <p className="text-ink/40 text-xs mt-1">{new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</p>
-                  </div>
-                  <p className="font-display text-2xl text-ink">{formatPrice(o.total)}</p>
-                </div>
-
-                {o.status === "cancelled" ? (
-                  <p className="bg-peri/15 text-peri rounded-xl px-5 py-3 text-sm mb-6">Cancelled and refunded.</p>
-                ) : (
-                  <div className="flex items-center mb-7">
-                    {STEPS.map((s, i) => (
-                      <div key={s} className="flex items-center flex-1 last:flex-none">
-                        <div className="flex flex-col items-center">
-                          <span className={`w-3 h-3 rounded-full ${i <= at ? "bg-gold" : "bg-ink/15"}`} />
-                          <span className={`text-[9px] tracking-tracksm uppercase mt-2 whitespace-nowrap ${i <= at ? "text-ink" : "text-ink/35"}`}>{LABEL[s]}</span>
-                        </div>
-                        {i < STEPS.length - 1 && <span className={`h-px flex-1 mx-1 ${i < at ? "bg-gold" : "bg-ink/15"}`} />}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {o.tracking_id && (
-                  <p className="bg-cream/70 rounded-xl px-5 py-3.5 text-sm font-light text-ink/70 mb-6">
-                    Tracking: <span className="text-ink">{o.tracking_id}</span>{o.courier ? ` \u00B7 ${o.courier}` : ""}
+      <div className="space-y-6">
+        {orders.map((o) => {
+          const at = STEPS.indexOf(o.status);
+          return (
+            <article key={o.id} className="border border-ink/12 bg-paper p-6 sm:p-8">
+              <div className="flex flex-wrap justify-between gap-4 pb-6 mb-6 border-b border-ink/12">
+                <div className="min-w-0">
+                  <p className="text-ink/45 text-[0.62rem] tracking-tracksm uppercase mb-1.5">Order</p>
+                  <p className="font-display text-lg text-ink break-words">{o.razorpay_payment_id}</p>
+                  <p className="text-ink/40 text-xs mt-1">
+                    {new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
                   </p>
-                )}
-
-                <div className="grid sm:grid-cols-2 gap-7 text-sm font-light">
-                  <div>
-                    <p className="text-ink/45 text-[10px] tracking-tracksm uppercase mb-3">Items</p>
-                    {o.items.map((i, n) => (
-                      <p key={n} className="text-ink/70 flex justify-between gap-4 mb-1.5">
-                        <span>{i.name} {"\u00D7"}{i.qty}</span>
-                        <span>{formatPrice(i.price * i.qty)}</span>
-                      </p>
-                    ))}
-                  </div>
-                  <div>
-                    <p className="text-ink/45 text-[10px] tracking-tracksm uppercase mb-3">Delivered to</p>
-                    <p className="text-ink/70 leading-relaxed">{o.customer_name}<br />{o.address_line}<br />{o.city}, {o.state} {o.pincode}</p>
-                  </div>
                 </div>
+                <p className="font-display text-2xl text-ink shrink-0">{formatPrice(o.total)}</p>
+              </div>
 
-                <div className="flex flex-wrap gap-3 mt-7 pt-6 border-t border-ink/10">
-                  <a href={`https://wa.me/917485001464?text=${encodeURIComponent(`Hi, I have a question about my order ${o.razorpay_payment_id}`)}`} target="_blank" rel="noopener noreferrer" className="bg-mint/20 border border-mint/50 rounded-full px-6 py-2.5 text-[10px] tracking-tracksm uppercase text-ink hover:bg-mint/35 transition">Need help</a>
-                  <Link href="/shop" className="border border-ink/20 rounded-full px-6 py-2.5 text-[10px] tracking-tracksm uppercase text-ink/70 hover:border-gold transition">Order again</Link>
+              {o.status === "cancelled" ? (
+                <p className="border border-peri/40 bg-peri/10 text-peri px-5 py-3 text-sm mb-6">
+                  Cancelled and refunded.
+                </p>
+              ) : (
+                <div className="flex items-start mb-7">
+                  {STEPS.map((s, i) => (
+                    <div key={s} className="flex items-center flex-1 last:flex-none">
+                      <div className="flex flex-col items-center">
+                        <span className={`w-3 h-3 rounded-full shrink-0 ${i <= at ? "bg-gold" : "bg-ink/15"}`} />
+                        <span className={`text-[0.55rem] sm:text-[0.6rem] tracking-tracksm uppercase mt-2 whitespace-nowrap ${i <= at ? "text-ink" : "text-ink/35"}`}>
+                          {LABEL[s]}
+                        </span>
+                      </div>
+                      {i < STEPS.length - 1 && (
+                        <span className={`h-px flex-1 mx-1 mt-1.5 self-start ${i < at ? "bg-gold" : "bg-ink/15"}`} />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {o.tracking_id && (
+                <p className="bg-sandsoft/70 px-5 py-3.5 body-text text-ink/70 mb-6">
+                  Tracking: <span className="text-ink">{o.tracking_id}</span>
+                  {o.courier ? ` · ${o.courier}` : ""}
+                </p>
+              )}
+
+              <div className="grid sm:grid-cols-2 gap-7">
+                <div>
+                  <p className="text-ink/45 text-[0.62rem] tracking-tracksm uppercase mb-3">Items</p>
+                  {o.items.map((i, n) => (
+                    <p key={n} className="text-ink/70 body-text flex justify-between gap-4">
+                      <span>{i.name} ×{i.qty}</span>
+                      <span className="shrink-0">{formatPrice(i.price * i.qty)}</span>
+                    </p>
+                  ))}
+                </div>
+                <div>
+                  <p className="text-ink/45 text-[0.62rem] tracking-tracksm uppercase mb-3">Delivered to</p>
+                  <p className="text-ink/70 body-text">
+                    {o.customer_name}
+                    <br />
+                    {o.address_line}
+                    <br />
+                    {o.city}, {o.state} {o.pincode}
+                  </p>
                 </div>
               </div>
-            );
-          })}
-        </div>
+
+              <div className="flex flex-wrap gap-3 mt-7 pt-6 border-t border-ink/12">
+                <a
+                  href={`https://wa.me/917485001464?text=${encodeURIComponent(`Hi, I have a question about my order ${o.razorpay_payment_id}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline min-h-0 py-2.5 px-6"
+                >
+                  Need help
+                </a>
+                <Link href="/shop" className="btn btn-outline min-h-0 py-2.5 px-6">
+                  Order again
+                </Link>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
