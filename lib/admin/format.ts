@@ -50,7 +50,7 @@ export function relative(iso: string | null | undefined) {
  * five are shown under friendlier labels instead of inventing states the
  * backend cannot persist.
  */
-export const ORDER_STATUS = {
+const ORDER_STATUS = {
   pending:   { label: "Pending",   tone: "warn"    as const, help: "Checkout started, payment not captured" },
   paid:      { label: "Confirmed", tone: "info"    as const, help: "Payment received, not yet packed" },
   packed:    { label: "Packed",    tone: "info"    as const, help: "Picked and boxed, awaiting pickup" },
@@ -74,12 +74,6 @@ export function statusMeta(s: string | null | undefined) {
 
 export function badgeClass(tone: string) {
   return `adm-badge adm-badge-${tone}`;
-}
-
-/** Percentage change, guarding the divide-by-zero that makes tiles show Infinity. */
-export function pctChange(current: number, previous: number): number | null {
-  if (!previous) return current > 0 ? null : 0;
-  return Math.round(((current - previous) / previous) * 100);
 }
 
 export const LOW_STOCK_THRESHOLD = 5;
