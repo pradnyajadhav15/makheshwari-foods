@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FSSAI, GSTIN, LEGAL_ENTITY, ADDRESS, EMAIL, INSTAGRAM } from "@/lib/products";
 
 const shop = [
@@ -55,6 +58,12 @@ function Column({ title, links }: { title: string; links: { href: string; label:
 }
 
 export default function Footer() {
+  const pathname = usePathname();
+  /* The admin has its own chrome — Header already guards this way, but
+     Footer never did, so the storefront footer was rendering underneath
+     the dashboard. */
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <footer className="bg-inkdeep text-cream">
       {/* Masthead */}
