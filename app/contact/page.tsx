@@ -43,7 +43,7 @@ export default function Contact() {
               {details.map((c) => {
                 const body = (
                   <>
-                    <dt className="text-[0.64rem] tracking-tracksm uppercase text-ink/50 mb-1.5">
+                    <dt className="text-[0.64rem] tracking-tracksm uppercase text-ink/70 mb-1.5">
                       {c.t}
                     </dt>
                     <dd className="text-ink body-text">
@@ -60,7 +60,7 @@ export default function Contact() {
                     href={c.href}
                     target={c.href.startsWith("http") ? "_blank" : undefined}
                     rel="noopener noreferrer"
-                    className="block border-b border-ink/15 py-5 hover:text-gold transition group"
+                    className="block border-b border-ink/15 py-5 hover:text-golddeep transition group"
                   >
                     {body}
                   </a>
@@ -81,7 +81,7 @@ export default function Contact() {
               <span className="block font-display text-xl text-ink mb-1">
                 Message us on WhatsApp
               </span>
-              <span className="block text-ink/60 body-text">
+              <span className="block text-ink/70 body-text">
                 Usually the fastest way to reach us
               </span>
             </a>
@@ -101,7 +101,7 @@ export default function Contact() {
             referrerPolicy="no-referrer-when-downgrade"
           />
         </div>
-        <p className="text-ink/45 text-[11px] mt-5 text-center">
+        <p className="text-ink/70 text-[11px] mt-5 text-center">
           {LEGAL_ENTITY}, {ADDRESS} · FSSAI {FSSAI} · GSTIN {GSTIN}
         </p>
       </section>

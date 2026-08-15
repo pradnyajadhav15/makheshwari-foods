@@ -13,11 +13,11 @@ const suggestions = [
 export default function NotFound() {
   return (
     <section className="wrap-mid section-lg text-center">
-      <p className="font-display text-gold text-6xl md:text-8xl">404</p>
+      <p className="font-display text-golddeep text-6xl md:text-8xl">404</p>
 
       <h1 className="display-lg text-ink mt-5">This page went missing.</h1>
 
-      <p className="lede text-ink/60 mt-6 max-w-md mx-auto">
+      <p className="lede text-ink/70 mt-6 max-w-md mx-auto">
         The link may be old, or the page may have moved. The makhana is still here though.
       </p>
 
@@ -33,7 +33,7 @@ export default function NotFound() {
             <Link
               key={s.href}
               href={s.href}
-              className="text-ink/60 text-[0.68rem] tracking-tracksm uppercase py-1.5 hover:text-gold transition"
+              className="text-ink/70 text-[0.68rem] tracking-tracksm uppercase py-1.5 hover:text-golddeep transition"
             >
               {s.label}
             </Link>

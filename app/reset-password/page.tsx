@@ -28,7 +28,7 @@ export default function Reset() {
       <PasswordInput value={pw} onChange={setPw} placeholder="New password" />
       <div className="mt-4 mb-7"><PasswordInput value={pw2} onChange={setPw2} placeholder="Confirm password" onEnter={go} /></div>
       <button type="button" onClick={go} disabled={busy} className={authBtn}>{busy ? "Saving" : "Save password"}</button>
-      {err && <p className="text-peri text-xs text-center mt-5">{err}</p>}
+      {err && <p className="text-perideep text-xs text-center mt-5">{err}</p>}
     </AuthCard>
   );
 }

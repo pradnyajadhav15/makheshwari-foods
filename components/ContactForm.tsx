@@ -79,7 +79,7 @@ export default function ContactForm() {
         </div>
       </div>
 
-      {err && <p className="text-peri text-sm mt-5" role="alert">{err}</p>}
+      {err && <p className="text-perideep text-sm mt-5" role="alert">{err}</p>}
 
       <button type="button" onClick={submit} className="btn btn-primary btn-block mt-7">
         Send message

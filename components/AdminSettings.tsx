@@ -42,12 +42,12 @@ export default function AdminSettings() {
     setToast({ m: "Settings saved", t: "ok" });
   };
 
-  if (!s) return <p className="text-ink/40 font-light">Loading</p>;
+  if (!s) return <p className="text-ink/70 font-light">Loading</p>;
 
   const inp = "w-full bg-cream/60 border border-ink/15 rounded-xl px-4 py-3 text-sm text-ink focus:outline-none focus:border-gold transition";
-  const lbl = "block text-ink/50 text-[10px] tracking-tracksm uppercase mb-2";
+  const lbl = "block text-ink/70 text-[10px] tracking-tracksm uppercase mb-2";
   const card = "bg-white rounded-[1.25rem] border border-ink/10 p-7";
-  const hint = "text-ink/40 text-xs mt-2 font-light";
+  const hint = "text-ink/70 text-xs mt-2 font-light";
 
   return (
     <section className="space-y-5 max-w-3xl">
@@ -115,7 +115,7 @@ export default function AdminSettings() {
         <button type="button" onClick={save} disabled={busy} className="bg-ink text-cream rounded-full px-10 py-3.5 text-[10px] tracking-tracksm uppercase hover:bg-gold hover:text-ink transition disabled:opacity-40">
           {busy ? "Saving" : "Save settings"}
         </button>
-        <span className="text-ink/40 text-xs font-light">Changes appear on the site within a minute.</span>
+        <span className="text-ink/70 text-xs font-light">Changes appear on the site within a minute.</span>
       </div>
       {err && <p className="text-peri text-sm">{err}</p>}
 

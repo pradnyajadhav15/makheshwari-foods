@@ -67,8 +67,8 @@ export default function AdminCoupons() {
 
   if (!rows) return null;
 
-  const inp = "w-full bg-cream/60 border border-ink/15 rounded-xl px-4 py-3 text-sm text-ink placeholder:text-ink/35 focus:outline-none focus:border-gold transition";
-  const lbl = "block text-ink/50 text-[10px] tracking-tracksm uppercase mb-2";
+  const inp = "w-full bg-cream/60 border border-ink/15 rounded-xl px-4 py-3 text-sm text-ink placeholder:text-ink/55 focus:outline-none focus:border-gold transition";
+  const lbl = "block text-ink/70 text-[10px] tracking-tracksm uppercase mb-2";
 
   const live = rows.filter((c) => c.active).length;
 
@@ -76,7 +76,7 @@ export default function AdminCoupons() {
     <section>
       <div className="flex items-end justify-between mb-7">
         <h2 className="font-display text-3xl text-ink">Discount codes</h2>
-        <span className="text-ink/50 text-sm">{live} active</span>
+        <span className="text-ink/70 text-sm">{live} active</span>
       </div>
 
       <div className="bg-white rounded-[1.25rem] border border-ink/10 p-7 mb-8">
@@ -122,7 +122,7 @@ export default function AdminCoupons() {
         {err && <p className="text-peri text-xs mt-4 font-light">{err}</p>}
       </div>
 
-      {rows.length === 0 && <p className="text-ink/50 font-light">No codes yet.</p>}
+      {rows.length === 0 && <p className="text-ink/70 font-light">No codes yet.</p>}
 
       <div className="space-y-4">
         {rows.map((c) => {
@@ -138,14 +138,14 @@ export default function AdminCoupons() {
                       {c.type === "percent" ? `${c.value}% off` : `\u20B9${c.value} off`}
                     </span>
                   </p>
-                  <p className="text-ink/45 text-xs mt-1.5">
+                  <p className="text-ink/70 text-xs mt-1.5">
                     {c.min_order ? `Min \u20B9${c.min_order}` : "No minimum"}
                     {c.max_discount ? ` \u00B7 Max \u20B9${c.max_discount}` : ""}
                     {` \u00B7 Used ${c.used_count}${c.usage_limit ? ` of ${c.usage_limit}` : ""}`}
                     {c.expires_at ? ` \u00B7 Expires ${new Date(c.expires_at).toLocaleDateString("en-IN")}` : ""}
                   </p>
                 </div>
-                <span className={`self-start rounded-full px-4 py-1.5 text-[9px] tracking-tracksm uppercase ${expired ? "bg-ink/10 text-ink/60" : spent ? "bg-ink/10 text-ink/60" : c.active ? "bg-mint/25 text-ink" : "bg-gold/25 text-ink"}`}>
+                <span className={`self-start rounded-full px-4 py-1.5 text-[9px] tracking-tracksm uppercase ${expired ? "bg-ink/10 text-ink/70" : spent ? "bg-ink/10 text-ink/70" : c.active ? "bg-mint/25 text-ink" : "bg-gold/25 text-ink"}`}>
                   {expired ? "Expired" : spent ? "Fully used" : c.active ? "Active" : "Paused"}
                 </span>
               </div>

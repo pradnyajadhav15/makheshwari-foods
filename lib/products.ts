@@ -108,10 +108,22 @@ export const accentClass: Record<Product["accent"], string> = {
   salt: "bg-salt",
 };
 
+/** Bright accents — for fills, bars, and text on DARK backgrounds only. */
 export const accentText: Record<Product["accent"], string> = {
   peri: "text-peri",
   mint: "text-mint",
   salt: "text-salt",
+};
+
+/**
+ * Darkened partners for accent text on LIGHT backgrounds. The packaging
+ * colours are all under 4.5:1 on cream (peri 3.95, mint 2.65, salt 2.30),
+ * so they cannot carry body-size text there.
+ */
+export const accentTextDeep: Record<Product["accent"], string> = {
+  peri: "text-perideep",
+  mint: "text-mintdeep",
+  salt: "text-saltdeep",
 };
 
 export function getProduct(slug: string) {

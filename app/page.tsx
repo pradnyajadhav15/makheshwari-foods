@@ -90,7 +90,7 @@ export default async function Home() {
               <p className="marker mb-5">The range</p>
               <h2 className="display-lg text-ink">Three flavours,<br />one honest crunch.</h2>
             </div>
-            <Link href="/shop" className="link-quiet text-ink/60 hover:text-ink">
+            <Link href="/shop" className="link-quiet text-ink/70 hover:text-ink">
               All products →
             </Link>
           </div>
@@ -126,7 +126,7 @@ export default async function Home() {
                 Makhana does not grow on a plant you can walk up to. It grows underwater, on a
                 prickly water lily rooted in the pond bed, and every seed is brought up by hand.
               </p>
-              <p className="text-cream/55 body-text mt-4 max-w-md">
+              <p className="text-cream/70 body-text mt-4 max-w-md">
                 We buy from those ponds, roast in Samastipur, and seal the same day.
               </p>
               <Link href="/know-your-makhana" className="btn btn-light self-start mt-9">
@@ -143,7 +143,7 @@ export default async function Home() {
         <Reveal className="max-w-2xl mb-12 md:mb-16">
           <p className="marker mb-5">Why choose us</p>
           <h2 className="display-lg text-ink">Closer to the pond than anyone else.</h2>
-          <p className="lede text-ink/60 mt-6">
+          <p className="lede text-ink/70 mt-6">
             Most makhana leaves Bihar in sacks and gets packed under someone else&apos;s name. Ours
             never leaves.
           </p>
@@ -153,11 +153,11 @@ export default async function Home() {
           {REASONS.map((c, i) => (
             <Reveal key={c.t} delay={i * 70}>
               <div className="border-t border-ink/15 py-7 md:py-9 h-full">
-                <span className="font-display text-gold text-sm tabular-nums">
+                <span className="font-display text-golddeep text-sm tabular-nums">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3 className="display-sm text-ink mt-3">{c.t}</h3>
-                <p className="text-ink/60 body-text mt-3">{c.b}</p>
+                <p className="text-ink/70 body-text mt-3">{c.b}</p>
               </div>
             </Reveal>
           ))}
@@ -171,7 +171,7 @@ export default async function Home() {
           <Reveal>
             <p className="marker marker-center mb-6">Raw and natural</p>
             <h2 className="display-lg text-ink">Pure, natural,<br />and nothing else.</h2>
-            <p className="lede text-ink/65 mt-7 max-w-xl mx-auto">
+            <p className="lede text-ink/75 mt-7 max-w-xl mx-auto">
               Sourced from the ponds of the Mithila belt and sorted by hand for size and colour. No
               additives, no preservatives, and nothing to hide behind.
             </p>
@@ -189,7 +189,7 @@ export default async function Home() {
               ].map((t) => (
                 <li
                   key={t}
-                  className="border border-ink/20 rounded-full px-4 py-2 text-[0.64rem] tracking-tracksm uppercase text-ink/65"
+                  className="border border-ink/20 rounded-full px-4 py-2 text-[0.64rem] tracking-tracksm uppercase text-ink/75"
                 >
                   {t}
                 </li>
@@ -210,12 +210,12 @@ export default async function Home() {
             <div className="max-w-xl">
               <p className="marker mb-5">From the kitchen</p>
               <h2 className="display-lg text-ink">More than a snack</h2>
-              <p className="text-ink/60 body-text mt-5">
+              <p className="text-ink/70 body-text mt-5">
                 Makhana has been cooked in Mithila kitchens for generations, long before anyone put
                 it in a pouch.
               </p>
             </div>
-            <Link href="/recipes" className="link-quiet text-ink/60 hover:text-ink">
+            <Link href="/recipes" className="link-quiet text-ink/70 hover:text-ink">
               All recipes →
             </Link>
           </div>
@@ -237,8 +237,8 @@ export default async function Home() {
                     {r.time}
                   </span>
                 </div>
-                <h3 className="display-sm text-ink mt-5 group-hover:text-gold transition">{r.t}</h3>
-                <p className="text-ink/60 body-text mt-2">{r.b}</p>
+                <h3 className="display-sm text-ink mt-5 group-hover:text-golddeep transition">{r.t}</h3>
+                <p className="text-ink/70 body-text mt-2">{r.b}</p>
               </Link>
             </Reveal>
           ))}
@@ -252,7 +252,7 @@ export default async function Home() {
             <div className="lg:w-1/3">
               <p className="marker marker-light mb-5">Also available on</p>
               <h2 className="display-md text-cream">Buy where you already shop</h2>
-              <p className="text-cream/55 body-text mt-4">
+              <p className="text-cream/70 body-text mt-4">
                 Same makhana, same Samastipur roastery.
               </p>
             </div>
@@ -291,7 +291,7 @@ export default async function Home() {
             <div>
               <p className="marker mb-5">Bulk & reseller</p>
               <h2 className="display-md text-ink">Buying by the carton?</h2>
-              <p className="text-ink/60 body-text mt-5 max-w-md">
+              <p className="text-ink/70 body-text mt-5 max-w-md">
                 We supply retailers, distributors and corporate gifting direct from our Samastipur
                 unit, with GST invoicing and custom pack sizes.
               </p>

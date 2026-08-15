@@ -116,7 +116,7 @@ export default function Header() {
                   key={n.href}
                   href={n.href}
                   className={`link-quiet ${
-                    isActive(n.href) ? "text-ink" : "text-ink/65 hover:text-ink"
+                    isActive(n.href) ? "text-ink" : "text-ink/75 hover:text-ink"
                   }`}
                   aria-current={isActive(n.href) ? "page" : undefined}
                 >
@@ -131,7 +131,7 @@ export default function Header() {
                 type="button"
                 onClick={() => setSearch(true)}
                 aria-label="Search"
-                className="w-11 h-11 flex items-center justify-center text-ink/70 hover:text-gold transition"
+                className="w-11 h-11 flex items-center justify-center text-ink/70 hover:text-golddeep transition"
               >
                 <svg viewBox="0 0 24 24" className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="1.6">
                   <circle cx="11" cy="11" r="7" />
@@ -142,7 +142,7 @@ export default function Header() {
               <Link
                 href="/account"
                 aria-label="Account"
-                className="hidden sm:flex w-11 h-11 items-center justify-center text-ink/70 hover:text-gold transition"
+                className="hidden sm:flex w-11 h-11 items-center justify-center text-ink/70 hover:text-golddeep transition"
               >
                 <svg viewBox="0 0 24 24" className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="1.6">
                   <circle cx="12" cy="8" r="3.4" />
@@ -153,7 +153,7 @@ export default function Header() {
               <Link
                 href="/cart"
                 aria-label={count > 0 ? `Cart, ${count} item${count === 1 ? "" : "s"}` : "Cart"}
-                className="relative w-11 h-11 flex items-center justify-center text-ink/70 hover:text-gold transition"
+                className="relative w-11 h-11 flex items-center justify-center text-ink/70 hover:text-golddeep transition"
               >
                 <svg viewBox="0 0 24 24" className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="1.6">
                   <path d="M6 7h12l-1 12H7L6 7z" strokeLinejoin="round" />
@@ -214,11 +214,11 @@ export default function Header() {
                     href={n.href}
                     onClick={() => setOpen(false)}
                     className={`flex items-center justify-between py-4 border-b border-ink/10 font-display text-2xl ${
-                      isActive(n.href) ? "text-gold" : "text-ink"
+                      isActive(n.href) ? "text-golddeep" : "text-ink"
                     }`}
                   >
                     {n.label}
-                    <svg viewBox="0 0 24 24" className="w-4 h-4 text-ink/30" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 text-ink/70" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </Link>
@@ -232,7 +232,7 @@ export default function Header() {
                   <Link
                     href={n.href}
                     onClick={() => setOpen(false)}
-                    className="block py-2.5 text-ink/60 body-text"
+                    className="block py-2.5 text-ink/70 body-text"
                   >
                     {n.label}
                   </Link>
@@ -242,7 +242,7 @@ export default function Header() {
                 <Link
                   href="/account"
                   onClick={() => setOpen(false)}
-                  className="block py-2.5 text-ink/60 body-text"
+                  className="block py-2.5 text-ink/70 body-text"
                 >
                   Your account
                 </Link>
@@ -259,7 +259,7 @@ export default function Header() {
             >
               Message us on WhatsApp
             </a>
-            <p className="text-center text-ink/45 text-[11px] mt-3">
+            <p className="text-center text-ink/70 text-[11px] mt-3">
               Samastipur, Bihar · FSSAI licensed
             </p>
           </div>

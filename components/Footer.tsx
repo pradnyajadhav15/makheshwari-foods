@@ -40,7 +40,7 @@ const marketplaces = [
 function Column({ title, links }: { title: string; links: { href: string; label: string }[] }) {
   return (
     <div>
-      <p className="text-cream/45 text-[0.62rem] tracking-tracksm uppercase mb-5">{title}</p>
+      <p className="text-cream/70 text-[0.62rem] tracking-tracksm uppercase mb-5">{title}</p>
       <ul className="space-y-3">
         {links.map((l) => (
           <li key={l.href}>
@@ -76,14 +76,14 @@ export default function Footer() {
           </div>
 
           <div className="lg:justify-self-end lg:text-right">
-            <p className="text-cream/45 text-[0.62rem] tracking-tracksm uppercase mb-5">Talk to us</p>
+            <p className="text-cream/70 text-[0.62rem] tracking-tracksm uppercase mb-5">Talk to us</p>
             <a href="tel:+917485001464" className="block font-display text-2xl md:text-3xl text-cream hover:text-gold transition">
               +91 74850 01464
             </a>
             <a href={`mailto:${EMAIL}`} className="block text-cream/70 text-sm font-light mt-3 hover:text-gold transition break-words">
               {EMAIL}
             </a>
-            <p className="text-cream/50 text-sm font-light mt-4 leading-relaxed">
+            <p className="text-cream/70 text-sm font-light mt-4 leading-relaxed">
               {LEGAL_ENTITY}
               <br />
               {ADDRESS} 848101
@@ -100,7 +100,7 @@ export default function Footer() {
           <Column title="Help" links={help} />
 
           <div>
-            <p className="text-cream/45 text-[0.62rem] tracking-tracksm uppercase mb-5">Follow</p>
+            <p className="text-cream/70 text-[0.62rem] tracking-tracksm uppercase mb-5">Follow</p>
             <ul className="space-y-3">
               {social.map((l) => (
                 <li key={l.href}>
@@ -116,7 +116,7 @@ export default function Footer() {
               ))}
             </ul>
 
-            <p className="text-cream/45 text-[0.62rem] tracking-tracksm uppercase mt-9 mb-5">
+            <p className="text-cream/70 text-[0.62rem] tracking-tracksm uppercase mt-9 mb-5">
               Also on
             </p>
             <ul className="space-y-3">
@@ -139,7 +139,7 @@ export default function Footer() {
 
       {/* Compliance */}
       <div className="border-t border-cream/10">
-        <div className="wrap py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-[11px] text-cream/40 leading-relaxed">
+        <div className="wrap py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-[11px] text-cream/70 leading-relaxed">
           <p>
             Marketed by {LEGAL_ENTITY}, {ADDRESS} · FSSAI Lic. {FSSAI} · GSTIN {GSTIN}
           </p>

@@ -87,22 +87,22 @@ export default function ProductImages({ slug, images, onChange }: { slug: string
 
   return (
     <div className="w-full border-t border-ink/10 pt-6 mt-5">
-      <p className="text-ink/60 text-sm mb-3">Main photo</p>
+      <p className="text-ink/70 text-sm mb-3">Main photo</p>
       {main ? (
         <div className="mb-4">
           <Image src={main} alt="" width={112} height={112} unoptimized className="w-28 h-28 object-cover rounded-lg border border-ink/15 mb-3" />
           <button type="button" disabled={busy} onClick={() => removeOne(main)} className={del}>Remove main photo</button>
         </div>
       ) : (
-        <div className="w-28 h-28 rounded-lg border border-dashed border-ink/25 mb-4 flex items-center justify-center text-ink/35 text-[10px] tracking-tracksm uppercase">None</div>
+        <div className="w-28 h-28 rounded-lg border border-dashed border-ink/25 mb-4 flex items-center justify-center text-ink/70 text-[10px] tracking-tracksm uppercase">None</div>
       )}
       <div className="bg-cream/60 border border-ink/15 rounded-xl p-4 mb-2">
         <input ref={mainRef} type="file" accept="image/jpeg,image/png,image/webp" disabled={busy} className={file} onChange={(e) => e.target.files?.[0] && setMain(e.target.files[0])} />
       </div>
-      <p className="text-ink/40 text-xs mb-8">Leave empty to keep the current photo. Replacing it deletes the old one.</p>
+      <p className="text-ink/70 text-xs mb-8">Leave empty to keep the current photo. Replacing it deletes the old one.</p>
 
       <div className="flex items-center justify-between mb-3">
-        <p className="text-ink/60 text-sm">Additional photos</p>
+        <p className="text-ink/70 text-sm">Additional photos</p>
         {extras.length > 0 && (
           <button type="button" disabled={busy} onClick={removeAllExtras} className={del}>Remove all</button>
         )}
@@ -127,9 +127,9 @@ export default function ProductImages({ slug, images, onChange }: { slug: string
       <div className="bg-cream/60 border border-ink/15 rounded-xl p-4 mb-2">
         <input ref={extraRef} type="file" accept="image/jpeg,image/png,image/webp" multiple disabled={busy} className={file} onChange={(e) => e.target.files?.length && addExtras(e.target.files)} />
       </div>
-      <p className="text-ink/40 text-xs">New photos are added to the gallery. Leave empty to keep the current ones.</p>
+      <p className="text-ink/70 text-xs">New photos are added to the gallery. Leave empty to keep the current ones.</p>
 
-      {busy && <p className="text-ink/50 text-xs mt-3">Working...</p>}
+      {busy && <p className="text-ink/70 text-xs mt-3">Working...</p>}
       {err && <p className="text-peri text-xs mt-3">{err}</p>}
     </div>
   );

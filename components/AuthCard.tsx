@@ -15,13 +15,13 @@ export function AuthCard({
         <div className="text-center mb-8">
           <p className="marker marker-center mb-5">Account</p>
           <h1 className="display-md text-ink">{title}</h1>
-          {subtitle && <p className="text-ink/60 body-text mt-3">{subtitle}</p>}
+          {subtitle && <p className="text-ink/70 body-text mt-3">{subtitle}</p>}
         </div>
 
         <div className="border border-ink/12 bg-paper p-6 sm:p-9">{children}</div>
 
         {footer && (
-          <div className="text-center text-ink/60 body-text mt-7">{footer}</div>
+          <div className="text-center text-ink/70 body-text mt-7">{footer}</div>
         )}
       </div>
     </section>

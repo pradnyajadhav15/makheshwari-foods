@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ReviewSkeleton } from "@/components/Skeleton";
 
 type R = { id: string; created_at: string; name: string; city: string | null; rating: number; body: string; verified: boolean };
 
 function Stars({ n, size = "text-base" }: { n: number; size?: string }) {
   return (
-    <span className={`${size} text-gold tracking-wider`} aria-label={`${n} out of 5`}>
+    <span className={`${size} text-golddeep tracking-wider`} aria-label={`${n} out of 5`}>
       {"★".repeat(n)}
       <span className="text-ink/20">{"★".repeat(5 - n)}</span>
     </span>
@@ -52,7 +53,7 @@ export default function Reviews({ slug, productName }: { slug: string; productNa
             {rows && rows.length > 0 && (
               <div className="flex items-center gap-3 mt-3">
                 <Stars n={Math.round(avg)} />
-                <span className="text-ink/55 text-sm">
+                <span className="text-ink/70 text-sm">
                   {avg.toFixed(1)} from {rows.length} review{rows.length > 1 ? "s" : ""}
                 </span>
               </div>
@@ -74,7 +75,7 @@ export default function Reviews({ slug, productName }: { slug: string; productNa
             {sent ? (
               <div className="text-center py-6">
                 <p className="font-display text-2xl text-ink mb-3">Thank you</p>
-                <p className="text-ink/60 body-text">
+                <p className="text-ink/70 body-text">
                   Your review has been sent and will appear once we have read it.
                 </p>
               </div>
@@ -93,7 +94,7 @@ export default function Reviews({ slug, productName }: { slug: string; productNa
                         aria-label={`${n} star${n > 1 ? "s" : ""}`}
                         aria-pressed={n === f.rating}
                         className={`w-10 h-10 text-2xl leading-none transition ${
-                          n <= f.rating ? "text-gold" : "text-ink/20 hover:text-ink/40"
+                          n <= f.rating ? "text-golddeep" : "text-ink/20 hover:text-ink/70"
                         }`}
                       >
                         ★
@@ -128,14 +129,22 @@ export default function Reviews({ slug, productName }: { slug: string; productNa
                 <button type="button" onClick={submit} className="btn btn-primary">
                   Send review
                 </button>
-                {err && <p className="text-peri text-xs mt-4" role="alert">{err}</p>}
+                {err && <p className="text-perideep text-xs mt-4" role="alert">{err}</p>}
               </>
             )}
           </div>
         )}
 
+        {rows === null && (
+          <div className="border-t border-ink/12" aria-busy="true">
+            <ReviewSkeleton />
+            <ReviewSkeleton />
+            <span className="sr-only">Loading reviews</span>
+          </div>
+        )}
+
         {rows && rows.length === 0 && (
-          <p className="text-ink/50 body-text border-t border-ink/12 pt-7">
+          <p className="text-ink/70 body-text border-t border-ink/12 pt-7">
             No reviews yet. If you have tried it, yours would be the first.
           </p>
         )}
@@ -148,17 +157,17 @@ export default function Reviews({ slug, productName }: { slug: string; productNa
                   <p className="font-display text-lg text-ink">
                     {r.name}
                     {r.verified && (
-                      <span className="ml-3 text-mint text-[0.6rem] tracking-tracksm uppercase">
+                      <span className="ml-3 text-mintdeep text-[0.6rem] tracking-tracksm uppercase">
                         Verified buyer
                       </span>
                     )}
                   </p>
-                  {r.city && <p className="text-ink/40 text-xs mt-1">{r.city}</p>}
+                  {r.city && <p className="text-ink/70 text-xs mt-1">{r.city}</p>}
                 </div>
                 <Stars n={r.rating} size="text-sm" />
               </div>
               <p className="text-ink/70 body-text">{r.body}</p>
-              <p className="text-ink/30 text-[10px] mt-3">
+              <p className="text-ink/70 text-[10px] mt-3">
                 {new Date(r.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
               </p>
             </article>

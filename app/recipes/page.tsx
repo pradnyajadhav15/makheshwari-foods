@@ -41,7 +41,7 @@ export default function Recipes() {
                   />
                 </div>
 
-                <div className="flex gap-3 text-[0.62rem] tracking-tracksm uppercase text-ink/45 mt-5">
+                <div className="flex gap-3 text-[0.62rem] tracking-tracksm uppercase text-ink/70 mt-5">
                   <span>{r.time}</span>
                   <span>·</span>
                   <span>Serves {r.serves}</span>
@@ -49,10 +49,10 @@ export default function Recipes() {
                   <span>{r.difficulty}</span>
                 </div>
 
-                <h2 className="display-sm text-ink mt-3 group-hover:text-gold transition">
+                <h2 className="display-sm text-ink mt-3 group-hover:text-golddeep transition">
                   {r.name}
                 </h2>
-                <p className="text-ink/60 body-text mt-2">{r.blurb}</p>
+                <p className="text-ink/70 body-text mt-2">{r.blurb}</p>
 
                 <span className="link-quiet text-golddeep mt-4">
                   Read recipe
@@ -68,7 +68,7 @@ export default function Recipes() {
         <div className="wrap section-sm grid md:grid-cols-2 gap-8 md:gap-14 items-center">
           <h2 className="display-md text-ink">Start with the makhana.</h2>
           <div>
-            <p className="text-ink/65 body-text mb-7">
+            <p className="text-ink/75 body-text mb-7">
               Every one of these works with our roasted range, or with plain raw makhana if you would
               rather season it yourself.
             </p>
