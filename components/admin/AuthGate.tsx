@@ -73,7 +73,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       <div className="adm min-h-screen flex items-center justify-center p-5">
         <div className="w-full max-w-sm">
           <div className="text-center mb-7">
-            <Image src="/brand/logo.png" alt="Makheshwari Foods" width={200} height={116} className="h-16 w-auto mx-auto mb-4" />
+            <Image src="/brand/logo.png" alt="Makheshwari Foods" width={200} height={116} className="h-24 w-auto mx-auto mb-4" />
             <h1 className="adm-h1 text-ink">Admin</h1>
             <p className="text-sm text-adminmuted mt-1.5">Sign in to manage the store</p>
           </div>

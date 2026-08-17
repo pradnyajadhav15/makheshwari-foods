@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FSSAI, GSTIN, LEGAL_ENTITY, ADDRESS, EMAIL, INSTAGRAM } from "@/lib/products";
@@ -70,6 +71,16 @@ export default function Footer() {
       <div className="wrap pt-16 pb-12 md:pt-20 md:pb-14">
         <div className="grid lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-20 items-start">
           <div className="max-w-md">
+            {/* Reversed logo — the footer is inkdeep and the standard mark's
+                dark green wordmark is illegible on it. alt is empty because
+                the header already names the brand on every page. */}
+            <Image
+              src="/brand/logo-light.png"
+              alt=""
+              width={330}
+              height={190}
+              className="h-20 md:h-24 w-auto mb-7"
+            />
             <p className="font-display text-cream text-3xl md:text-4xl leading-tight">
               Roasted where it grows.
             </p>

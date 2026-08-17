@@ -80,7 +80,9 @@ export default function Shell({
     <div className="flex flex-col h-full bg-inkdeep text-cream">
       <div className={`flex items-center gap-3 h-16 shrink-0 border-b border-cream/10 ${collapsed ? "justify-center px-2" : "px-4"}`}>
         <Link href={BASE} className="flex items-center gap-2.5 min-w-0" onClick={() => setDrawer(false)}>
-          <Image src="/brand/logo.png" alt="" width={120} height={70} className="h-9 w-auto shrink-0" />
+          {/* The sidebar is bg-inkdeep, so this needs the reversed logo — the
+              standard one has a dark green wordmark that disappears on it. */}
+          <Image src="/brand/logo-light.png" alt="" width={120} height={70} className="h-12 w-auto shrink-0" />
           {!collapsed && (
             <span className="font-display text-cream text-sm leading-tight truncate">
               Makheshwari

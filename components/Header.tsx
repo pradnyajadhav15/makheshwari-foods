@@ -74,7 +74,7 @@ export default function Header() {
         <div className="wrap">
           <div
             className={`flex items-center justify-between gap-4 transition-[height] duration-300 ${
-              scrolled ? "h-16 lg:h-20" : "h-[4.5rem] lg:h-24"
+              scrolled ? "h-16 lg:h-[5.5rem]" : "h-20 lg:h-28"
             }`}
           >
             {/* Left: menu on mobile, wordmark on desktop */}
@@ -104,7 +104,7 @@ export default function Header() {
                 height={190}
                 priority
                 className={`w-auto transition-[height] duration-300 ${
-                  scrolled ? "h-11 lg:h-14" : "h-12 lg:h-16"
+                  scrolled ? "h-12 lg:h-16" : "h-14 lg:h-20"
                 }`}
               />
             </Link>
