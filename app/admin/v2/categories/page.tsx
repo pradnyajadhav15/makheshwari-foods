@@ -1,68 +1,191 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { Icons } from "@/components/admin/Icons";
+import {
+  Card, PageHeader, Badge, TableSkeleton, EmptyState, useToast, Modal, ConfirmModal,
+} from "@/components/admin/ui";
 import { num } from "@/lib/admin/format";
-import { Card, PageHeader, Badge, DemoNotice, TableSkeleton } from "@/components/admin/ui";
 
+type Category = {
+  id: string; slug: string; name: string; description: string | null;
+  sort_order: number; active: boolean;
+};
 
-type Product = { slug: string; name: string; stock: number; in_stock: boolean };
+type Counts = Record<string, { total: number; live: number }>;
 
-/**
- * There is no `categories` table. The storefront hard-codes one live
- * category plus two "coming soon" chips in app/shop/page.tsx, so this
- * page reflects that reality and counts real products against it rather
- * than inventing a taxonomy the store does not have.
- */
-const CATEGORIES = [
-  { name: "Flavoured makhana", slug: "makhana", live: true, note: "The only category currently on sale" },
-  { name: "Namkeen", slug: "namkeen", live: false, note: "Shown as “coming soon” on the shop page" },
-  { name: "Gift boxes", slug: "gift-boxes", live: false, note: "Shown as “coming soon” on the shop page" },
-];
+const BLANK = { name: "", slug: "", description: "", sort_order: "0", active: true };
 
 export default function CategoriesPage() {
-  const [products, setProducts] = useState<Product[] | null>(null);
+  const { push } = useToast();
+  const [rows, setRows] = useState<Category[] | null>(null);
+  const [counts, setCounts] = useState<Counts>({});
+  const [uncategorised, setUncategorised] = useState(0);
+  const [migrated, setMigrated] = useState(true);
+  const [editing, setEditing] = useState<Category | "new" | null>(null);
+  const [f, setF] = useState(BLANK);
+  const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [confirm, setConfirm] = useState<Category | null>(null);
 
-  useEffect(() => {
-    fetch("/api/admin/products")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => setProducts(d?.products || []))
-      .catch(() => setProducts([]));
+  const load = useCallback(async () => {
+    try {
+      const r = await fetch("/api/admin/categories");
+      const d = await r.json().catch(() => ({}));
+      setRows(d.categories || []);
+      setCounts(d.counts || {});
+      setUncategorised(d.uncategorised || 0);
+      setMigrated(d.migrated !== false);
+    } catch {
+      setRows([]);
+    }
   }, []);
 
-  const live = (products || []).filter((p) => p.in_stock).length;
+  useEffect(() => { load(); }, [load]);
+
+  const open = (c: Category | "new") => {
+    setErr("");
+    setEditing(c);
+    setF(
+      c === "new"
+        ? BLANK
+        : {
+            name: c.name,
+            slug: c.slug,
+            description: c.description ?? "",
+            sort_order: String(c.sort_order),
+            active: c.active,
+          }
+    );
+  };
+
+  const save = async () => {
+    if (!f.name.trim()) { setErr("Name is required."); return; }
+    setBusy(true);
+    setErr("");
+
+    const isNew = editing === "new";
+    const r = await fetch("/api/admin/categories", {
+      method: isNew ? "POST" : "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(
+        isNew
+          ? { name: f.name, slug: f.slug, description: f.description, sort_order: f.sort_order, active: f.active }
+          : { id: (editing as Category).id, name: f.name, description: f.description, sort_order: f.sort_order, active: f.active }
+      ),
+    });
+    const d = await r.json().catch(() => ({}));
+    setBusy(false);
+    if (!r.ok) { setErr(d.error || "Could not save"); return; }
+    push(isNew ? "Category created" : "Category updated");
+    setEditing(null);
+    load();
+  };
+
+  const remove = async () => {
+    if (!confirm) return;
+    setBusy(true);
+    const r = await fetch("/api/admin/categories", {
+      method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: confirm.id }),
+    });
+    setBusy(false);
+    if (!r.ok) { push("Could not delete", "danger"); return; }
+    push(`${confirm.name} deleted — its products are now uncategorised`);
+    setConfirm(null);
+    load();
+  };
+
+  const list = rows || [];
 
   return (
     <>
-      <PageHeader title="Categories" subtitle="How the shop page groups the catalogue" />
+      <PageHeader
+        title="Categories"
+        subtitle="How the shop page groups the catalogue"
+        actions={
+          migrated && (
+            <button type="button" onClick={() => open("new")} className="adm-btn adm-btn-primary">
+              <span className="w-4 h-4 block">{Icons.plus}</span>
+              New category
+            </button>
+          )
+        }
+      />
 
-      <div className="mb-5">
-        <DemoNotice what="There is no categories table in the database — the shop page lists one live category and two placeholders in code. Product counts below are real; the category list is not yet editable." />
-      </div>
+      {!migrated && (
+        <Card className="mb-5">
+          <p className="adm-h2 text-ink mb-2">Not set up yet</p>
+          <p className="text-sm text-ink/80 leading-relaxed">
+            The <code className="font-mono text-xs">categories</code> table does not exist. Run{" "}
+            <code className="font-mono text-xs">supabase/02_categories.sql</code> in the Supabase SQL
+            editor, then reload this page. It seeds the three categories the shop page currently
+            hard-codes and files every existing product under Flavoured makhana, so nothing on the
+            storefront changes.
+          </p>
+        </Card>
+      )}
+
+      {migrated && uncategorised > 0 && (
+        <Card className="mb-5">
+          <p className="text-sm text-ink">
+            <strong className="font-medium">{uncategorised}</strong> product
+            {uncategorised === 1 ? " has" : "s have"} no category. They still appear in the shop —
+            assign one from the product editor.
+          </p>
+        </Card>
+      )}
 
       <Card bodyClass="">
-        {products === null ? (
-          <TableSkeleton rows={3} cols={4} />
+        {rows === null ? (
+          <TableSkeleton rows={3} cols={5} />
+        ) : list.length === 0 ? (
+          <EmptyState
+            icon={<span className="w-5 h-5 block">{Icons.categories}</span>}
+            title={migrated ? "No categories yet" : "Nothing to show"}
+            body={migrated ? "Create one to start grouping the catalogue." : "Run the migration above first."}
+            action={
+              migrated ? (
+                <button type="button" onClick={() => open("new")} className="adm-btn adm-btn-primary">New category</button>
+              ) : undefined
+            }
+          />
         ) : (
           <div className="adm-scroll">
-            <table className="adm-table min-w-[40rem]">
+            <table className="adm-table min-w-[44rem]">
               <thead>
                 <tr>
-                  <th>Category</th><th>Slug</th><th className="text-right">Products</th><th>Status</th><th>Notes</th>
+                  <th>Category</th><th>Slug</th><th className="text-right">Products</th>
+                  <th className="text-right">Order</th><th>Status</th><th className="text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {CATEGORIES.map((c) => (
-                  <tr key={c.slug}>
-                    <td className="font-medium text-ink">{c.name}</td>
-                    <td className="font-mono text-[0.7rem] text-adminmuted">{c.slug}</td>
-                    <td className="text-right tabular-nums">
-                      {c.live ? num(products.length) : 0}
-                      {c.live && live !== products.length && (
-                        <span className="block text-[0.68rem] text-adminmuted">{live} visible</span>
+                {list.map((c) => (
+                  <tr key={c.id}>
+                    <td>
+                      <span className="font-medium text-ink block">{c.name}</span>
+                      {c.description && (
+                        <span className="text-[0.7rem] text-adminmuted line-clamp-1">{c.description}</span>
                       )}
                     </td>
-                    <td><Badge tone={c.live ? "success" : "muted"}>{c.live ? "Live" : "Coming soon"}</Badge></td>
-                    <td className="text-adminmuted">{c.note}</td>
+                    <td className="font-mono text-[0.7rem] text-adminmuted">{c.slug}</td>
+                    <td className="text-right tabular-nums">
+                      {num(counts[c.id]?.total ?? 0)}
+                      {counts[c.id] && counts[c.id].live !== counts[c.id].total && (
+                        <span className="block text-[0.68rem] text-adminmuted">{counts[c.id].live} visible</span>
+                      )}
+                    </td>
+                    <td className="text-right tabular-nums text-adminmuted">{c.sort_order}</td>
+                    <td><Badge tone={c.active ? "success" : "muted"}>{c.active ? "Live" : "Hidden"}</Badge></td>
+                    <td className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button type="button" onClick={() => open(c)} aria-label={`Edit ${c.name}`} className="w-8 h-8 flex items-center justify-center rounded-lg text-adminmuted hover:text-ink hover:bg-sandsoft transition">
+                          <span className="w-4 h-4 block">{Icons.edit}</span>
+                        </button>
+                        <button type="button" onClick={() => setConfirm(c)} aria-label={`Delete ${c.name}`} className="w-8 h-8 flex items-center justify-center rounded-lg text-adminmuted hover:text-perideep hover:bg-perideep/10 transition">
+                          <span className="w-4 h-4 block">{Icons.trash}</span>
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -71,23 +194,67 @@ export default function CategoriesPage() {
         )}
       </Card>
 
-      <Card className="mt-5" title="Making categories real">
-        <p className="text-sm text-ink/80 leading-relaxed mb-3">
-          To manage categories here, the database needs a <code className="font-mono text-xs">categories</code> table
-          and a <code className="font-mono text-xs">category_id</code> column on <code className="font-mono text-xs">products</code>.
-          That is a small migration, and it would also unlock category-scoped coupons, which the coupons
-          screen currently cannot offer.
-        </p>
-        <ul className="text-sm text-adminmuted space-y-1.5 list-disc pl-5">
-          <li>Create, rename, reorder and hide categories</li>
-          <li>Assign products, with a category filter on the shop page</li>
-          <li>Category-specific discounts</li>
-          <li>Per-category revenue in Analytics</li>
-        </ul>
-        <p className="adm-hint mt-4">
-          Say the word and I will write the migration and wire this screen to it.
-        </p>
-      </Card>
+      <Modal
+        open={editing !== null}
+        onClose={() => setEditing(null)}
+        title={editing === "new" ? "New category" : editing ? `Edit ${editing.name}` : "Category"}
+        footer={
+          <>
+            <button type="button" onClick={() => setEditing(null)} className="adm-btn adm-btn-ghost" disabled={busy}>Cancel</button>
+            <button type="button" onClick={save} className="adm-btn adm-btn-primary" disabled={busy || !f.name.trim()}>
+              {busy ? "Saving…" : "Save"}
+            </button>
+          </>
+        }
+      >
+        {err && <p className="text-perideep text-sm mb-4" role="alert">{err}</p>}
+        <div className="space-y-4">
+          <div>
+            <label className="adm-field-label" htmlFor="c-name">Name *</label>
+            <input id="c-name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className="adm-input" placeholder="Flavoured makhana" />
+          </div>
+
+          {editing === "new" ? (
+            <div>
+              <label className="adm-field-label" htmlFor="c-slug">Slug</label>
+              <input id="c-slug" value={f.slug} onChange={(e) => setF({ ...f, slug: e.target.value })} className="adm-input font-mono text-xs" placeholder="Leave blank to derive from the name" />
+            </div>
+          ) : (
+            <div>
+              <label className="adm-field-label" htmlFor="c-slug-ro">Slug</label>
+              <input id="c-slug-ro" value={f.slug} disabled className="adm-input opacity-55 cursor-not-allowed font-mono text-xs" />
+              <p className="adm-hint">Fixed after creation so links stay stable.</p>
+            </div>
+          )}
+
+          <div>
+            <label className="adm-field-label" htmlFor="c-desc">Description</label>
+            <textarea id="c-desc" rows={2} value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} className="adm-textarea" />
+          </div>
+
+          <div>
+            <label className="adm-field-label" htmlFor="c-sort">Sort order</label>
+            <input id="c-sort" inputMode="numeric" value={f.sort_order} onChange={(e) => setF({ ...f, sort_order: e.target.value })} className="adm-input max-w-[8rem]" />
+            <p className="adm-hint">Lower numbers appear first.</p>
+          </div>
+
+          <label className="flex items-center gap-2.5 text-sm">
+            <input type="checkbox" checked={f.active} onChange={(e) => setF({ ...f, active: e.target.checked })} className="accent-ink w-4 h-4" />
+            <span>Live on the shop page</span>
+          </label>
+        </div>
+      </Modal>
+
+      <ConfirmModal
+        open={Boolean(confirm)}
+        onClose={() => setConfirm(null)}
+        onConfirm={remove}
+        busy={busy}
+        danger
+        confirmLabel="Delete category"
+        title={`Delete ${confirm?.name ?? ""}?`}
+        body={`Its ${counts[confirm?.id ?? ""]?.total ?? 0} product(s) are not deleted — they become uncategorised and stay on sale. Hiding the category instead keeps the grouping.`}
+      />
     </>
   );
 }

@@ -33,21 +33,63 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ product: data });
 }
 
+/**
+ * Columns added by supabase/01_product_fields.sql and 02_categories.sql.
+ * They are applied separately from the core columns so that, if the
+ * migration has not been run yet, saving a product still succeeds with the
+ * fields that do exist rather than failing outright.
+ */
+const EXTENDED_TEXT = [
+  "sku", "brand", "short_description", "description", "ingredients",
+  "allergens", "shelf_life", "storage", "batch_number",
+  "meta_title", "meta_description",
+] as const;
+
+const EXTENDED_NUM = ["low_stock_threshold", "cost_price", "gst_rate"] as const;
+
+const MISSING_COLUMN = "42703"; // undefined_column
+
 export async function PATCH(req: NextRequest) {
   if (!isAuthed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { slug, name, price, mrp, weight_g, stock, in_stock } = await req.json();
+  const body = await req.json();
+  const { slug, name, price, mrp, weight_g, stock, in_stock } = body;
   if (!slug) return NextResponse.json({ error: "Missing slug" }, { status: 400 });
 
-  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
-  if (name !== undefined) patch.name = name;
-  if (price !== undefined) patch.price = Number(price);
-  if (mrp !== undefined) patch.mrp = mrp === null || mrp === "" ? null : Number(mrp);
-  if (weight_g !== undefined) patch.weight_g = Number(weight_g);
-  if (stock !== undefined) patch.stock = Number(stock);
-  if (in_stock !== undefined) patch.in_stock = Boolean(in_stock);
+  const core: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (name !== undefined) core.name = name;
+  if (price !== undefined) core.price = Number(price);
+  if (mrp !== undefined) core.mrp = mrp === null || mrp === "" ? null : Number(mrp);
+  if (weight_g !== undefined) core.weight_g = Number(weight_g);
+  if (stock !== undefined) core.stock = Number(stock);
+  if (in_stock !== undefined) core.in_stock = Boolean(in_stock);
 
-  const { data, error } = await supabaseAdmin.from("products").update(patch).eq("slug", slug).select().single();
+  const extended: Record<string, unknown> = {};
+  for (const k of EXTENDED_TEXT) {
+    if (body[k] !== undefined) extended[k] = body[k] === "" ? null : body[k];
+  }
+  for (const k of EXTENDED_NUM) {
+    if (body[k] !== undefined) extended[k] = body[k] === "" || body[k] === null ? null : Number(body[k]);
+  }
+  if (body.category_id !== undefined) extended.category_id = body.category_id || null;
+  if (body.nutrition !== undefined) extended.nutrition = body.nutrition;
+
+  const attempt = async (patch: Record<string, unknown>) =>
+    supabaseAdmin.from("products").update(patch).eq("slug", slug).select().single();
+
+  const { data, error } = await attempt({ ...core, ...extended });
+
+  // Migration not run yet — save what the schema can take and say so.
+  if (error?.code === MISSING_COLUMN && Object.keys(extended).length) {
+    const retry = await attempt(core);
+    if (retry.error) return NextResponse.json({ error: retry.error.message }, { status: 500 });
+    return NextResponse.json({
+      product: retry.data,
+      warning:
+        "Saved the core fields only. The extended product columns do not exist yet — run supabase/01_product_fields.sql and supabase/02_categories.sql.",
+    });
+  }
+
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ product: data });
 }

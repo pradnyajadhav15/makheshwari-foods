@@ -1,168 +1,237 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card, PageHeader, useToast, DemoNotice, Badge, Sk } from "@/components/admin/ui";
+import { useCallback, useEffect, useState } from "react";
+import { Card, PageHeader, useToast, Sk } from "@/components/admin/ui";
+import { CONTENT_SCHEMA, type ContentBlock } from "@/lib/content";
 
-type Settings = {
-  announcement: string; announcement_active: boolean;
-  instagram: string; support_email: string;
-  shop_closed_message: string;
-};
+type Settings = { announcement: string; announcement_active: boolean; instagram: string };
 
-/**
- * The storefront copy lives in page components and lib/*.ts, not the
- * database — there is no CMS table. The two things that ARE stored and
- * editable (the announcement bar and the Instagram link) are wired up
- * here for real; everything else is listed with where it actually lives
- * so it can be found, rather than shown as a fake editor that silently
- * discards edits.
- */
-const CONTENT_MAP = [
-  { area: "Homepage hero", where: "components/HeroVideo.tsx", what: "Headline, sub-copy, both CTAs, poster image" },
-  { area: "Featured products", where: "Automatic", what: "Pulled live from the products table, ordered by weight" },
-  { area: "Promotional banner", where: "Announcement bar", what: "Editable below", editable: true },
-  { area: "Brand story", where: "app/our-story/page.tsx", what: "Full story page copy and section headings" },
-  { area: "Process / Know your makhana", where: "app/know-your-makhana/page.tsx", what: "Nine process steps and images" },
-  { area: "Recipes", where: "lib/recipes.ts", what: "Ingredients, method steps, tips" },
-  { area: "FAQs", where: "app/faq/page.tsx", what: "Three groups of questions and answers" },
-  { area: "Testimonials", where: "Reviews table", what: "Approved reviews render on product pages" },
-  { area: "Footer content", where: "components/Footer.tsx", what: "Link columns, contact block, compliance line" },
-  { area: "Social links", where: "Settings + Footer", what: "Instagram editable below; others in the footer" },
-];
+const BLOCK_KEYS = Object.keys(CONTENT_SCHEMA);
 
 export default function ContentPage() {
   const { push } = useToast();
-  const [s, setS] = useState<Settings | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [content, setContent] = useState<Record<string, ContentBlock> | null>(null);
+  const [settings, setSettings] = useState<Settings | null>(null);
+  const [migrated, setMigrated] = useState(true);
+  const [active, setActive] = useState(BLOCK_KEYS[0]);
   const [dirty, setDirty] = useState(false);
+  const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
-    fetch("/api/admin/settings")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => d && setS(d))
-      .catch(() => {});
+  const load = useCallback(async () => {
+    const [c, s] = await Promise.all([
+      fetch("/api/admin/content").then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      fetch("/api/admin/settings").then((r) => (r.ok ? r.json() : null)).catch(() => null),
+    ]);
+    if (c) { setContent(c.content); setMigrated(c.migrated !== false); }
+    if (s) setSettings(s);
   }, []);
 
-  const set = <K extends keyof Settings>(k: K, v: Settings[K]) => {
-    setS((p) => (p ? { ...p, [k]: v } : p));
+  useEffect(() => { load(); }, [load]);
+
+  const setField = (block: string, field: string, v: string) => {
+    setContent((p) => (p ? { ...p, [block]: { ...p[block], [field]: v } } : p));
+    setDirty(true);
+  };
+
+  const setSetting = <K extends keyof Settings>(k: K, v: Settings[K]) => {
+    setSettings((p) => (p ? { ...p, [k]: v } : p));
     setDirty(true);
   };
 
   const save = async () => {
-    if (!s) return;
     setBusy(true);
-    const r = await fetch("/api/admin/settings", {
-      method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(s),
-    });
-    const d = await r.json().catch(() => ({}));
+    const [c, s] = await Promise.all([
+      content
+        ? fetch("/api/admin/content", {
+            method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(content),
+          })
+        : Promise.resolve(null),
+      settings
+        ? fetch("/api/admin/settings", {
+            method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(settings),
+          })
+        : Promise.resolve(null),
+    ]);
     setBusy(false);
-    if (!r.ok) { push(d.error || "Could not save", "danger"); return; }
-    setS(d);
+
+    if (c && !c.ok) {
+      const d = await c.json().catch(() => ({}));
+      push(d.error || "Could not save content", "danger");
+      return;
+    }
+    if (s && !s.ok) { push("Could not save settings", "danger"); return; }
+
     setDirty(false);
-    push("Content saved");
+    push("Content saved — live on the site now");
+    load();
   };
+
+  if (!content) {
+    return (
+      <>
+        <PageHeader title="Website content" />
+        <div className="space-y-4 max-w-3xl"><Sk className="h-10" /><Sk className="h-64" /></div>
+      </>
+    );
+  }
+
+  const schema = CONTENT_SCHEMA[active];
+  const block = content[active] || {};
 
   return (
     <>
       <PageHeader
         title="Website content"
-        subtitle="What you can edit here, and where the rest lives"
+        subtitle="Edit storefront copy without touching code"
         actions={
-          <button type="button" onClick={save} disabled={busy || !dirty || !s} className="adm-btn adm-btn-primary">
+          <button type="button" onClick={save} disabled={busy || !dirty} className="adm-btn adm-btn-primary">
             {busy ? "Saving…" : dirty ? "Save changes" : "Saved"}
           </button>
         }
       />
 
-      <div className="mb-5">
-        <DemoNotice what="There is no CMS table yet, so most storefront copy is edited in code. The two fields below are stored in the settings table and take effect on the live site immediately." />
-      </div>
+      {!migrated && (
+        <Card className="mb-5">
+          <p className="adm-h2 text-ink mb-2">Not set up yet</p>
+          <p className="text-sm text-ink/80 leading-relaxed">
+            The <code className="font-mono text-xs">content</code> table does not exist, so edits
+            here cannot be saved. Run <code className="font-mono text-xs">supabase/03_content.sql</code>{" "}
+            in the Supabase SQL editor. It seeds every block with the copy currently hard-coded in
+            the page components, so the storefront reads identically before and after.
+          </p>
+        </Card>
+      )}
 
-      <div className="grid xl:grid-cols-[1fr_1.2fr] gap-5">
+      <div className="grid xl:grid-cols-[15rem_1fr] gap-5">
+        <nav aria-label="Content blocks" className="adm-card p-2 h-fit">
+          {BLOCK_KEYS.map((k) => (
+            <button
+              key={k}
+              type="button"
+              onClick={() => setActive(k)}
+              aria-current={active === k ? "true" : undefined}
+              className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition ${
+                active === k ? "bg-ink text-cream" : "text-ink/80 hover:bg-sandsoft"
+              }`}
+            >
+              {CONTENT_SCHEMA[k].label}
+            </button>
+          ))}
+          <div className="border-t border-adminline mt-2 pt-2">
+            <button
+              type="button"
+              onClick={() => setActive("__banner")}
+              aria-current={active === "__banner" ? "true" : undefined}
+              className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition ${
+                active === "__banner" ? "bg-ink text-cream" : "text-ink/80 hover:bg-sandsoft"
+              }`}
+            >
+              Banner &amp; social
+            </button>
+          </div>
+        </nav>
+
         <div className="space-y-5">
-          <Card title="Promotional banner">
-            {!s ? (
-              <div className="space-y-3"><Sk className="h-5 w-40" /><Sk className="h-10 w-full" /></div>
-            ) : (
-              <div className="space-y-4">
-                <label className="flex items-center gap-2.5 text-sm">
-                  <input type="checkbox" checked={s.announcement_active} onChange={(e) => set("announcement_active", e.target.checked)} className="accent-ink w-4 h-4" />
-                  Show on the site
-                </label>
-                <div>
-                  <label className="adm-field-label" htmlFor="c-ann">Banner text</label>
-                  <input id="c-ann" value={s.announcement} onChange={(e) => set("announcement", e.target.value)} className="adm-input" />
-                </div>
+          {active === "__banner" ? (
+            <Card title="Announcement banner and social links">
+              {!settings ? (
+                <Sk className="h-24" />
+              ) : (
+                <div className="space-y-4">
+                  <label className="flex items-center gap-2.5 text-sm">
+                    <input type="checkbox" checked={settings.announcement_active} onChange={(e) => setSetting("announcement_active", e.target.checked)} className="accent-ink w-4 h-4" />
+                    Show the banner
+                  </label>
+                  <div>
+                    <label className="adm-field-label" htmlFor="b-text">Banner text</label>
+                    <input id="b-text" value={settings.announcement} onChange={(e) => setSetting("announcement", e.target.value)} className="adm-input" />
+                  </div>
+                  <div>
+                    <label className="adm-field-label" htmlFor="b-ig">Instagram URL</label>
+                    <input id="b-ig" value={settings.instagram} onChange={(e) => setSetting("instagram", e.target.value)} className="adm-input" />
+                  </div>
 
-                <div>
-                  <p className="adm-label mb-2">Live preview</p>
-                  <div className="rounded-lg overflow-hidden border border-adminline">
-                    <div className={`bg-inkdeep px-4 py-2.5 text-center ${s.announcement_active ? "" : "opacity-35"}`}>
+                  <div>
+                    <p className="adm-label mb-2">Live preview</p>
+                    <div className={`rounded-lg bg-inkdeep px-4 py-2.5 text-center ${settings.announcement_active ? "" : "opacity-35"}`}>
                       <span className="text-goldsoft text-[0.68rem] tracking-[0.18em] uppercase">
-                        {s.announcement || "Your message here"}
+                        {settings.announcement || "Your message here"}
                       </span>
                     </div>
-                    <div className="bg-paper px-4 py-3 flex items-center justify-between">
-                      <span className="font-display text-sm text-ink">Makheshwari</span>
-                      <span className="text-[0.6rem] tracking-[0.18em] uppercase text-ink/50">Shop · Story · Contact</span>
-                    </div>
                   </div>
-                  {!s.announcement_active && (
-                    <p className="adm-hint">Currently hidden — the bar will not render on the storefront.</p>
+                </div>
+              )}
+            </Card>
+          ) : (
+            <>
+              <Card title={schema.label}>
+                <div className="space-y-4">
+                  {Object.entries(schema.fields).map(([field, meta]) => (
+                    <div key={field}>
+                      <label className="adm-field-label" htmlFor={`f-${field}`}>{meta.label}</label>
+                      {meta.multiline ? (
+                        <textarea
+                          id={`f-${field}`}
+                          rows={field === "heading" ? 2 : 3}
+                          value={block[field] ?? ""}
+                          onChange={(e) => setField(active, field, e.target.value)}
+                          className="adm-textarea"
+                        />
+                      ) : (
+                        <input
+                          id={`f-${field}`}
+                          value={block[field] ?? ""}
+                          onChange={(e) => setField(active, field, e.target.value)}
+                          className="adm-input"
+                        />
+                      )}
+                      {field === "heading" && (
+                        <p className="adm-hint">A line break here becomes a line break on the site.</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              <Card title="Live preview">
+                <div className={active === "hero" || active === "origin" ? "bg-inkdeep p-6 sm:p-9 rounded-lg" : "bg-sandsoft/60 p-6 sm:p-9 rounded-lg"}>
+                  {block.eyebrow && (
+                    <p className={`marker ${active === "hero" || active === "origin" ? "marker-light" : ""} mb-4`}>
+                      {block.eyebrow}
+                    </p>
+                  )}
+                  {block.heading && (
+                    <p className={`display-md ${active === "hero" || active === "origin" ? "text-cream" : "text-ink"} whitespace-pre-line`}>
+                      {block.heading}
+                    </p>
+                  )}
+                  {block.body && (
+                    <p className={`lede mt-4 max-w-lg ${active === "hero" || active === "origin" ? "text-cream/70" : "text-ink/70"}`}>
+                      {block.body}
+                    </p>
+                  )}
+                  {block.body2 && (
+                    <p className={`body-text mt-3 max-w-lg ${active === "origin" ? "text-cream/60" : "text-ink/70"}`}>
+                      {block.body2}
+                    </p>
+                  )}
+                  {block.ctaLabel && (
+                    <span className={`btn ${active === "hero" ? "btn-light" : "btn-primary"} mt-6`}>
+                      {block.ctaLabel}
+                    </span>
+                  )}
+                  {block.footnote && (
+                    <p className="text-cream/70 text-[0.7rem] tracking-tracksm uppercase mt-6">{block.footnote}</p>
                   )}
                 </div>
-              </div>
-            )}
-          </Card>
-
-          <Card title="Social links">
-            {!s ? (
-              <Sk className="h-10 w-full" />
-            ) : (
-              <div>
-                <label className="adm-field-label" htmlFor="c-ig">Instagram URL</label>
-                <input id="c-ig" value={s.instagram} onChange={(e) => set("instagram", e.target.value)} className="adm-input" />
-                <p className="adm-hint">Used in the footer. YouTube, LinkedIn and WhatsApp are still hard-coded in the footer component.</p>
-              </div>
-            )}
-          </Card>
+                <p className="adm-hint mt-3">
+                  Rendered with the real storefront styles, so this is what visitors will see.
+                </p>
+              </Card>
+            </>
+          )}
         </div>
-
-        <Card title="Where the rest of the copy lives" bodyClass="">
-          <div className="adm-scroll">
-            <table className="adm-table min-w-[36rem]">
-              <thead>
-                <tr><th>Area</th><th>Managed in</th><th>Contents</th></tr>
-              </thead>
-              <tbody>
-                {CONTENT_MAP.map((c) => (
-                  <tr key={c.area}>
-                    <td className="font-medium text-ink whitespace-nowrap">{c.area}</td>
-                    <td>
-                      {c.editable ? (
-                        <Badge tone="success">Editable here</Badge>
-                      ) : (
-                        <code className="font-mono text-[0.68rem] text-adminmuted">{c.where}</code>
-                      )}
-                    </td>
-                    <td className="text-adminmuted">{c.what}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
       </div>
-
-      <Card className="mt-5" title="Turning this into a real CMS">
-        <p className="text-sm text-ink/80 leading-relaxed">
-          A single <code className="font-mono text-xs">content</code> table keyed by section — hero headline, story
-          paragraphs, FAQ entries, footer blurb — plus image uploads through the existing
-          <code className="font-mono text-xs"> /api/admin/upload</code> route would make every row above editable
-          from this screen with live preview. It is a contained piece of work; the upload plumbing already exists
-          for product images.
-        </p>
-      </Card>
     </>
   );
 }

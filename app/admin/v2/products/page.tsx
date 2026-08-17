@@ -13,6 +13,24 @@ export type Product = {
   slug: string; name: string; price: number; mrp: number | null;
   weight_g: number; stock: number; in_stock: boolean;
   images: string[] | null; updated_at?: string;
+  // Added by supabase/01_product_fields.sql and 02_categories.sql. All
+  // optional, so the type still describes an un-migrated row correctly.
+  sku?: string | null;
+  brand?: string | null;
+  category_id?: string | null;
+  short_description?: string | null;
+  description?: string | null;
+  ingredients?: string | null;
+  allergens?: string | null;
+  shelf_life?: string | null;
+  storage?: string | null;
+  batch_number?: string | null;
+  low_stock_threshold?: number | null;
+  cost_price?: number | null;
+  gst_rate?: number | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  nutrition?: { label: string; value: string }[] | null;
 };
 
 type SortKey = "name" | "price" | "stock" | "updated";
