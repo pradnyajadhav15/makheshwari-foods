@@ -11,7 +11,18 @@ export type Product = {
   allergens: string;
   shelfLifeMonths: string;
   storage: string;
+  /**
+   * Transcribed from the printed pack panel, which is the declaration of
+   * record. Do not add rows the pack does not declare, and do not copy one
+   * product's figures to another — oil and seasoning load differ per flavour,
+   * so sodium and fat differ with them.
+   *
+   * An empty array means "no panel published for this product yet"; the
+   * product page omits the section entirely rather than showing blanks.
+   */
   nutrition: { label: string; value: string }[];
+  /** The wording printed above the pack's own panel, shown verbatim. */
+  nutritionBasis?: string;
   images: string[];
   inStock: boolean;
 };
@@ -40,13 +51,18 @@ export const products: Product[] = [
     shelfLifeMonths: "6-8 months from date of packing",
     storage: "Store in a cool, dry place away from direct sunlight. Reseal after opening.",
     nutrition: [
-      { label: "Energy", value: "— kcal" },
-      { label: "Protein", value: "— g" },
-      { label: "Carbohydrate", value: "— g" },
-      { label: "of which sugars", value: "— g" },
-      { label: "Total fat", value: "— g" },
-      { label: "Sodium", value: "— mg" },
+      { label: "Energy", value: "452 kcal" },
+      { label: "Protein", value: "9.0 g" },
+      { label: "Carbohydrate", value: "64.5 g" },
+      { label: "of which sugars", value: "0.9 g" },
+      { label: "Total dietary fibre", value: "6.8 g" },
+      { label: "Fat", value: "16.4 g" },
+      { label: "Sodium", value: "810 mg" },
+      { label: "Iron", value: "1.6 mg" },
+      { label: "Magnesium", value: "90 mg" },
+      { label: "Calcium", value: "55 mg" },
     ],
+    nutritionBasis: "Approximate values per 100 g of makhana on roasted basis",
     images: [],
     inStock: true,
   },
@@ -64,14 +80,11 @@ export const products: Product[] = [
     allergens: "Packed in a facility that also handles nuts and milk products.",
     shelfLifeMonths: "6-8 months from date of packing",
     storage: "Store in a cool, dry place away from direct sunlight. Reseal after opening.",
-    nutrition: [
-      { label: "Energy", value: "— kcal" },
-      { label: "Protein", value: "— g" },
-      { label: "Carbohydrate", value: "— g" },
-      { label: "of which sugars", value: "— g" },
-      { label: "Total fat", value: "— g" },
-      { label: "Sodium", value: "— mg" },
-    ],
+    // No panel transcribed for this flavour yet. Peri Peri's figures are not
+    // reused here: this pack carries a different seasoning and oil load, so
+    // its sodium and fat will not match. The section stays hidden until the
+    // printed panel for this pack is entered.
+    nutrition: [],
     images: [],
     inStock: true,
   },
@@ -89,14 +102,11 @@ export const products: Product[] = [
     allergens: "Packed in a facility that also handles nuts and milk products.",
     shelfLifeMonths: "6-8 months from date of packing",
     storage: "Store in a cool, dry place away from direct sunlight. Reseal after opening.",
-    nutrition: [
-      { label: "Energy", value: "— kcal" },
-      { label: "Protein", value: "— g" },
-      { label: "Carbohydrate", value: "— g" },
-      { label: "of which sugars", value: "— g" },
-      { label: "Total fat", value: "— g" },
-      { label: "Sodium", value: "— mg" },
-    ],
+    // No panel transcribed for this flavour yet. Peri Peri's figures are not
+    // reused here: this pack carries a different seasoning and oil load, so
+    // its sodium and fat will not match. The section stays hidden until the
+    // printed panel for this pack is entered.
+    nutrition: [],
     images: [],
     inStock: true,
   },
