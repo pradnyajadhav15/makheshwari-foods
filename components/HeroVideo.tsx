@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import LottiePlayer from "@/components/LottiePlayer";
@@ -96,13 +97,34 @@ export default function HeroVideo() {
 
       <div className="wrap relative z-10 w-full pt-24 pb-12 sm:pt-28 sm:pb-16 lg:py-0">
         <div className="max-w-2xl">
-          <p className="marker marker-light mb-6 animate-fade-up">
+          {/* Reversed logo: the hero is inkdeep, and the standard mark's dark
+              green wordmark is illegible on it. alt is empty because the
+              header already announces the brand a few hundred pixels above —
+              a second "Makheshwari Foods" here is just noise on a reader. */}
+          <Image
+            src="/brand/logo-light.png"
+            alt=""
+            width={330}
+            height={190}
+            priority
+            /* Hidden on phones on purpose. The mobile scrim is at its weakest
+               at the top of the hero (0.5 alpha), so the cream wordmark goes
+               faint over a bright frame, and the header logo already sits
+               ~120px above it — a second mark inside one viewport is
+               redundant and costs fold space where the CTA matters most. */
+            className="hidden sm:block sm:h-20 lg:h-24 w-auto mb-5 animate-fade-up"
+          />
+
+          <p
+            className="marker marker-light mb-6 animate-fade-up"
+            style={{ animationDelay: "80ms" }}
+          >
             Pond-grown in Samastipur, Bihar
           </p>
 
           <h1
             className="display-xl text-cream animate-fade-up"
-            style={{ animationDelay: "90ms" }}
+            style={{ animationDelay: "160ms" }}
           >
             Roasted where
             <br />
@@ -111,7 +133,7 @@ export default function HeroVideo() {
 
           <p
             className="lede text-cream/75 mt-6 max-w-md animate-fade-up"
-            style={{ animationDelay: "180ms" }}
+            style={{ animationDelay: "240ms" }}
           >
             Whole makhana from the ponds of the Mithila belt. Hot-air roasted, never fried, and
             sealed the day it is packed.
@@ -119,7 +141,7 @@ export default function HeroVideo() {
 
           <div
             className="mt-9 flex flex-wrap gap-3 animate-fade-up"
-            style={{ animationDelay: "270ms" }}
+            style={{ animationDelay: "320ms" }}
           >
             <Link href="/shop" className="btn btn-light">
               Shop the range
@@ -131,7 +153,7 @@ export default function HeroVideo() {
 
           <p
             className="text-cream/70 text-[0.7rem] tracking-tracksm uppercase mt-8 animate-fade-up"
-            style={{ animationDelay: "360ms" }}
+            style={{ animationDelay: "400ms" }}
           >
             FSSAI licensed · Free shipping over ₹499
           </p>
