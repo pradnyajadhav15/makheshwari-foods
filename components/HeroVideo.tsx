@@ -4,9 +4,16 @@ import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import LottiePlayer from "@/components/LottiePlayer";
 
-/* No real poster frame exists yet — /video/poster.jpg was referenced by an
-   older build but never added, so this is the one landscape brand still we
-   have. Replace with a frame pulled from hero.mp4 when there is one. */
+/* The still behind the video. This is a real photograph of the Mithila
+   makhana ponds, which is why it is kept in preference to a frame pulled
+   from hero.mp4 — it is the image most visitors actually see, since the
+   video is desktop-only, and it evidences the "pond-grown in Samastipur"
+   line sitting on top of it.
+
+   It also removes the need for a poster attribute on the video: .hero-media
+   is opacity 0 until canplay, so this shows through the whole time the
+   video is loading. A poster would just be a second fetch of the same
+   picture. */
 const POSTER = "/brand/story-hero.jpg";
 
 /* Drop a .lottie or .json into /public/lottie and point this at it to use
@@ -27,8 +34,9 @@ function subscribeMedia(cb: () => void) {
   };
 }
 
-/* hero.mp4 is ~38MB. Sending that to a phone on mobile data is not a
-   reasonable default, so small screens and data-saver get the still. */
+/* The video is 2.2MB (WebM) / 2.9MB (MP4) after re-encoding, down from a
+   38MB source. Still not something to push over mobile data for a purely
+   decorative background, so small screens and data-saver keep the still. */
 function shouldPlayVideo() {
   if (LOTTIE_SRC) return false;
   if (window.matchMedia(REDUCED).matches) return false;
@@ -65,7 +73,6 @@ export default function HeroVideo() {
           <video
             ref={ref}
             className={`hero-media ${ready ? "is-ready" : ""}`}
-            poster={POSTER}
             muted
             loop
             autoPlay
@@ -76,6 +83,10 @@ export default function HeroVideo() {
             onLoadedData={() => setReady(true)}
             onCanPlay={() => setReady(true)}
           >
+            {/* WebM first: browsers take the first source they can play, and
+                VP9 is 25% smaller than the H.264 at matched quality. Safari
+                below 15 has no WebM, hence the MP4. */}
+            <source src="/video/hero.webm" type="video/webm" />
             <source src="/video/hero.mp4" type="video/mp4" />
           </video>
         )
