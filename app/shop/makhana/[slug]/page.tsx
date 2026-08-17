@@ -172,16 +172,51 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </p>
           </div>
 
-          <dl className="divide-y divide-ink/10 border-t border-ink/10">
-            {specs.map((s) => (
-              <div key={s.k} className="py-4 grid sm:grid-cols-[10rem_1fr] gap-1 sm:gap-6">
-                <dt className="text-[0.66rem] tracking-tracksm uppercase text-ink/70 pt-0.5">
-                  {s.k}
-                </dt>
-                <dd className="text-ink/75 body-text">{s.v}</dd>
+          <div>
+            <dl className="divide-y divide-ink/10 border-t border-ink/10">
+              {specs.map((s) => (
+                <div key={s.k} className="py-4 grid sm:grid-cols-[10rem_1fr] gap-1 sm:gap-6">
+                  <dt className="text-[0.66rem] tracking-tracksm uppercase text-ink/70 pt-0.5">
+                    {s.k}
+                  </dt>
+                  <dd className="text-ink/75 body-text">{s.v}</dd>
+                </div>
+              ))}
+            </dl>
+
+            {/* Omitted entirely when no panel has been transcribed for this
+                pack — an empty or dashed table would read as a real
+                declaration of nothing. */}
+            {product.nutrition.length > 0 && (
+              <div className="mt-10">
+                <h3 className="text-[0.66rem] tracking-tracksm uppercase text-ink/70 mb-4">
+                  Nutrition information
+                </h3>
+                <table className="w-full border-t border-ink/10">
+                  <caption className="sr-only">
+                    {product.nutritionBasis ?? "Nutrition information"}
+                  </caption>
+                  <tbody className="divide-y divide-ink/10">
+                    {product.nutrition.map((n) => (
+                      <tr key={n.label}>
+                        <th scope="row" className="text-left font-normal text-ink/75 body-text py-2.5 pr-4">
+                          {n.label}
+                        </th>
+                        <td className="text-right text-ink tabular-nums body-text py-2.5 whitespace-nowrap">
+                          {n.value}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {product.nutritionBasis && (
+                  <p className="text-ink/70 text-[0.72rem] mt-3 leading-relaxed">
+                    {product.nutritionBasis}. As printed on the pack.
+                  </p>
+                )}
               </div>
-            ))}
-          </dl>
+            )}
+          </div>
         </div>
       </section>
 
