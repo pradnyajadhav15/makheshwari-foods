@@ -46,7 +46,16 @@ export const products: Product[] = [
     mrp: 179,
     description:
       "Whole makhana roasted until it snaps, then tumbled in a chilli and herb blend that builds slowly and then doesn't stop. Our most-ordered flavour, and the one people buy in threes.",
-    ingredients: "Makhana (fox nut), edible vegetable oil, peri peri seasoning, iodised salt.",
+    // Transcribed from the printed 60 g pack, in the declared order. The
+    // previous four-item list omitted maltodextrin, sugar, the acidity
+    // regulators and the flavour enhancers — the things people actually
+    // check a label for.
+    //
+    // The anti-caking agent's INS number is cut off in the pack photo
+    // ("Anti-Caking Agent IN…"), so it is declared without a number rather
+    // than guessed at. Add it once the full pack text is to hand.
+    ingredients:
+      "Panchamrit (makhana), sunflower oil, maltodextrin powder, salt, sugar, dehydrated vegetables (onion, garlic), spices & condiments (chilli, pepper), mango powder, vegetable oil (refined soybean), acidifying agents (INS 330, INS 296), flavour enhancers (INS 627, INS 631), anti-caking agent.",
     allergens: "Packed in a facility that also handles nuts and milk products.",
     shelfLifeMonths: "6-8 months from date of packing",
     storage: "Store in a cool, dry place away from direct sunlight. Reseal after opening.",
