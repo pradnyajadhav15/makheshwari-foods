@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const SLIDES = [
-  { src: "/hero/peri-peri.jpg", alt: "Peri peri roasted makhana in a terracotta bowl" },
-  { src: "/hero/garden-mint.jpg", alt: "Garden mint roasted makhana in a terracotta bowl" },
-  { src: "/hero/pink-salt.jpg", alt: "Himalayan pink salt roasted makhana in a terracotta bowl" },
+  { src: "/hero/peri-peri.jpg", alt: "Peri peri roasted makhana in a terracotta bowl", name: "Peri Peri" },
+  { src: "/hero/garden-mint.jpg", alt: "Garden mint roasted makhana in a terracotta bowl", name: "Garden Mint" },
+  { src: "/hero/pink-salt.jpg", alt: "Himalayan pink salt roasted makhana in a terracotta bowl", name: "Himalayan Pink Salt" },
 ];
 
 const INTERVAL = 3000;
@@ -47,6 +47,15 @@ export default function HeroVideo() {
         ))}
 
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-ink/10 via-ink/30 to-ink sm:bg-gradient-to-r sm:from-ink/90 sm:via-ink/60 sm:to-ink/20" />
+
+        <div className="absolute inset-y-0 left-0 z-10 flex w-[36%] items-center px-5 sm:hidden">
+          <p
+            key={SLIDES[i].name}
+            className="font-display text-cream text-[1.35rem] leading-[1.15] animate-fade-up"
+          >
+            {SLIDES[i].name}
+          </p>
+        </div>
 
         <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-10 flex gap-2.5">
           {SLIDES.map((s, n) => (

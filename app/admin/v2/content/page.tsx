@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Card, PageHeader, useToast, Sk } from "@/components/admin/ui";
-import { CONTENT_SCHEMA, type ContentBlock } from "@/lib/content";
+import { CONTENT_SCHEMA, type ContentBlock } from "@/lib/contentSchema";
 
 type Settings = { announcement: string; announcement_active: boolean; instagram: string };
 
