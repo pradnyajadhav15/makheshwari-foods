@@ -24,8 +24,10 @@ const steps = [
 export default function KnowYourMakhana() {
   return (
     <>
-      <section className="bg-ink text-cream">
-        <div className="wrap pt-14 pb-16 md:pt-20 md:pb-24">
+      <section className="relative isolate overflow-hidden bg-ink text-cream">
+        <Image src="/brand/hero.jpg" alt="" fill priority sizes="100vw" className="object-cover object-center opacity-70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/40" />
+        <div className="wrap relative z-10 pt-14 pb-16 md:pt-20 md:pb-24">
           <div className="max-w-3xl">
             <p className="marker marker-light mb-6">The process</p>
             <h1 className="display-xl text-cream">

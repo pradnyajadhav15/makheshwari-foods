@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import ProductCard from "@/components/ProductCard";
@@ -18,8 +19,10 @@ export default async function Shop() {
 
   return (
     <>
-      <section className="bg-ink text-cream">
-        <div className="wrap pt-14 pb-16 md:pt-20 md:pb-24">
+      <section className="relative isolate overflow-hidden bg-ink text-cream">
+        <Image src="/shop/hero.jpg" alt="" fill priority sizes="100vw" className="object-cover object-center opacity-70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/40" />
+        <div className="wrap relative z-10 pt-14 pb-16 md:pt-20 md:pb-24">
           <div className="max-w-3xl">
             <p className="marker marker-light mb-6">The range</p>
             <h1 className="display-xl text-cream">
@@ -31,6 +34,13 @@ export default async function Shop() {
               Whole makhana from the Mithila belt, hot-air roasted in small batches and seasoned by
               hand. Three flavours now, more on the way.
             </p>
+            <ul className="flex flex-wrap gap-x-2 gap-y-2.5 mt-8">
+              {["Single ingredient", "Roasted, never fried", "Naturally gluten free", "No additives"].map((t) => (
+                <li key={t} className="border border-cream/25 rounded-full px-4 py-2 text-[0.62rem] tracking-tracksm uppercase text-cream/75">
+                  {t}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>

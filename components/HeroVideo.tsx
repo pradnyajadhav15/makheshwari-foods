@@ -8,6 +8,9 @@ const SLIDES = [
   { src: "/hero/peri-peri.jpg", alt: "Peri peri roasted makhana in a terracotta bowl", name: "Peri Peri" },
   { src: "/hero/garden-mint.jpg", alt: "Garden mint roasted makhana in a terracotta bowl", name: "Garden Mint" },
   { src: "/hero/pink-salt.jpg", alt: "Himalayan pink salt roasted makhana in a terracotta bowl", name: "Himalayan Pink Salt" },
+  { src: "/hero/cream-onion.jpg", alt: "Cream and onion roasted makhana in a terracotta bowl", name: "Cream & Onion" },
+  { src: "/hero/real-tomato.jpg", alt: "Real tomato roasted makhana in a terracotta bowl", name: "Real Tomato" },
+  { src: "/hero/cheese-herbs.jpg", alt: "Cheese and herbs roasted makhana in a terracotta bowl", name: "Cheese & Herbs" },
 ];
 
 const INTERVAL = 3000;

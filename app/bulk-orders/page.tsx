@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import FacilityStrip from "@/components/FacilityStrip";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import BulkForm from "@/components/BulkForm";
@@ -122,6 +123,8 @@ export default async function BulkOrders() {
           </div>
         </section>
       )}
+
+      <FacilityStrip />
 
       <section className="bg-sandsoft/60 border-y border-ink/10">
         <div className="wrap section grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">

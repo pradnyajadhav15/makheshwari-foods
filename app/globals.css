@@ -647,3 +647,21 @@ textarea:focus-visible,
     height: 100%;
   }
 }
+
+/* Facility rail — duplicated track translated by exactly 50%, so the seam
+   never shows. Pauses on hover and for reduced-motion. */
+.facility-rail { overflow: hidden; }
+.facility-track {
+  display: flex;
+  width: max-content;
+  animation: facility-scroll 55s linear infinite;
+}
+.facility-rail:hover .facility-track { animation-play-state: paused; }
+@keyframes facility-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .facility-track { animation: none; }
+  .facility-rail { overflow-x: auto; }
+}
