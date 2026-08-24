@@ -89,7 +89,7 @@ function adminCsp(nonce: string) {
 function siteCsp() {
   return join([
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://checkout.razorpay.com https://*.razorpay.com https://*.sentry.io https://cdn.jsdelivr.net`,
+    `script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://checkout.razorpay.com https://*.razorpay.com https://*.sentry.io https://cdn.jsdelivr.net https://va.vercel-scripts.com`,
     ...SHARED,
   ]);
 }

@@ -390,8 +390,16 @@ p, li, h1, h2, h3, dd, dt { overflow-wrap: break-word; }
 /* On phones the hero is content-driven so the CTAs always land above the
    fold, but it keeps a floor so the imagery still has some presence. */
 @media (max-width: 640px) {
-  .hero { height: auto; min-height: 30rem; max-height: none; }
+  .hero { height: auto; min-height: 0; max-height: none; padding-top: 56vw; }
+  .hero-figure { height: 56vw; bottom: auto; }
+  .hero-scrim { height: 56vw; bottom: auto; background: linear-gradient(to bottom, rgba(12,36,28,0.10) 0%, rgba(12,36,28,0.35) 70%, var(--color-inkdeep) 100%); }
+  .hero-figure { position: absolute; inset: 0; }
+
+.hero-media { height: 56vw; bottom: auto; }
+  .hero-scrim { background: linear-gradient(to bottom, rgba(12,36,28,0.15) 0%, rgba(12,36,28,0.45) 45%, var(--color-inkdeep) 56vw); }
 }
+
+.hero-figure { position: absolute; inset: 0; }
 
 .hero-media {
   position: absolute;
@@ -413,14 +421,11 @@ p, li, h1, h2, h3, dd, dt { overflow-wrap: break-word; }
     linear-gradient(to top, rgba(12, 36, 28, 0.8) 0%, transparent 45%);
 }
 
-@media (max-width: 640px) {
-  .hero-scrim {
-    background: linear-gradient(to top, rgba(12, 36, 28, 0.92) 12%, rgba(12, 36, 28, 0.55) 60%, rgba(12, 36, 28, 0.5) 100%);
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-media { display: none; }
+  .hero-figure { position: absolute; inset: 0; }
+
+.hero-media { display: none; }
 }
 
 /* ============================================================
@@ -625,3 +630,20 @@ textarea:focus-visible,
 }
 
 @keyframes admToast { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+
+/* Hero figure — sized here rather than with Tailwind arbitrary values,
+   which were not regenerating reliably. */
+.hero-figure {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+}
+@media (min-width: 640px) {
+  .hero-figure {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+    height: 100%;
+  }
+}
