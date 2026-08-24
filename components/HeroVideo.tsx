@@ -5,15 +5,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const SLIDES = [
-  { src: "/hero/peri-peri.jpg", alt: "Peri peri roasted makhana in a terracotta bowl", name: "Peri Peri" },
-  { src: "/hero/garden-mint.jpg", alt: "Garden mint roasted makhana in a terracotta bowl", name: "Garden Mint" },
-  { src: "/hero/pink-salt.jpg", alt: "Himalayan pink salt roasted makhana in a terracotta bowl", name: "Himalayan Pink Salt" },
-  { src: "/hero/cream-onion.jpg", alt: "Cream and onion roasted makhana in a terracotta bowl", name: "Cream & Onion" },
-  { src: "/hero/real-tomato.jpg", alt: "Real tomato roasted makhana in a terracotta bowl", name: "Real Tomato" },
-  { src: "/hero/cheese-herbs.jpg", alt: "Cheese and herbs roasted makhana in a terracotta bowl", name: "Cheese & Herbs" },
+  { src: "/hero/peri-peri.jpg", alt: "Peri peri roasted makhana in a terracotta bowl", name: "Peri Peri", tag: "Sharp and smoky" },
+  { src: "/hero/garden-mint.jpg", alt: "Garden mint roasted makhana in a terracotta bowl", name: "Garden Mint", tag: "Cool and herby" },
+  { src: "/hero/pink-salt.jpg", alt: "Himalayan pink salt roasted makhana in a terracotta bowl", name: "Himalayan Pink Salt", tag: "Clean and simple" },
+  { src: "/hero/cream-onion.jpg", alt: "Cream and onion roasted makhana in a terracotta bowl", name: "Cream & Onion", tag: "Rich and savoury" },
+  { src: "/hero/real-tomato.jpg", alt: "Real tomato roasted makhana in a terracotta bowl", name: "Real Tomato", tag: "Bright and tangy" },
+  { src: "/hero/cheese-herbs.jpg", alt: "Cheese and herbs roasted makhana in a terracotta bowl", name: "Cheese & Herbs", tag: "Warm and buttery" },
 ];
 
-const INTERVAL = 3000;
+const INTERVAL = 2000;
 
 export default function HeroVideo() {
   const [i, setI] = useState(0);
@@ -43,7 +43,7 @@ export default function HeroVideo() {
             loading={n === 0 ? undefined : "lazy"}
             sizes="100vw"
             aria-hidden={n !== i}
-            className={`object-cover object-center transition-opacity duration-700 ${
+            className={`object-cover object-center transition-opacity duration-500 ${
               n === i ? "opacity-100" : "opacity-0"
             }`}
           />
@@ -51,12 +51,19 @@ export default function HeroVideo() {
 
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-ink/10 via-ink/30 to-ink sm:bg-gradient-to-r sm:from-ink/90 sm:via-ink/60 sm:to-ink/20" />
 
-        <div className="absolute inset-y-0 left-0 z-10 flex w-[36%] items-center px-5 sm:hidden">
+        <div className="absolute inset-y-0 left-0 z-10 flex w-[38%] flex-col justify-center px-5 sm:hidden">
           <p
             key={SLIDES[i].name}
-            className="font-display text-cream text-[1.35rem] leading-[1.15] animate-fade-up"
+            className="font-display text-cream text-[1.15rem] leading-[1.15] animate-fade-up"
           >
             {SLIDES[i].name}
+          </p>
+          <p
+            key={SLIDES[i].tag}
+            className="text-cream/55 text-[0.6rem] tracking-tracksm uppercase mt-2 animate-fade-up"
+            style={{ animationDelay: "120ms" }}
+          >
+            {SLIDES[i].tag}
           </p>
         </div>
 
