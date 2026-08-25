@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import ClipHeading from "@/components/motion/ClipHeading";
 import ProductCard from "@/components/ProductCard";
 import HeroVideo from "@/components/HeroVideo";
 import { getLiveProducts } from "@/lib/liveProducts";
@@ -82,19 +83,29 @@ export default async function Home() {
       </div>
 
       {/* PRODUCTS — moved directly under the hero. Previously these sat
-          below a long essay section, a third of the way down the page. */}
+          below a long essay section, a third of the way down the page.
+
+          The header block no longer sits inside a single Reveal: the eyebrow
+          and link ride their own staggered reveals so the masked headline can
+          trigger itself without compounding two transforms on the same text. */}
       <section className="wrap section">
-        <Reveal>
-          <div className="flex items-end justify-between flex-wrap gap-5 mb-9 md:mb-12">
-            <div className="max-w-xl">
+        <div className="flex items-end justify-between flex-wrap gap-5 mb-9 md:mb-12">
+          <div className="max-w-xl">
+            <Reveal>
               <p className="marker mb-5">The range</p>
-              <h2 className="display-lg text-ink">Three flavours,<br />one honest crunch.</h2>
-            </div>
+            </Reveal>
+            <ClipHeading
+              className="display-lg text-ink"
+              lines={["Three flavours,", "one honest crunch."]}
+              delay={90}
+            />
+          </div>
+          <Reveal delay={240}>
             <Link href="/shop" className="link-quiet text-ink/70 hover:text-ink">
               All products →
             </Link>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 lg:gap-7">
           {products.map((p, i) => (
@@ -118,36 +129,62 @@ export default async function Home() {
             />
           </div>
 
-          <Reveal>
-            <div className="h-full flex flex-col justify-center px-[clamp(1.15rem,5vw,4.5rem)] py-14 md:py-20">
+          <div className="h-full flex flex-col justify-center px-[clamp(1.15rem,5vw,4.5rem)] py-14 md:py-20">
+            <Reveal>
               <p className="marker marker-light mb-5">Know your makhana</p>
-              <h2 className="display-lg text-cream">It begins waist-deep in water.</h2>
+            </Reveal>
+
+            <ClipHeading
+              className="display-lg text-cream"
+              lines={["It begins waist-deep in water."]}
+              delay={90}
+            />
+
+            <Reveal delay={220}>
               <p className="lede text-cream/65 mt-6 max-w-md">
                 Makhana does not grow on a plant you can walk up to. It grows underwater, on a
                 prickly water lily rooted in the pond bed, and every seed is brought up by hand.
               </p>
+            </Reveal>
+
+            <Reveal delay={300}>
               <p className="text-cream/70 body-text mt-4 max-w-md">
                 We buy from those ponds, roast in Samastipur, and seal the same day.
               </p>
-              <Link href="/know-your-makhana" className="btn btn-light self-start mt-9">
+            </Reveal>
+
+            {/* self-start moved onto the Reveal wrapper, which is now the flex
+                child — the Link no longer sees the flex context directly */}
+            <Reveal delay={380} className="self-start">
+              <Link href="/know-your-makhana" className="btn btn-light mt-9">
                 See how it is made
               </Link>
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
         </div>
       </section>
 
       {/* Why us — numbered editorial list. Replaces six white drop-shadow
           cards with icons, which was the most template-like block on the page. */}
       <section className="wrap section">
-        <Reveal className="max-w-2xl mb-12 md:mb-16">
-          <p className="marker mb-5">Why choose us</p>
-          <h2 className="display-lg text-ink">Closer to the pond than anyone else.</h2>
-          <p className="lede text-ink/70 mt-6">
-            Most makhana leaves Bihar in sacks and gets packed under someone else&apos;s name. Ours
-            never leaves.
-          </p>
-        </Reveal>
+        <div className="max-w-2xl mb-12 md:mb-16">
+          <Reveal>
+            <p className="marker mb-5">Why choose us</p>
+          </Reveal>
+
+          <ClipHeading
+            className="display-lg text-ink"
+            lines={["Closer to the pond than anyone else."]}
+            delay={90}
+          />
+
+          <Reveal delay={220}>
+            <p className="lede text-ink/70 mt-6">
+              Most makhana leaves Bihar in sacks and gets packed under someone else&apos;s name. Ours
+              never leaves.
+            </p>
+          </Reveal>
+        </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 lg:gap-x-14 gap-y-0">
           {REASONS.map((c, i) => (
@@ -170,12 +207,22 @@ export default async function Home() {
         <div className="wrap-mid section text-center">
           <Reveal>
             <p className="marker marker-center mb-6">Raw and natural</p>
-            <h2 className="display-lg text-ink">Pure, natural,<br />and nothing else.</h2>
+          </Reveal>
+
+          <ClipHeading
+            className="display-lg text-ink"
+            lines={["Pure, natural,", "and nothing else."]}
+            delay={90}
+          />
+
+          <Reveal delay={220}>
             <p className="lede text-ink/75 mt-7 max-w-xl mx-auto">
               Sourced from the ponds of the Mithila belt and sorted by hand for size and colour. No
               additives, no preservatives, and nothing to hide behind.
             </p>
+          </Reveal>
 
+          <Reveal delay={300}>
             <ul className="flex flex-wrap justify-center gap-x-2 gap-y-2.5 mt-10">
               {[
                 "100% plant based",
@@ -195,7 +242,9 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
+          </Reveal>
 
+          <Reveal delay={380}>
             <Link href="/shop" className="btn btn-primary mt-10">
               Explore all
             </Link>
@@ -205,21 +254,31 @@ export default async function Home() {
 
       {/* Recipes — now with the images that already sit unused in /public */}
       <section className="wrap section">
-        <Reveal>
-          <div className="flex items-end justify-between flex-wrap gap-5 mb-9 md:mb-12">
-            <div className="max-w-xl">
+        <div className="flex items-end justify-between flex-wrap gap-5 mb-9 md:mb-12">
+          <div className="max-w-xl">
+            <Reveal>
               <p className="marker mb-5">From the kitchen</p>
-              <h2 className="display-lg text-ink">More than a snack</h2>
+            </Reveal>
+
+            <ClipHeading
+              className="display-lg text-ink"
+              lines={["More than a snack"]}
+              delay={90}
+            />
+
+            <Reveal delay={220}>
               <p className="text-ink/70 body-text mt-5">
                 Makhana has been cooked in Mithila kitchens for generations, long before anyone put
                 it in a pouch.
               </p>
-            </div>
+            </Reveal>
+          </div>
+          <Reveal delay={280}>
             <Link href="/recipes" className="link-quiet text-ink/70 hover:text-ink">
               All recipes →
             </Link>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
 
         <div className="grid sm:grid-cols-3 gap-4 md:gap-7">
           {RECIPES.map((r, i) => (
@@ -245,7 +304,9 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Marketplaces */}
+      {/* Marketplaces — display-md heading, so it keeps the plain Reveal.
+          If every headline on the page gets the mask, none of them read as
+          special. */}
       <section className="bg-ink text-cream">
         <div className="wrap section-sm">
           <Reveal className="flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-16">
@@ -284,12 +345,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Bulk */}
+      {/* Bulk — display-md, plain Reveal on the card as a single entrance */}
       <section className="wrap section">
         <Reveal>
           <div className="border border-ink/15 bg-paper px-6 py-12 md:px-16 md:py-16 grid lg:grid-cols-[1.2fr_1fr] gap-8 lg:gap-16 items-center">
             <div>
-              <p className="marker mb-5">Bulk & reseller</p>
+              <p className="marker mb-5">Bulk &amp; reseller</p>
               <h2 className="display-md text-ink">Buying by the carton?</h2>
               <p className="text-ink/70 body-text mt-5 max-w-md">
                 We supply retailers, distributors and corporate gifting direct from our Samastipur

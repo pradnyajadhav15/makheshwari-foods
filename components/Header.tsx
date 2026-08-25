@@ -74,7 +74,7 @@ export default function Header() {
         <div className="wrap">
           <div
             className={`flex items-center justify-between gap-4 transition-[height] duration-300 ${
-              scrolled ? "h-16 lg:h-[5.5rem]" : "h-20 lg:h-28"
+              scrolled ? "h-16 lg:h-[4.5rem]" : "h-18 lg:h-24"
             }`}
           >
             {/* Left: menu on mobile, wordmark on desktop */}
