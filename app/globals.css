@@ -391,6 +391,11 @@ p, li, h1, h2, h3, dd, dt { overflow-wrap: break-word; }
    backdrop on the left, so the text has somewhere to sit. A phone crops
    a 16:9 frame to roughly its centre, which would cut the bowl in half —
    hence the shift to the right edge below 640px. */
+.hero-figure {
+  position: absolute;
+  inset: 0;
+}
+
 .hero img {
   object-position: 72% center;
 }
@@ -400,7 +405,12 @@ p, li, h1, h2, h3, dd, dt { overflow-wrap: break-word; }
     height: auto;
     min-height: 0;
     max-height: none;
-    padding-top: 62vw;
+    padding-top: 75vw;
+  }
+
+  .hero-figure {
+    height: 75vw;
+    bottom: auto;
   }
 
   .hero img {
@@ -415,7 +425,7 @@ p, li, h1, h2, h3, dd, dt { overflow-wrap: break-word; }
       to bottom,
       rgba(12, 36, 28, 0.15) 0%,
       rgba(12, 36, 28, 0.45) 38%,
-      rgba(12, 36, 28, 0.92) 62vw,
+      rgba(12, 36, 28, 0.92) 75vw,
       var(--color-inkdeep) 100%
     );
   }

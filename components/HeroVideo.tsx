@@ -22,8 +22,6 @@ export default function HeroVideo() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    /* Reduced-motion visitors keep the first frame rather than a
-       background that changes every two seconds. */
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const t = setInterval(() => setActive((i) => (i + 1) % FLAVOURS.length), INTERVAL);
     return () => clearInterval(t);
@@ -31,22 +29,49 @@ export default function HeroVideo() {
 
   return (
     <section className="hero flex items-end lg:items-center">
-      {FLAVOURS.map((f, i) => (
-        <Image
-          key={f.id}
-          src={f.src}
-          alt=""
-          aria-hidden="true"
-          fill
-          priority={i === 0}
-          sizes="100vw"
-          className={`object-cover transition-opacity duration-1000 ${
-            active === i ? "opacity-100" : "opacity-0"
-          }`}
-        />
-      ))}
+      {/* The wrapper is what bounds the imagery. On phones it shrinks to a
+          band at the top while the hero itself grows with the copy below,
+          so the images are never asked to cover a tall portrait box. */}
+      <div className="hero-figure">
+        {FLAVOURS.map((f, i) => (
+          <Image
+            key={f.id}
+            src={f.src}
+            alt=""
+            aria-hidden="true"
+            fill
+            priority={i === 0}
+            sizes="100vw"
+            quality={82}
+            className={`object-cover transition-opacity duration-1000 ${
+              active === i ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
+      </div>
 
       <div className="hero-scrim" />
+
+      {/* On phones the copy sits below the band, leaving the empty left of
+          the frame unused — so the flavour caption goes there instead. Below
+          640px only; wider screens use the in-flow block further down. */}
+      <div className="sm:hidden absolute inset-x-0 top-0 h-[75vw] z-10 pointer-events-none flex items-start pt-[14vw] px-[clamp(1.15rem,5vw,4.5rem)]">
+        <div className="relative w-[46%] h-16">
+          {FLAVOURS.map((f, i) => (
+            <div
+              key={f.id}
+              className={`absolute inset-0 transition-opacity duration-700 ${
+                active === i ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <p className="font-display text-xl text-cream">{f.name}</p>
+              <p className="text-cream/65 text-[0.6rem] tracking-tracksm uppercase mt-1">
+                {f.tag}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <div className="wrap relative z-10 w-full pt-8 pb-10 sm:pt-28 sm:pb-16 lg:pt-[5.5rem] lg:pb-0">
         <div className="max-w-2xl">
@@ -68,12 +93,8 @@ export default function HeroVideo() {
             sealed the day it is packed.
           </p>
 
-          {/* Flavour caption, cross-fading in step with the backdrop. The
-              fixed height stops the CTAs below shifting as names change
-              length, and aria-live is off so it does not interrupt a
-              screen reader every two seconds. */}
           <div
-            className="relative h-14 mt-7 animate-fade-up"
+            className="relative hidden sm:block h-14 mt-7 animate-fade-up"
             aria-live="off"
             style={{ animationDelay: "270ms" }}
           >
