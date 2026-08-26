@@ -96,7 +96,7 @@ function siteCsp() {
 
 const IS_ADMIN = /^\/admin(?:\/|$)/;
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const admin = IS_ADMIN.test(request.nextUrl.pathname);
 
   const requestHeaders = new Headers(request.headers);
