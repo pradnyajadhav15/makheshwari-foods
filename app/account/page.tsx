@@ -8,7 +8,7 @@ import { formatPrice } from "@/lib/products";
 import { Skeleton, OrderSkeleton } from "@/components/Skeleton";
 
 type O = {
-  id: string; created_at: string; razorpay_payment_id: string; status: string;
+  id: string; order_number: number | null; created_at: string; razorpay_payment_id: string; status: string;
   customer_name: string; address_line: string; city: string; state: string; pincode: string;
   items: { name: string; qty: number; price: number }[];
   subtotal: number; shipping: number; total: number;
@@ -111,7 +111,7 @@ export default function Account() {
               <div className="flex flex-wrap justify-between gap-4 pb-6 mb-6 border-b border-ink/12">
                 <div className="min-w-0">
                   <p className="text-ink/70 text-[0.62rem] tracking-tracksm uppercase mb-1.5">Order</p>
-                  <p className="font-display text-lg text-ink break-words">{o.razorpay_payment_id}</p>
+                  <p className="font-display text-lg text-ink">{o.order_number ? `MF-${o.order_number}` : o.razorpay_payment_id}</p>
                   <p className="text-ink/70 text-xs mt-1">
                     {new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
                   </p>
@@ -172,7 +172,7 @@ export default function Account() {
 
               <div className="flex flex-wrap gap-3 mt-7 pt-6 border-t border-ink/12">
                 <a
-                  href={`https://wa.me/917485001464?text=${encodeURIComponent(`Hi, I have a question about my order ${o.razorpay_payment_id}`)}`}
+                  href={`https://wa.me/917485001464?text=${encodeURIComponent(`Hi, I have a question about order ${o.order_number ? `MF-${o.order_number}` : o.razorpay_payment_id}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn-outline min-h-0 py-2.5 px-6"

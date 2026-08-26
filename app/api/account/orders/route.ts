@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
   const { data: orders } = await supabaseAdmin
     .from("orders")
-    .select("id,created_at,razorpay_payment_id,status,customer_name,address_line,city,state,pincode,items,subtotal,shipping,total,tracking_id,courier")
+    .select("id,order_number,created_at,razorpay_payment_id,status,customer_name,address_line,city,state,pincode,items,subtotal,shipping,total,tracking_id,courier")
     .ilike("email", userData.user.email)
     .order("created_at", { ascending: false });
 
