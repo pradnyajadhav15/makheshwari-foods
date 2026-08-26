@@ -74,6 +74,8 @@ export async function POST(req: Request) {
 
     await decrementStockOnce(razorpay_order_id);
 
+    let orderNumber: number | null = null;
+
     try {
       const { data: row } = await supabaseAdmin.from("orders").select("id").eq("razorpay_order_id", razorpay_order_id).maybeSingle();
       if (row) await ensureInvoice(row.id);
@@ -82,6 +84,7 @@ export async function POST(req: Request) {
     try {
       await notifyOwner({
         paymentId: razorpay_payment_id,
+        orderNumber,
         name: customer.name,
         phone: customer.phone,
         email: customer.email,

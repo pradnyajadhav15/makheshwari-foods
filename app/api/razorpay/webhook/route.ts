@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 
       const { data: existing } = await supabaseAdmin
         .from("orders")
-        .select("id, status, customer_name, email, phone, address_line, city, state, pincode, items, total, notes")
+        .select("id, order_number, status, customer_name, email, phone, address_line, city, state, pincode, items, total, notes")
         .eq("razorpay_order_id", orderId)
         .maybeSingle();
 
@@ -90,6 +90,7 @@ export async function POST(req: Request) {
         try {
           await notifyOwner({
             paymentId,
+            orderNumber: existing.order_number,
             name: existing.customer_name,
             phone: existing.phone,
             email: existing.email,
