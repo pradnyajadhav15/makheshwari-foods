@@ -20,7 +20,7 @@ export async function POST(req: Request) {
      on its own to cancel someone else's order. */
   const { data: order } = await supabaseAdmin
     .from("orders")
-    .select("id,status,items,stock_decremented,razorpay_payment_id,customer_name,phone,email,total")
+    .select("id,status,items,stock_decremented,razorpay_payment_id,customer_name,phone,email,total,order_number")
     .eq("id", orderId)
     .ilike("email", userData.user.email)
     .maybeSingle();
@@ -60,6 +60,7 @@ export async function POST(req: Request) {
   try {
     await notifyOwnerCancelled({
       paymentId: order.razorpay_payment_id,
+      orderNumber: order.order_number,
       name: order.customer_name,
       phone: order.phone,
       email: order.email,

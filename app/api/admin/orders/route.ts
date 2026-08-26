@@ -28,8 +28,13 @@ export async function GET(req: NextRequest) {
 
   if (q) {
     const like = `%${q}%`;
+    /* Customers quote the order number, not the payment id, and they
+       write it as MF-1042, mf1042 or 1042. Strip the prefix and match
+       on the bare digits when there are any. */
+    const digits = q.replace(/\D/g, "");
+    const numPart = digits ? `,order_number.eq.${digits}` : "";
     query = query.or(
-      `customer_name.ilike.${like},phone.ilike.${like},email.ilike.${like},razorpay_payment_id.ilike.${like}`
+      `customer_name.ilike.${like},phone.ilike.${like},email.ilike.${like},razorpay_payment_id.ilike.${like}${numPart}`
     );
   }
 

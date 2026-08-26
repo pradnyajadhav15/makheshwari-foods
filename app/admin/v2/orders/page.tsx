@@ -9,7 +9,7 @@ import {
 import { inr, dateTime, relative, SETTABLE_STATUSES, statusMeta } from "@/lib/admin/format";
 
 type Order = {
-  id: string; created_at: string; paid_at: string | null;
+  id: string; order_number: number | null; created_at: string; paid_at: string | null;
   razorpay_payment_id: string; razorpay_order_id?: string; status: string;
   customer_name: string; email: string; phone: string; address_line: string;
   city: string; state: string; pincode: string;
@@ -179,7 +179,7 @@ function OrdersInner() {
                     return (
                       <tr key={o.id}>
                         <td className="font-mono text-[0.7rem] text-adminmuted whitespace-nowrap">
-                          {(o.razorpay_payment_id || o.id).slice(-12)}
+                          {o.order_number ? `MF-${o.order_number}` : (o.razorpay_payment_id || o.id).slice(-12)}
                         </td>
                         <td>
                           <span className="font-medium text-ink block">{o.customer_name || "—"}</span>
@@ -264,7 +264,7 @@ function OrderDrawer({
       open={Boolean(order)}
       onClose={onClose}
       wide
-      title={`Order ${(order.razorpay_payment_id || order.id).slice(-12)}`}
+      title={order.order_number ? `Order MF-${order.order_number}` : `Order ${(order.razorpay_payment_id || order.id).slice(-12)}`}
       footer={
         <>
           <button

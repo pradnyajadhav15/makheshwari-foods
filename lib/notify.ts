@@ -3,6 +3,7 @@ const FROM = process.env.RESEND_FROM || "Makheshwari Foods <orders@makheshwarifo
 
 type OrderMail = {
   paymentId: string;
+  orderNumber?: number | null;
   name: string;
   phone: string;
   email: string;
@@ -44,13 +45,14 @@ Phone: ${o.phone}<br>Email: ${o.email}
 ${o.notes ? `<br>Notes: ${o.notes}` : ""}
 </p>
 <a href="${waLink}" style="display:inline-block;background:#25D366;color:#fff;padding:14px 28px;border-radius:999px;text-decoration:none;font-size:14px">Message customer on WhatsApp</a>
-<p style="font-size:12px;color:#888;margin-top:24px">Payment ID ${o.paymentId}</p>
+<p style="font-size:12px;color:#888;margin-top:24px">${o.orderNumber ? `Order MF-${o.orderNumber} &middot; ` : ""}Payment ID ${o.paymentId}</p>
 </div>`,
   });
 }
 
 type CancelMail = {
   paymentId: string;
+  orderNumber?: number | null;
   name: string;
   phone: string;
   email: string;
@@ -78,7 +80,7 @@ export async function notifyOwnerCancelled(o: CancelMail) {
 <p style="font-size:22px;margin:0 0 6px"><strong>&#8377;${o.total}</strong></p>
 <p style="font-size:15px;margin:0 0 18px">Refund this from the Razorpay dashboard.</p>
 <p style="font-size:15px;background:#F7F3E9;padding:14px 18px;margin:0 0 20px">
-Payment ID<br><strong style="font-size:17px">${o.paymentId}</strong>
+${o.orderNumber ? `Order MF-${o.orderNumber}<br>` : ""}Payment ID<br><strong style="font-size:17px">${o.paymentId}</strong>
 </p>
 <table width="100%" style="font-size:14px;margin-bottom:20px">${rows}</table>
 <p style="font-size:14px;line-height:1.6;margin:0">
