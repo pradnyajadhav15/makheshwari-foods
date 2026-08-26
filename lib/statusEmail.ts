@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-const FROM = process.env.RESEND_FROM || "Makheshwari Foods <onboarding@resend.dev>";
+const FROM = process.env.RESEND_FROM || "Makheshwari Foods <orders@makheshwarifoods.com>";
 const WA = "https://wa.me/917485001464";
 
 type StatusMail = {

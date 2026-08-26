@@ -38,6 +38,23 @@ export default function Account() {
     })();
   }, [router]);
 
+  const [cancelling, setCancelling] = useState<string | null>(null);
+
+  const cancelOrder = async (id: string) => {
+    if (!window.confirm("Cancel this order? We will refund you within 5 to 7 working days.")) return;
+    setCancelling(id);
+    const sb = supabaseBrowser();
+    const { data } = await sb.auth.getSession();
+    const r = await fetch("/api/account/cancel", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: data.session?.access_token, orderId: id }),
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { window.alert(d.error || "Could not cancel that order"); setCancelling(null); return; }
+    setOrders((prev) => prev!.map((o) => (o.id === id ? { ...o, status: "cancelled" } : o)));
+    setCancelling(null);
+  };
+
   const out = async () => {
     await supabaseBrowser().auth.signOut();
     router.push("/");
@@ -104,7 +121,7 @@ export default function Account() {
 
               {o.status === "cancelled" ? (
                 <p className="border border-peri/40 bg-peri/10 text-peri px-5 py-3 text-sm mb-6">
-                  Cancelled and refunded.
+                  Cancelled. Your refund is on the way.
                 </p>
               ) : (
                 <div className="flex items-start mb-7">
@@ -165,6 +182,16 @@ export default function Account() {
                 <Link href="/shop" className="btn btn-outline min-h-0 py-2.5 px-6">
                   Order again
                 </Link>
+                {["paid", "packed"].includes(o.status) && (
+                  <button
+                    type="button"
+                    disabled={cancelling === o.id}
+                    onClick={() => cancelOrder(o.id)}
+                    className="btn btn-outline min-h-0 py-2.5 px-6 border-peri/40 text-perideep hover:bg-peri/10 disabled:opacity-40"
+                  >
+                    {cancelling === o.id ? "Cancelling" : "Cancel order"}
+                  </button>
+                )}
               </div>
             </article>
           );
