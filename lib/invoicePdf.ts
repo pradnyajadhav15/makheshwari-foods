@@ -8,6 +8,7 @@ const LINE = rgb(0.85, 0.85, 0.83);
 const GOLD = rgb(0.79, 0.64, 0.15);
 
 type OrderRow = {
+  order_number?: number | null;
   razorpay_payment_id: string | null;
   razorpay_order_id: string | null;
   created_at: string;
@@ -156,6 +157,14 @@ export async function buildInvoicePdf(order: OrderRow, invoiceNo: string): Promi
   rule(fy + 34, LINE);
   text("Payment reference", M, fy + 18, 8, bold, GREY);
   text(order.razorpay_payment_id || order.razorpay_order_id || "-", M, fy + 6, 8.5);
+
+  /* The customer quotes this, not the payment reference. Placed on the same
+     baselines in the gap between the reference block and the signatory block
+     on the right, so nothing shifts. */
+  if (order.order_number) {
+    text("Order", M + 170, fy + 18, 8, bold, GREY);
+    text(`MF-${order.order_number}`, M + 170, fy + 6, 8.5);
+  }
 
   text("This is a computer generated invoice and does not require a signature.", M, fy - 16, 7.5, reg, GREY);
   text(`For ${LEGAL_ENTITY}`, 595 - M - 130, fy + 18, 8, bold, GREY);
