@@ -18,6 +18,7 @@ export default function Checkout() {
   const [f, setF] = useState({ name: "", email: "", phone: "", address: "", city: "", state: "Bihar", pincode: "", notes: "" });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [showErrors, setShowErrors] = useState(false);
   const router = useRouter();
 
   const [codeInput, setCodeInput] = useState("");
@@ -38,7 +39,18 @@ export default function Checkout() {
   const total = Math.max(1, subtotal - discount + shipping);
   const set = (k: string, v: string) => setF({ ...f, [k]: v });
 
-  const valid = f.name.trim() && /\S+@\S+\.\S+/.test(f.email) && /^[6-9]\d{9}$/.test(f.phone.replace(/\D/g, "")) && f.address.trim() && f.city.trim() && /^\d{6}$/.test(f.pincode);
+  const fieldErrors: Record<string, string> = {};
+  if (!f.name.trim()) fieldErrors.name = "Enter your full name";
+  if (!/\S+@\S+\.\S+/.test(f.email)) fieldErrors.email = "Enter a valid email address";
+  if (!/^[6-9]\d{9}$/.test(f.phone.replace(/\D/g, ""))) fieldErrors.phone = "Enter a 10 digit mobile number";
+  if (!f.address.trim()) fieldErrors.address = "Enter your delivery address";
+  if (!f.city.trim()) fieldErrors.city = "Enter your city";
+  if (!/^\d{6}$/.test(f.pincode)) fieldErrors.pincode = "Enter a 6 digit PIN code";
+
+  const valid = Object.keys(fieldErrors).length === 0;
+  /* Errors stay hidden until the first failed submit, so the form does not
+     scold someone who has simply not finished typing yet. */
+  const errFor = (k: string) => (showErrors ? fieldErrors[k] : undefined);
 
   const lineItems = items.map((i) => ({ slug: i.product.slug, name: i.product.name, qty: i.qty, price: i.product.price ?? 0 }));
 
@@ -84,7 +96,13 @@ export default function Checkout() {
     });
 
   const pay = async () => {
-    if (!valid) { setErr("Please check the highlighted fields"); return; }
+    if (!valid) {
+      setShowErrors(true);
+      setErr("");
+      const ids: Record<string, string> = { name: "k-name", phone: "k-phone", email: "k-email", address: "k-addr", city: "k-city", pincode: "k-pin" };
+      document.getElementById(ids[Object.keys(fieldErrors)[0]])?.focus();
+      return;
+    }
     setBusy(true);
     setErr("");
     try {
@@ -177,28 +195,33 @@ export default function Checkout() {
           <div className="grid sm:grid-cols-2 gap-5">
             <div>
               <label className="field-label" htmlFor="k-name">Full name</label>
-              <input id="k-name" autoComplete="name" className="field" value={f.name} onChange={(e) => set("name", e.target.value)} />
+              <input id="k-name" autoComplete="name" className={`field ${errFor("name") ? "border-perideep" : ""}`} aria-invalid={!!errFor("name")} value={f.name} onChange={(e) => set("name", e.target.value)} />
+              {errFor("name") && <p className="text-perideep text-[0.7rem] mt-1.5">{errFor("name")}</p>}
             </div>
             <div>
               <label className="field-label" htmlFor="k-phone">Phone</label>
-              <input id="k-phone" type="tel" inputMode="numeric" autoComplete="tel" className="field" placeholder="10 digit mobile" value={f.phone} onChange={(e) => set("phone", e.target.value)} />
+              <input id="k-phone" type="tel" inputMode="numeric" autoComplete="tel" className={`field ${errFor("phone") ? "border-perideep" : ""}`} aria-invalid={!!errFor("phone")} placeholder="10 digit mobile" value={f.phone} onChange={(e) => set("phone", e.target.value)} />
+              {errFor("phone") && <p className="text-perideep text-[0.7rem] mt-1.5">{errFor("phone")}</p>}
             </div>
           </div>
 
           <div className="mt-5">
             <label className="field-label" htmlFor="k-email">Email</label>
-            <input id="k-email" type="email" inputMode="email" autoComplete="email" className="field" value={f.email} onChange={(e) => set("email", e.target.value)} />
+            <input id="k-email" type="email" inputMode="email" autoComplete="email" className={`field ${errFor("email") ? "border-perideep" : ""}`} aria-invalid={!!errFor("email")} value={f.email} onChange={(e) => set("email", e.target.value)} />
+              {errFor("email") && <p className="text-perideep text-[0.7rem] mt-1.5">{errFor("email")}</p>}
           </div>
 
           <div className="mt-5">
             <label className="field-label" htmlFor="k-addr">Address</label>
-            <textarea id="k-addr" rows={3} autoComplete="street-address" className="field resize-none" placeholder="House, street, landmark" value={f.address} onChange={(e) => set("address", e.target.value)} />
+            <textarea id="k-addr" rows={3} autoComplete="street-address" className={`field resize-none ${errFor("address") ? "border-perideep" : ""}`} aria-invalid={!!errFor("address")} placeholder="House, street, landmark" value={f.address} onChange={(e) => set("address", e.target.value)} />
+              {errFor("address") && <p className="text-perideep text-[0.7rem] mt-1.5">{errFor("address")}</p>}
           </div>
 
           <div className="grid sm:grid-cols-3 gap-5 mt-5">
             <div>
               <label className="field-label" htmlFor="k-city">City</label>
-              <input id="k-city" autoComplete="address-level2" className="field" value={f.city} onChange={(e) => set("city", e.target.value)} />
+              <input id="k-city" autoComplete="address-level2" className={`field ${errFor("city") ? "border-perideep" : ""}`} aria-invalid={!!errFor("city")} value={f.city} onChange={(e) => set("city", e.target.value)} />
+              {errFor("city") && <p className="text-perideep text-[0.7rem] mt-1.5">{errFor("city")}</p>}
             </div>
             <div>
               <label className="field-label" htmlFor="k-state">State</label>
@@ -208,7 +231,8 @@ export default function Checkout() {
             </div>
             <div>
               <label className="field-label" htmlFor="k-pin">PIN code</label>
-              <input id="k-pin" inputMode="numeric" autoComplete="postal-code" maxLength={6} className="field" placeholder="6 digits" value={f.pincode} onChange={(e) => set("pincode", e.target.value)} />
+              <input id="k-pin" inputMode="numeric" autoComplete="postal-code" maxLength={6} className={`field ${errFor("pincode") ? "border-perideep" : ""}`} aria-invalid={!!errFor("pincode")} placeholder="6 digits" value={f.pincode} onChange={(e) => set("pincode", e.target.value)} />
+              {errFor("pincode") && <p className="text-perideep text-[0.7rem] mt-1.5">{errFor("pincode")}</p>}
             </div>
           </div>
 
