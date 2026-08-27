@@ -33,7 +33,18 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
     recipeYield: `${r.serves} servings`,
     totalTime: `PT${parseInt(r.time)}M`,
     recipeIngredient: r.ingredients.flatMap((g) => g.items),
-    recipeInstructions: r.steps.map((s) => ({ "@type": "HowToStep", name: s.t, text: s.b })),
+    recipeCuisine: "Indian",
+    recipeCategory: r.slug === "makhana-kheer" ? "Dessert" : "Snack",
+    /* Drawn from the recipe itself rather than invented, so the keywords
+       match what the page actually says. */
+    keywords: [r.name, "makhana", "fox nuts", "phool makhana", r.uses].join(", "),
+    /* Each step gets an anchor so Google can deep link into the method. */
+    recipeInstructions: r.steps.map((s, i) => ({
+      "@type": "HowToStep",
+      name: s.t,
+      text: s.b,
+      url: `https://makheshwarifoods.com/recipes/${r.slug}#step-${i + 1}`,
+    })),
     author: { "@type": "Organization", name: "Makheshwari Foods" },
   };
 
