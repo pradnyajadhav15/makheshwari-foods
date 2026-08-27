@@ -11,7 +11,11 @@ const FLAVOURS = [
   { id: "peri-peri", name: "Peri Peri", tag: "Slow heat that builds", src: "/hero/peri-peri.jpg" },
   { id: "garden-mint", name: "Garden Mint", tag: "Cool, green, unexpected", src: "/hero/garden-mint.jpg" },
   { id: "pink-salt", name: "Himalayan Pink Salt", tag: "Just the crunch, nothing louder", src: "/hero/pink-salt.jpg" },
-];
+  { id: "spanish-tomato", name: "Spanish Tomato", tag: "Sun-dried and smoky", src: "/hero/spanish-tomato.jpg" },
+  { id: "cream-onion", name: "Cream & Onion", tag: "The one everyone finishes first", src: "/hero/cream-onion.jpg" },
+  { id: "cheese-herbs", name: "Cheese & Herbs", tag: "Savoury, with oregano", src: "/hero/cheese-herbs.jpg" },
+  { id: "chocolate", name: "Chocolate", tag: "Dark cocoa on a light puff", src: "/hero/chocolate.jpg" },
+  { id: "salt-pepper", name: "Salt & Pepper", tag: "Cracked black, kitchen simple", src: "/hero/salt-pepper.jpg" },];
 
 export default function HeroVideo() {
   const [active, setActive] = useState(0);
