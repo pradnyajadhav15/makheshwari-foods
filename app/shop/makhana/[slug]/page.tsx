@@ -7,7 +7,7 @@ import BuyBox from "@/components/BuyBox";
 import StickyBuyBar from "@/components/StickyBuyBar";
 import Reviews from "@/components/Reviews";
 import { getLiveProducts } from "@/lib/liveProducts";
-import { products, accentClass, accentTextDeep, formatPrice } from "@/lib/products";
+import { products, accentClass, accentTextDeep, formatPrice, FREE_SHIPPING_OVER } from "@/lib/products";
 
 export const revalidate = 60;
 
@@ -72,7 +72,29 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       price: product.price,
       priceCurrency: "INR",
       availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-    },
+      /* Mirrors /shipping-returns exactly: flat Rs 49, free over the
+         threshold, dispatch within 2 working days, 3-7 in transit. Sealed
+         food is not returnable for change of mind, so the policy is
+         NotPermitted rather than a window we do not actually offer. */
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: (product.price ?? 0) >= FREE_SHIPPING_OVER ? 0 : 49,
+          currency: "INR",
+        },
+        shippingDestination: { "@type": "DefinedRegion", addressCountry: "IN" },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 2, unitCode: "DAY" },
+          transitTime: { "@type": "QuantitativeValue", minValue: 3, maxValue: 7, unitCode: "DAY" },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "IN",
+        returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+      },    },
   };
 
   const specs = [
