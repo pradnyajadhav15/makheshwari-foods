@@ -132,6 +132,17 @@ export const accentClass: Record<Product["accent"], string> = {
  * 4.5:1 on cream (peri 3.95, mint 2.65, salt 2.30), so these darkened
  * partners are what carries body-size text.
  */
+/**
+ * Very light wash behind the product shot. The three pouches photograph
+ * near-identically on white, so at phone size the cards were hard to tell
+ * apart; this carries the flavour colour without competing with the pack.
+ */
+export const accentTint: Record<Product["accent"], string> = {
+  peri: "bg-peri/[0.14]",
+  mint: "bg-mint/[0.18]",
+  salt: "bg-salt/[0.16]",
+};
+
 export const accentTextDeep: Record<Product["accent"], string> = {
   peri: "text-perideep",
   mint: "text-mintdeep",

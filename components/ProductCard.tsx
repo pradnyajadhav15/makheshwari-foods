@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import AddToCart from "@/components/AddToCart";
-import { accentClass, formatPrice, type Product } from "@/lib/products";
+import { accentClass, accentTint, formatPrice, type Product } from "@/lib/products";
 
 type CardProduct = Product & { stock?: number; lowStock?: boolean };
 
@@ -22,7 +22,7 @@ export default function ProductCard({ product: p }: { product: CardProduct }) {
       {/* Flavour accent — a real field at the top of the card rather than a 1px stripe */}
       <div className={`h-1.5 ${accentClass[p.accent]}`} />
 
-      <Link href={href} className="pcard-media" aria-label={p.name}>
+      <Link href={href} className={`pcard-media ${sold ? "" : accentTint[p.accent]}`} aria-label={p.name}>
         <Image
           src={img}
           alt={p.name}
