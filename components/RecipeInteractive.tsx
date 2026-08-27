@@ -76,10 +76,13 @@ export function StepList({ steps }: { steps: { t: string; b: string }[] }) {
         return (
           <button
             key={s.t}
+            /* The recipe JSON-LD points each HowToStep at #step-N, so the
+               anchor has to exist. scroll-mt clears the sticky header. */
+            id={`step-${i + 1}`}
             type="button"
             onClick={() => toggle(i)}
             aria-pressed={on}
-            className={`w-full text-left border-b border-ink/15 py-6 transition-colors ${
+            className={`w-full scroll-mt-24 text-left border-b border-ink/15 py-6 transition-colors ${
               on ? "bg-mint/10" : "hover:bg-sandsoft/40"
             }`}
           >
