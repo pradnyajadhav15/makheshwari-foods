@@ -43,7 +43,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const p = products.find((x) => x.slug === slug);
   if (!p) return {};
-  return { title: `${p.name} Roasted Makhana - ${p.weightG}g`, description: p.description.slice(0, 155) };
+  return {
+    title: `${p.name} Roasted Makhana - ${p.weightG}g`,
+    description: p.description.slice(0, 155),
+    alternates: { canonical: `/shop/makhana/${p.slug}` },
+  };
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {

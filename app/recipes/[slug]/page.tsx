@@ -15,7 +15,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const r = getRecipe(slug);
   if (!r) return {};
-  return { title: r.name, description: r.blurb };
+  return {
+    title: r.name,
+    description: r.blurb,
+    alternates: { canonical: `/recipes/${r.slug}` },
+  };
 }
 
 export default async function RecipePage({ params }: { params: Promise<{ slug: string }> }) {
