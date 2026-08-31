@@ -37,7 +37,7 @@ export default function OurStory() {
       <section className="relative isolate overflow-hidden bg-inkdeep flex items-end min-h-[26rem] md:min-h-[34rem]">
         <Image
           src="/brand/story-hero.jpg"
-          alt=""
+          alt="Harvesting makhana by hand in the ponds of the Mithila belt"
           fill
           priority
           sizes="100vw"
