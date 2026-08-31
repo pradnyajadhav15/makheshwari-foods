@@ -55,6 +55,24 @@ export default function Account() {
     setCancelling(null);
   };
 
+  const [deleting, setDeleting] = useState(false);
+
+  const deleteAccount = async () => {
+    if (!window.confirm("Delete your account? Your login is removed permanently. Past order records are kept as required by tax rules, and you can still track orders by phone number.")) return;
+    setDeleting(true);
+    const sb = supabaseBrowser();
+    const { data } = await sb.auth.getSession();
+    const r = await fetch("/api/account/delete", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: data.session?.access_token }),
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { window.alert(d.error || "Could not delete the account"); setDeleting(false); return; }
+    await sb.auth.signOut();
+    router.push("/");
+    router.refresh();
+  };
+
   const out = async () => {
     await supabaseBrowser().auth.signOut();
     router.push("/");
@@ -196,6 +214,23 @@ export default function Account() {
             </article>
           );
         })}
+      </div>
+      {/* Right to erasure. Kept well away from Log out so it cannot be hit
+          by accident, and stated plainly rather than hidden in settings. */}
+      <div className="mt-16 pt-8 border-t border-ink/12">
+        <h2 className="display-sm text-ink mb-2">Delete account</h2>
+        <p className="text-ink/70 body-text max-w-lg mb-5">
+          This removes your login permanently. Past order records are kept as long as tax and
+          food safety rules require, and you can still track those orders using your phone number.
+        </p>
+        <button
+          type="button"
+          onClick={deleteAccount}
+          disabled={deleting}
+          className="btn btn-outline min-h-0 py-2.5 px-6 border-peri/40 text-perideep hover:bg-peri/10 disabled:opacity-40"
+        >
+          {deleting ? "Deleting" : "Delete my account"}
+        </button>
       </div>
     </section>
   );
